@@ -1,0 +1,8 @@
+{
+  "input" : [],
+  "output" : {
+    "name" : "caos_spawner",
+    "count" : 1
+  },
+  "groups" : [ "mod", "caos_vm", "all" ]
+}

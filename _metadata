@@ -1,0 +1,11 @@
+{
+  "name" : "c2sb",
+  "friendlyName" : "Creatures to Starbound",
+  "priority" : -1,
+  "version" : "0.01",
+  "author" : "Adam Heinermann",
+  "link" : "",
+  "description" : "Creatures to StarBound",
+  "requires" : [],
+  "includes" : []
+}

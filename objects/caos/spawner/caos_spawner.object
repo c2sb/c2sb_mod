@@ -1,0 +1,60 @@
+{
+  "objectName" : "caos_spawner",
+  "colonyTags" : ["ancient"],
+  "rarity" : "Legendary",
+  "description" : "A mysterious ancient gate.",
+  "shortdescription" : "Ancient Gate",
+  "race" : "ancient",
+  "category" : "decorative",
+  "price" : 0,
+
+  "apexDescription" : "A mysterious gate to somewhere.",
+  "avianDescription" : "A gate of mysterious origin.",
+  "floranDescription" : "Floran wonder which ssstrange creature make door.",
+  "glitchDescription" : "Confused. I cannot trace the origins of this gate.",
+  "humanDescription" : "A strange and arcane gate shrouded in mystery.",
+  "hylotlDescription" : "A monumental structure, it looms above me. Dare I see where it leads?",
+  "novakidDescription" : "A strange gate that's jus' beggin' me to walk through it.",
+
+  "lightColor" : [15, 5, 30],
+
+  "inventoryIcon" : "icon.png",
+  "orientations" : [
+    {
+      "imageLayers" : [ { "image" : "ancientconsole.png:<color>.<frame>", "fullbright" : true }, { "image" : "ancientconsolelit.png:<color>.<frame>" } ],
+      "imagePosition" : [-46, 0],
+      "animationPosition" : [1, 14],
+      
+      "direction" : "left",
+      "flipImages" : true,
+
+      "lightPosition" : [0, 1],
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "bottom" ],
+      "collision" : "solid",
+      "collisionSpaces" : [ [-3, 0], [-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0] ],
+
+      "detectArea" : [ [-2, 0], [2.3, 5] ]
+    },
+    {
+      "imageLayers" : [ { "image" : "ancientconsole.png:<color>.<frame>", "fullbright" : true }, { "image" : "ancientconsolelit.png:<color>.<frame>" } ],
+      "imagePosition" : [-33, 0],
+      "animationPosition" : [14, 14],
+
+      "direction" : "right",
+
+      "lightPosition" : [0, 1],
+
+      "spaceScan" : 0.1,
+      "anchors" : [ "bottom" ],
+      "collision" : "solid",
+      "collisionSpaces" : [ [-1, 0], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0] ],
+
+      "detectArea" : [ [-0.3, 0], [4, 5] ]
+    }
+  ],
+
+  "scripts" : [ "/objects/caos/spawner/caos_spawner.lua" ],
+  "scriptDelta" : 20
+}

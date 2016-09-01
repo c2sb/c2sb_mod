@@ -1,0 +1,153 @@
+{
+  "animatedParts" : {
+    "stateTypes" : {
+      "body" : {
+        "priority" : 0,
+        "default" : "idle",
+        "states" : {
+          "idle" : {
+            "frames" : 1
+          }
+        }
+      }
+    },
+
+    "parts" : {
+      "body" : {
+        "properties" : {
+        },
+        "partStates" : {
+          "body" : {
+            "idle" : {
+              "properties" : {
+                "image" : "<partImage>:<frame>"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "globalTagDefaults" : {
+    "near" : ""
+  },
+
+  "transformationGroups" : {
+    "body" : { "interpolated" : true }
+  },
+
+  "lights" : {
+    "glow" : {
+      "active" : true,
+      "position" : [0, 0],
+      "color" : [140, 50, 140],
+      "pointLight" : true
+    }
+  },
+
+  "effects" : {
+    "blink" : {
+      "type" : "flash",
+      "time" : 0,
+      "directives" : "fade=ffffff;0.5"
+    }
+  },
+
+  "particleEmitters" : {
+    "erchius" : {
+      "active" : true,
+      "emissionRate" : 0,
+      "offsetRegion" : [-2.25, -4.0, 2.25, 2.5],
+      "particles" : [
+        {
+          "particle" : {
+            "type" : "ember",
+            "size" : 1.5,
+            "color" : [140, 70, 140, 255],
+            "position" : [0, 0],
+            "initialVelocity" : [0, 6.0],
+            "light" : [140, 70, 140],
+            "timeToLive" : 0.8,
+            "destructionAction" : "fade",
+            "destructionTime" : 0.2,
+            "layer" : "front",
+            "fullbright" : true,
+            "variance" : {
+              "initialVelocity" : [0, 2.0],
+              "size" : 1.0
+            }
+          }
+        }
+      ]
+    },
+    "deathPoof" : {
+      "particles" : [
+      ]
+    }
+  },
+
+  "sounds" : {
+    "deathPuff" : [ "/sfx/npc/enemydeathpuff.ogg" ]
+  }
+}
+
+//{
+//  "animatedParts" : {
+//    "stateTypes" : {
+//    
+//      "portrait" : {
+//        "priority" : -1,
+//        "default" : "portrait",
+//        "states" : {
+//          "portrait" : {
+//            "frames" : 1
+//          },
+//          "invisible" : {
+//            "frames" : 1
+//          }
+//        }
+//      }
+//    },
+//    
+//    "parts" : {
+//      "body" : {
+//        "properties" : {
+//          "zLevel" : 1,
+//          "centered" : true,
+//          "rotationGroup" : "all"
+//        },
+//        
+//        "partStates" : {
+//          "portrait" : {
+//            "portrait" : {
+//              "properties" : {
+//                "image" : "atlas.png:<frameno>"
+//              }
+//            },
+//            "invisible" : {
+//              "properties" : {
+//                "image" : ""
+//              }
+//            }
+//          }
+//        }
+//      }
+//    }
+//  },
+//
+//  "rotationGroups" : {
+//    "all" : {
+//      "angularVelocity" : 1
+//    }
+//  },
+//  "particleEmitters" : {
+//  },
+//
+//  "effects" : {
+//    "blink" : {
+//      "type" : "flash",
+//      "time" : 0.25,
+//      "directives" : "fade=ffffff;0.5"
+//    }
+//  }
+//}

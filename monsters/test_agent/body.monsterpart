@@ -1,0 +1,9 @@
+{
+  "name" : "test_agent",
+  "category" : "test_agent",
+  "type" : "body",
+
+  "frames" : {
+    "body" : "atlas.png"
+  }
+}
