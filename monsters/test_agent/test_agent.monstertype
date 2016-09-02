@@ -12,7 +12,9 @@
 
   "baseParameters" : {
     "scripts" : [
-     "/monsters/test_agent/test_agent.lua"
+     "/monsters/test_agent/test_agent.lua",
+     "/scripts/caos_vm/caos.lua",
+     "/monsters/test_agent/balloonplant.lua"
     ],
 
     "speedupRange" : [75, 175],

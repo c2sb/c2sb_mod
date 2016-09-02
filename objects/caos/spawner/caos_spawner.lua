@@ -3,6 +3,6 @@ function init()
 end
 
 function onInteraction(args)
-  world.spawnMonster("test_agent", entity.position())
+  world.spawnMonster("test_agent", object.toAbsolutePosition({0, 6}))
 end
 
