@@ -1,10 +1,10 @@
 {
   "type" : "test_agent",
-  "shortdescription" : "Erchius Ghost",
-  "description" : "When it closes its eyes it becomes immune to attacks by entering a different plane of existence.",
+  "shortdescription" : "",
+  "description" : "",
 
   "categories" : [ "test_agent" ],
-  "parts" : [ "body" ],
+  "parts" : [ ],
 
   "animation" : "test_agent.animation",
 
@@ -16,54 +16,22 @@
      "/scripts/caos_vm/caos.lua",
      "/monsters/test_agent/balloonplant.lua"
     ],
-
-    "speedupRange" : [75, 175],
-    "maxSpeed" : 30,
-
-    // The min speed depends on the erchius amount of the player
-    "minSpeedRange" : [0.5, 10],
-    "erchiusRange" : [0, 5000],
-
-    "emissionRange" : 20,
-    "maxEmissionRate" : 100,
+    "initialScriptDelta" : 1,
 
     "renderLayer" : "ForegroundEntity",
 
-    "touchDamage" : {
-      "poly" : [ [1.25, 2.55], [1.75, 2.05],  [2.25, -3.55], [1.75, -3.95],  [-1.75, -3.95], [-2.25, -3.55],  [-1.75, 2.05], [-1.25, 2.55] ],
-      "damage" : 1000,
-
-      "teamType" : "enemy",
-      "damageSourceKind" : "slash",
-      "knockback" : 20,
-      "statusEffects" : [ ]
-    },
-
-    "metaBoundBox" : [-4, -4, 4, 4],
-    "scale" : 1.0,
+    "metaBoundBox" : [-2.5, -2.5, 2.5, 2.5],
+    "scale" : 0.5,
 
     "movementSettings" : {
       "collisionEnabled" : true,
-      "collisionPoly" : [ [1.25, 2.55], [1.75, 2.05],  [2.25, -3.55], [1.75, -3.95],  [-1.75, -3.95], [-2.25, -3.55],  [-1.75, 2.05], [-1.25, 2.55] ],
-
-      "mass" : 1.0,
-      "walkSpeed" : 4,
-      "runSpeed" : 12,
-      "gravityEnabled" : true,
-
-      "airFriction" : 0.5,
-      "airForce" : 50,
-      "flySpeed" : 2,
-
-      "physicsEffectCategories" : [ "boss" ]
+      "collisionPoly" : [ [-2.5, 2.5], [2.5, 2.5],  [2.5, -2.5], [-2.5, -2.5] ],
+      
+      "gravityModifier" : 1.0
     },
 
     "bodyMaterialKind" : "organic",
 
-    "knockoutTime" : 0.3,
-    "knockoutAnimationStates" : {
-      "damage" : "stunned"
-    },
     "knockoutEffect" : "",
 
     "statusSettings" : {
@@ -71,7 +39,7 @@
         "targetMaterialKind" : "organic"
       },
 
-      "appliesEnvironmentStatusEffects" : false,
+      "appliesEnvironmentStatusEffects" : true,
       "minimumLiquidStatusEffectPercentage" : 0.1,
 
       "stats" : {
@@ -133,55 +101,3 @@
     "nametagColor" : [64, 200, 255]
   }
 }
-
-
-//{
-//  "type" : "test_agent",
-//  "shortdescription" : "Balloonplant",
-//  "description" : "",
-//
-//  "categories" : [ "test_agent" ],
-//  "parts" : [ "body" ],
-//  
-//  "animation" : "test_agent.animation",
-//  
-//  "dropPools" : [ ],
-//    
-//  "baseParameters" : {
-//    "scripts" : [
-//      //"/scripts/caos_vm/caos.lua",
-//      "/scripts/util.lua",
-//      "/monsters/test_agent/test_agent.lua"
-//    ],
-//    
-//    "metaBoundBox" : [-2.5, -2.5, 2.5, 2.5],
-//    "scale" : 0.5,    // All agents will be half-size 
-//    
-//    "damageTeamType" : "ghostly",
-//    "renderLayer" : "ForegroundEntity",
-//    
-//    "movementSettings" : {
-//      // TODO
-//    },
-//    
-//    "mouthOffset" : [0, 0],
-//    "feetOffset" : [0, 0],
-//    
-//    "statusSettings" : {
-//
-//    },
-//
-//    
-//    
-//    // We can't actually persist the lua data for the script, so this has to go for now
-//    // Possible workaround is have a central "agent controller" which controls every agent:
-//    // Advantages are that it works as an agent spawner and also allows script saving and inter-script communication
-//    // Additionally, as an object can use the storage API to store data
-//    //"persistent" : true,
-//    
-//    // install script is called on every world load, we don't want that!
-//    "first_spawn" : false
-//    
-//  }
-//
-//}

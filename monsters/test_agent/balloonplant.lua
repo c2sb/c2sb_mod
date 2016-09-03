@@ -1,5 +1,11 @@
 require("/scripts/caos_vm/constants.lua")
 
+-- NOTES:
+-- 6205: Actual plant
+-- 6204: The balloon
+-- 6203: Fruit
+-- 6201: The seed
+-----------------------------------------------------------------------------------
 --* Script 1 extracted from Balloonplant.agents by Mirality REVELATION
 
 --*The plant itself!

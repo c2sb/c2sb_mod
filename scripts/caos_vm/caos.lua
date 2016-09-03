@@ -13,7 +13,13 @@ function updateImageFrame()
   assert(type(self.first_image) == "number", "first_image is not a number")
   assert(type(self.base_image) == "number", "base_image is not a number")
   assert(type(self.pose_image) == "number", "pose_image is not a number")
-  animator.setGlobalTag("frame", tostring(self.first_image + self.base_image + self.pose_image))
+  local frameno = self.first_image + self.base_image + self.pose_image
+  animator.setGlobalTag("frameno", frameno)
+  
+  local image_size = root.imageSize("/monsters/test_agent/atlas.png:10")
+  local imge_bounds = root.nonEmptyRegion("/monsters/test_agent/atlas.png:10")
+  
+  logInfo("IMAGE SIZE: %s, %s", util.tableToString(image_size), util.tableToString(imge_bounds))
 end
 
 function getv(variable)
@@ -93,7 +99,7 @@ function esee_wrap(family, genus, species, fcn_callback)
   })
   
   local originalTarg = self.TARG
-  for entity in entities do
+  for i,entity in ipairs(entities) do
     self.TARG = entity
     fcn_callback()
   end
@@ -199,7 +205,12 @@ end
 
 function rand(value1, value2)
   logInfo("rand %s %s", value1, value2)
-  return sb.staticRandomI32Range(value1, value2)
+  if value1 == value2 then
+    return value1
+  elseif value1 > value2 then
+    value1, value2 = value2, value1
+  end
+  return self.random:randu32() % (value2 - value1) + value1
 end
 
 function wait(ticks)
@@ -210,19 +221,24 @@ end
 
 function kill(target)
   logInfo("kill %s", target)
-  world.callScriptedEntity(target, "remote_kill")
+  if target == entity.id() then
+    killSelf()
+    coroutine.yield()
+  else
+    world.callScriptedEntity(target, "remote_kill")
+  end
 end
 
 function posx()
   logInfo("posx")
   if (self.TARG == nil) then return 0 end
-  return world.callScriptedEntity(self.TARG, "remote_posx")
+  return world.entityPosition(self.TARG)[1]
 end
 
 function posy()
   logInfo("posy")
   if (self.TARG == nil) then return 0 end
-  return world.callScriptedEntity(self.TARG, "remote_posy")
+  return world.entityPosition(self.TARG)[2]
 end
 
 function addv(variable, value)
@@ -317,15 +333,17 @@ function remote_attr(flags)
 end
 
 function remote_elas(elasticity_percentage)
-  mcontroller.controlParameters({bounceFactor = elasticity_percentage / 100.0})
+  mcontroller.controlParameters({ bounceFactor = elasticity_percentage / 100.0 })
 end
 
 function remote_fric(friction)
-  mcontroller.controlParameters({groundFriction = friction})
+  mcontroller.controlParameters({ groundFriction = friction })
 end
 
 function remote_accg(gravity_pixels)
-  mcontroller.controlParameters({gravityMultiplier = gravity_pixels / world.gravity(mcontroller.position()) })
+  mcontroller.controlParameters({
+    gravityMultiplier = gravity_pixels / world.gravity(mcontroller.position())
+  })
 end
 
 function remote_perm(permiability)
@@ -355,19 +373,11 @@ function remote_tick(tick_rate)
 end
 
 function remote_kill()
-  self.killed = true
-end
-
-function remote_posx()
-  return mcontroller.xPosition()
-end
-
-function remote_posy()
-  return mcontroller.yPosition()
+  killSelf()
 end
 
 function remote_velo(x_velocity, y_velocity)
-  return mcontroller.setVelocity({x_velocity, y_velocity})
+  mcontroller.setVelocity({x_velocity, -y_velocity})
 end
 
 function remote_fall()

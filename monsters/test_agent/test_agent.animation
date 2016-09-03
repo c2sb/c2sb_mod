@@ -2,24 +2,13 @@
   "animatedParts" : {
     "stateTypes" : {
       "body" : {
-        "priority" : 0,
+        "priority" : -1,
         "default" : "idle",
         "states" : {
           "idle" : {
             "frames" : 1
-          }
-        }
-      },
-      "damage" : {
-        "priority" : 4,
-        "default" : "none",
-        "states" : {
-          "none" : {
-            "frames" : 1
           },
-          "stunned" : {
-            "frames" : 1
-          }
+          "invisible" : {}
         }
       }
     },
@@ -32,7 +21,12 @@
           "body" : {
             "idle" : {
               "properties" : {
-                "image" : "<partImage>:<frame>"
+                "image" : "monsters/test_agent/atlas.png:<frameno>"
+              }
+            },
+            "invisible" : {
+              "properties" : {
+                "image" : ""
               }
             }
           }
@@ -51,73 +45,7 @@
   "lights" : { },
 
   "effects" : {
-    "blink" : {
-      "type" : "flash",
-      "time" : 0,
-      "directives" : "fade=ffffff;0.5"
-    }
   },
 
   "particleEmitters" : { }
 }
-
-//{
-//  "animatedParts" : {
-//    "stateTypes" : {
-//    
-//      "portrait" : {
-//        "priority" : -1,
-//        "default" : "portrait",
-//        "states" : {
-//          "portrait" : {
-//            "frames" : 1
-//          },
-//          "invisible" : {
-//            "frames" : 1
-//          }
-//        }
-//      }
-//    },
-//    
-//    "parts" : {
-//      "body" : {
-//        "properties" : {
-//          "zLevel" : 1,
-//          "centered" : true,
-//          "rotationGroup" : "all"
-//        },
-//        
-//        "partStates" : {
-//          "portrait" : {
-//            "portrait" : {
-//              "properties" : {
-//                "image" : "atlas.png:<frameno>"
-//              }
-//            },
-//            "invisible" : {
-//              "properties" : {
-//                "image" : ""
-//              }
-//            }
-//          }
-//        }
-//      }
-//    }
-//  },
-//
-//  "rotationGroups" : {
-//    "all" : {
-//      "angularVelocity" : 1
-//    }
-//  },
-//  "particleEmitters" : {
-//  },
-//
-//  "effects" : {
-//    "blink" : {
-//      "type" : "flash",
-//      "time" : 0.25,
-//      "directives" : "fade=ffffff;0.5"
-//    }
-//  }
-//}

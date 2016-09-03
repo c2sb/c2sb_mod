@@ -19,21 +19,27 @@ function init()
   self.killed = false
   self.tick_rate = 0
   self.range_check = 100
-  self.last_tick_time = 0
+  self.last_tick_time = world.time()
   
   self.last_colliding_state = false
   self.TARG = nil
   self.OWNR = entity.id()
   
+  self.random = sb.makeRandomSource(world.time())
+  updateImageFrame()
+  mcontroller.setAutoClearControls(false)   -- Fixes gravity override and some other things from being cleared every frame
+  
   if (self.family == CAOS.FAMILY.INVALID) then
     self.OWNR = nil
     install()
     
-    self.killed = true
+    killSelf()
   end
 end
 
 function update(dt)
+  if self.killed then return end
+  
   -- Check Collision
   local isColliding = mcontroller.isColliding()
   if self.last_colliding_state ~= isColliding then
@@ -77,6 +83,11 @@ function uninit()
 end
 
 ----------------------------------------- END callbacks
+
+function killSelf()
+  self.killed = true
+  animator.setAnimationState("body", "invisible")
+end
 
 function create_coroutine(event)
   if script_coroutine ~= nil and coroutine.status(script_coroutine) ~= "dead" and self.current_event == event then
