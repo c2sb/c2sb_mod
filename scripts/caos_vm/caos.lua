@@ -58,7 +58,16 @@ end
 -- This can be used to alter the tick behaviour if agents execute too quickly or slowly
 -- NOTE: It's noted that a creatures tick is about 50ms (1/20 of a second). Starbound is timed in seconds (as a float value).
 function c2sb_ticks(ticks)
-  return ticks / 60.0
+  return ticks / 20.0
+end
+
+-- IIRC one Starbound tile is 16 pixels
+function c2sb_pixels(pixel_value)
+  return pixel_value / 16.0
+end
+
+function sb2c_tiles(tile_value)
+  return tile_value * 16.0
 end
 
 function bool_to_int(value)
@@ -92,7 +101,7 @@ function esee_wrap(family, genus, species, fcn_callback)
   end
   if (target == nil) then return {} end
   
-  local entities = world.entityQuery(world.entityPosition(target), radius, {
+  local entities = world.entityQuery(world.entityPosition(target), c2sb_pixels(radius), {
     withoutEntityId = target,
     callScript = "matches_species",
     callScriptArgs = { family, genus, species }
@@ -232,13 +241,13 @@ end
 function posx()
   logInfo("posx")
   if (self.TARG == nil) then return 0 end
-  return world.entityPosition(self.TARG)[1]
+  return sb2c_tiles(world.entityPosition(self.TARG)[1])
 end
 
 function posy()
   logInfo("posy")
   if (self.TARG == nil) then return 0 end
-  return world.entityPosition(self.TARG)[2]
+  return sb2c_tiles(world.entityPosition(self.TARG)[2])
 end
 
 function addv(variable, value)
@@ -340,9 +349,17 @@ function remote_fric(friction)
   mcontroller.controlParameters({ groundFriction = friction })
 end
 
+-- TODO: Figure out what Starbound gravity is _actually_ measured in to come up with a correct formula.
+-- For now, we assume starbound gravity is in tiles/s^2 (ship gravity is 80)
+-- Note that ACCG is measured in "pixels per tick squared", where a tick is 1/20 of a second
+--      but we can only set a gravity multiplier, not the gravity itself.
+-- To convert creatures gravity to starbound gravity, we know that: 1 tile = 16 px, 20 tick = 1 s
+-- We also have that newGravity = worldGravity * gravityMultiplier => gravityMultiplier = newGravity / worldGravity
+-- Example: (5 px / tick^2) * (20 tick / s) * (20 tick / s) / (16 px / tile)   =   (125 tiles / s)
 function remote_accg(gravity_pixels)
+  local newGravity = gravity_pixels / c2sb_ticks(1) / c2sb_ticks(1) * c2sb_pixels(1)
   mcontroller.controlParameters({
-    gravityMultiplier = gravity_pixels / world.gravity(mcontroller.position())
+    gravityMultiplier = newGravity / world.gravity(mcontroller.position())
   })
 end
 
@@ -377,7 +394,7 @@ function remote_kill()
 end
 
 function remote_velo(x_velocity, y_velocity)
-  mcontroller.setVelocity({x_velocity, -y_velocity})
+  mcontroller.setVelocity({ x_velocity, -y_velocity })
 end
 
 function remote_fall()
