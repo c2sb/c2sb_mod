@@ -42,7 +42,7 @@ CAOS.TIME_OF_DAY = {
   NIGHT = 4
 }
 
--- Cellular automata
+-- Cellular automata (emit)
 CAOS.CA_INDEX = {
   SOUND = 0,
   LIGHT = 1,
@@ -71,6 +71,13 @@ CAOS.FAMILY = {
   OBJECT = 2,
   EXTENDED = 3,
   CREATURE = 4
+}
+
+CAOS.UI_GENUS = {
+  INVISIBLE = 1,
+  SYSTEM = 2,
+  FAV_SIGN = 3,
+  FAV_ICON = 4
 }
 
 CAOS.OBJECT_GENUS = {
@@ -120,6 +127,10 @@ CAOS.CREATURE_GENUS = {
   GRENDEL = 2,
   ETTIN = 3,
   SOMETHING = 4
+}
+
+CAOS.UI_SYSTEM = {
+  SPEECH_BUBBLE = 10
 }
 
 CAOS.EVENT = {

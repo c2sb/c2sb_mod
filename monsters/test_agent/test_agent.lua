@@ -29,6 +29,9 @@ function init()
   self.OWNR = entity.id()
   
   self.random = sb.makeRandomSource(world.time())
+
+  self.scale = tonumber(config.getParameter("imageScale", 1))
+  animator.setGlobalTag("scale", self.scale)
   updateImageFrame()
   mcontroller.setAutoClearControls(false)   -- Fixes gravity override and some other things from being cleared every frame
   

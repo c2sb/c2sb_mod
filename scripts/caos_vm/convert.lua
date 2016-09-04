@@ -1,12 +1,13 @@
 fromSB = {}
 toSB = {}
 
+-- One Starbound tile is 8 pixels
 fromSB.coordinate = function(value)
-  return value * 16.0
+  return (value * 8.0) / self.scale
 end
 
 toSB.coordinate = function(value)
-  return value / 16.0
+  return (value * self.scale) / 8.0
 end
 
 fromSB.y_coordinate = function(value)

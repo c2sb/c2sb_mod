@@ -15,13 +15,12 @@
 
     "parts" : {
       "body" : {
-        "properties" : {
-        },
+        "properties" : {},
         "partStates" : {
           "body" : {
             "idle" : {
               "properties" : {
-                "image" : "monsters/test_agent/atlas.png:<frameno>"
+                "image" : "monsters/test_agent/atlas.png:<frameno>?scale=<scale>"
               }
             },
             "invisible" : {
@@ -34,18 +33,13 @@
       }
     }
   },
-  "globalTagDefaults" : {
-    "near" : ""
-  },
+  "globalTagDefaults" : {},
+  
+  "transformationGroups" : {},
+  
+  "lights" : {},
 
-  "transformationGroups" : {
-    "body" : { "interpolated" : true }
-  },
+  "effects" : {},
 
-  "lights" : { },
-
-  "effects" : {
-  },
-
-  "particleEmitters" : { }
+  "particleEmitters" : {}
 }

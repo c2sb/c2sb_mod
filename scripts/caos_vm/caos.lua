@@ -32,10 +32,10 @@ function updateImageFrame()
   -- Set the collision polygon
   local center_x = image_size[1] / 2
   local center_y = image_size[2] / 2
-  local left = (image_bounds[1] - center_x) / 16.0
-  local top = (image_bounds[2] - center_y) / 16.0
-  local right = (image_bounds[3] - center_x) / 16.0
-  local bottom = (image_bounds[4] - center_y) / 16.0
+  local left = toSB.coordinate(image_bounds[1] - center_x)
+  local top = toSB.coordinate(image_bounds[2] - center_y)
+  local right = toSB.coordinate(image_bounds[3] - center_x)
+  local bottom = toSB.coordinate(image_bounds[4] - center_y)
   
   local collision_poly =  { {left, top}, {right, top}, {right, bottom}, {left, bottom} }
   mcontroller.controlParameters({
