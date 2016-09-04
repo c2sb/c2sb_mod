@@ -11,7 +11,7 @@ require("/scripts/caos_vm/constants.lua")
 --*The plant itself!
 
 function install()
-    --inst
+    inst()
     new_simp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, "BulbBalloon", 0, 0, 4567)
  
     attr(CAOS.ATTRIBUTES.SUFFER_PHYSICS | CAOS.ATTRIBUTES.SUFFER_COLLISIONS)
@@ -21,7 +21,7 @@ function install()
     perm(70)
     setv(ov03, 1)
     pose(0)
-    --mvto 1600 9200
+    mvto(1600, 9200)
     tick(10)
 end
 
@@ -43,14 +43,14 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, CAOS.EVENT.TIMER, functio
 --***************************************************
     new_simp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, "BulbBalloon", 0, 10, 4567)
     attr(CAOS.ATTRIBUTES.SUFFER_PHYSICS | CAOS.ATTRIBUTES.SUFFER_COLLISIONS | CAOS.ATTRIBUTES.MOUSEABLE)
-    --bhvr 32
+    bhvr(CAOS.PERMISSIONS.PICK_UP)
     elas(50)
     fric(50)
     accg(-0.3)
     perm(40)
     pose(0)
     velo(rand(10, -10), rand(-10, -25))
-    --mvsf va08 va09
+    mvsf(va08, va09)
 --****************************************************
     targ(ownr())
     pose(8)
@@ -68,32 +68,32 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, CAOS.EVENT.COLLIDE, func
         pose(0)
         --*this is an edible food blob
   
-        --inst
+        inst()
   
         new_simp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, "BulbBalloon", 0, 11, 4567)
   
         attr(CAOS.ATTRIBUTES.SUFFER_PHYSICS | CAOS.ATTRIBUTES.SUFFER_COLLISIONS | CAOS.ATTRIBUTES.MOUSEABLE | CAOS.ATTRIBUTES.CARRYABLE)
-        --bhvr 48
+        bhvr(CAOS.PERMISSIONS.PICK_UP | CAOS.PERMISSIONS.EAT)
         elas(30)
         fric(20)
         accg(2)
         pose(1)
-        --mvsf va10 va11
+        mvsf(va10, va11)
         velo(rand(10, -10), rand(10, -10))
         tick(250)
     end
   
     for i = 1, (rand(5, 7)) do
-        --inst
+        inst()
         new_simp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, "BulbBalloon", 0, 11, 4567)
   
         attr(CAOS.ATTRIBUTES.SUFFER_PHYSICS | CAOS.ATTRIBUTES.SUFFER_COLLISIONS | CAOS.ATTRIBUTES.MOUSEABLE | CAOS.ATTRIBUTES.CARRYABLE)
-        --bhvr 48
+        bhvr(CAOS.PERMISSIONS.PICK_UP | CAOS.PERMISSIONS.EAT)
         elas(20)
         fric(40)
         accg(2)
         pose(2)
-        --mvsf va10 va11
+        mvsf(va10, va11)
         velo(rand(10, -10), rand(0, 10))
         tick(rand(0, 250))
     end
@@ -149,7 +149,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.TIMER, functio
     accg(5)
     perm(70)
     pose(0)
-    --mvsf va08 va09
+    mvsf(va08, va09)
     tick(10)
     kill(ownr())
 end)

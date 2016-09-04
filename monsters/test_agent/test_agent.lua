@@ -2,24 +2,27 @@
 --require "/monsters/test_agent/balloonplant.lua"
 --require("/scripts/util.lua")
 require "/scripts/caos_vm/constants.lua"
+require "/scripts/caos_vm/convert.lua"
 
 function init()
-  self.family = tonumber(config.getParameter("family", CAOS.FAMILY.INVALID))
-  self.genus = tonumber(config.getParameter("genus", -1))
-  self.species = tonumber(config.getParameter("species", -1))
-  self.sprite_file = config.getParameter("sprite_file", "NOT_FOUND")
-  self.image_count = tonumber(config.getParameter("image_count", 0))
-  self.first_image = tonumber(config.getParameter("first_image", 0))
-  self.plane = tonumber(config.getParameter("plane", 0))
+  self.caos = {}
+  self.caos.family = tonumber(config.getParameter("family", CAOS.FAMILY.INVALID))
+  self.caos.genus = tonumber(config.getParameter("genus", -1))
+  self.caos.species = tonumber(config.getParameter("species", -1))
+  self.caos.sprite_file = config.getParameter("sprite_file", "NOT_FOUND")
+  self.caos.image_count = tonumber(config.getParameter("image_count", 0))
+  self.caos.first_image = tonumber(config.getParameter("first_image", 0))
+  self.caos.plane = tonumber(config.getParameter("plane", 0))
   
-  init_scriptorium_space(self.family, self.genus, self.species)
+  init_scriptorium_space(self.caos.family, self.caos.genus, self.caos.species)
   
-  self.base_image = 0
-  self.pose_image = 0
-  self.killed = false
-  self.tick_rate = 0
-  self.range_check = 100
+  self.caos.base_image = 0
+  self.caos.pose_image = 0
+  self.caos.tick_rate = 0
+  self.caos.range_check = 100
+
   self.last_tick_time = world.time()
+  self.killed = false
   
   self.last_colliding_state = false
   self.TARG = nil
@@ -29,7 +32,7 @@ function init()
   updateImageFrame()
   mcontroller.setAutoClearControls(false)   -- Fixes gravity override and some other things from being cleared every frame
   
-  if (self.family == CAOS.FAMILY.INVALID) then
+  if (self.caos.family == CAOS.FAMILY.INVALID) then
     self.OWNR = nil
     install()
     
@@ -50,7 +53,7 @@ function update(dt)
   end
   
   -- Check Timer
-  if self.tick_rate > 0 and world.time() > self.last_tick_time + c2sb_ticks(self.tick_rate) then
+  if self.caos.tick_rate > 0 and world.time() > self.last_tick_time + toSB.ticks(self.caos.tick_rate) then
     self.last_tick_time = world.time()
     create_coroutine(CAOS.EVENT.TIMER)
   end
@@ -86,6 +89,7 @@ end
 
 function killSelf()
   self.killed = true
+  -- Attempt to hide it for the delay between this call and the shouldDie() callback
   animator.setAnimationState("body", "invisible")
 end
 
@@ -94,10 +98,10 @@ function create_coroutine(event)
     return
   end
   
-  if scriptorium[self.family][self.genus][self.species][event] ~= nil then
+  if scriptorium[self.caos.family][self.caos.genus][self.caos.species][event] ~= nil then
     logInfo("Running event script %s", event)
     self.TARG = self.OWNR
     self.current_event = event
-    script_coroutine = coroutine.create(scriptorium[self.family][self.genus][self.species][event])
+    script_coroutine = coroutine.create(scriptorium[self.caos.family][self.caos.genus][self.caos.species][event])
   end
 end

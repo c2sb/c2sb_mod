@@ -1,4 +1,8 @@
+-- NOTES
+--  - Y values need to be invertedStarbound: y=0 is the bottom of the world; Creatures: y=0 is the top
+
 require("/scripts/caos_vm/constants.lua")
+require("/scripts/caos_vm/convert.lua")
 require("/scripts/util.lua")
 
 ----------------------
@@ -6,15 +10,15 @@ require("/scripts/util.lua")
 ----------------------
 
 function logInfo(fmt, ...)
-  sb.logInfo("[%s:%s,%s,%s] "..fmt, entity.id(), self.family, self.genus, self.species, ...)
+  sb.logInfo("[%s:%s,%s,%s] "..fmt, entity.id(), self.caos.family, self.caos.genus, self.caos.species, ...)
 end
 
 function updateImageFrame()
-  assert(type(self.first_image) == "number", "first_image is not a number")
-  assert(type(self.base_image) == "number", "base_image is not a number")
-  assert(type(self.pose_image) == "number", "pose_image is not a number")
+  assert(type(self.caos.first_image) == "number", "first_image is not a number")
+  assert(type(self.caos.base_image) == "number", "base_image is not a number")
+  assert(type(self.caos.pose_image) == "number", "pose_image is not a number")
   
-  local frameno = self.first_image + self.base_image + self.pose_image
+  local frameno = self.caos.first_image + self.caos.base_image + self.caos.pose_image
   if self.lastframeno == frameno then return end  -- because frame updates might be expensive
   self.lastframeno = frameno
   
@@ -72,44 +76,21 @@ function getv(variable)
   end
 end
 
-
 function remote_getv(variable_id)
   self.variables = self.variables or {}
   return self.variables[variable_id] or 0
 end
 
--- This can be used to alter the tick behaviour if agents execute too quickly or slowly
--- NOTE: It's noted that a creatures tick is about 50ms (1/20 of a second). Starbound is timed in seconds (as a float value).
-function c2sb_ticks(ticks)
-  return ticks / 20.0
-end
-
--- IIRC one Starbound tile is 16 pixels
-function c2sb_pixels(pixel_value)
-  return pixel_value / 16.0
-end
-
-function sb2c_tiles(tile_value)
-  return tile_value * 16.0
-end
-
-function bool_to_int(value)
-  if value == true then
-    return 1
-  end
-  return 0
-end
-
 function matches_species(family, genus, species)
-  if family ~= 0 and family ~= self.family then
+  if family ~= 0 and family ~= self.caos.family then
     return false
   end
   
-  if genus ~= 0 and genus ~= self.genus then
+  if genus ~= 0 and genus ~= self.caos.genus then
     return false
   end
   
-  return species == 0 or species == self.species
+  return species == 0 or species == self.caos.species
 end
 
 function esee_wrap(family, genus, species, fcn_callback)
@@ -117,14 +98,14 @@ function esee_wrap(family, genus, species, fcn_callback)
   local radius = nil
   if (self.OWNR ~= nil) then
     target = self.OWNR
-    radius = self.range_check
+    radius = self.caos.range_check
   else
     target = self.TARG
     radius = rnge()
   end
   if (target == nil) then return {} end
   
-  local entities = world.entityQuery(world.entityPosition(target), c2sb_pixels(radius), {
+  local entities = world.entityQuery(world.entityPosition(target), toSB.coordinate(radius), {
     withoutEntityId = target,
     callScript = "matches_species",
     callScriptArgs = { family, genus, species }
@@ -171,6 +152,14 @@ function caos_targfunction_wrap1(name, arg1)
   return world.callScriptedEntity(self.TARG, "remote_"..name, arg1)
 end
 
+function isReasonableMove(entityId, targetCaosPosition)
+  local targPosition = world.entityPosition(entityId)
+  if world.magnitude(targPosition, {toSB.coordinate(targetCaosPosition[1]), toSB.y_coordinate(targetCaosPosition[2])}) > 1024 then
+    return false
+  end
+  return true
+end
+
 --------------------
 -- CAOS FUNCTIONS --
 --------------------
@@ -191,13 +180,13 @@ function new_simp(family, genus, species, sprite_file, image_count, first_image,
   plane = caos_number_arg(plane)
   
   self.TARG = world.spawnMonster("test_agent", mcontroller.position(), {
-    family = family,
-    genus = genus,
-    species = species,
-    sprite_file = sprite_file,
-    image_count = image_count,
-    first_image = first_image,
-    plane = plane
+    ["family"] = family,
+    ["genus"] = genus,
+    ["species"] = species,
+    ["sprite_file"] = sprite_file,
+    ["image_count"] = image_count,
+    ["first_image"] = first_image,
+    ["plane"] = plane
   })
 end
 
@@ -272,7 +261,7 @@ end
 function wait(ticks)
   logInfo("wait %s", ticks)
   ticks = caos_number_arg(ticks)
-  local actual_ticks = c2sb_ticks(ticks)
+  local actual_ticks = toSB.ticks(ticks)
   util.wait(actual_ticks)
 end
 
@@ -290,13 +279,13 @@ end
 function posx()
   logInfo("posx")
   if (self.TARG == nil) then return 0 end
-  return sb2c_tiles(world.entityPosition(self.TARG)[1])
+  return fromSB.coordinate(world.entityPosition(self.TARG)[1])
 end
 
 function posy()
   logInfo("posy")
   if (self.TARG == nil) then return 0 end
-  return sb2c_tiles(world.entityPosition(self.TARG)[2])
+  return fromSB.y_coordinate(world.entityPosition(self.TARG)[2])
 end
 
 function addv(variable, value)
@@ -323,6 +312,16 @@ function carr()
   return nil
 end
 
+-- Not implemented
+function inst()
+  logInfo("inst")
+end
+
+-- Not implemented
+function bhvr(flags)
+  return caos_targfunction_wrap1("bhvr", flags)
+end
+
 function rnge(range)
   return caos_targfunction_wrap1("rnge", range)
 end
@@ -341,9 +340,40 @@ function ownr()
   return self.OWNR
 end
 
+function mvsf(x, y)
+  logInfo("mvsf %s %s", x, y)
+  x = caos_number_arg(x)
+  y = caos_number_arg(y)
+  if (self.TARG == nil) then return end
+  if not isReasonableMove(self.TARG, {x, y}) then return end
+  
+  world.callScriptedEntity(self.TARG, "remote_mvsf", x, y)
+end
+
+function mvto(x, y)
+  logInfo("mvto %s %s", x, y)
+  x = caos_number_arg(x)
+  y = caos_number_arg(y)
+  if (self.TARG == nil) then return end
+  if not isReasonableMove(self.TARG, {x, y}) then return end
+  
+  world.callScriptedEntity(self.TARG, "remote_mvto", x, y)
+end
+
 ---------------------------
 -- CAOS REMOTE FUNCTIONS --
 ---------------------------
+
+function remote_mvto(x, y)
+  mcontroller.setPosition({ toSB.coordinate(x), toSB.y_coordinate(y) })
+end
+
+function remote_mvsf(x, y)
+  local newPosition = world.resolvePolyCollision(mcontroller.collisionPoly(), { toSB.coordinate(x), toSB.y_coordinate(y) }, 16)
+  if newPosition ~= nil then
+    mcontroller.setPosition(newPosition)
+  end
+end
 
 function remote_attr(flags)
   if flags ~= nil then
@@ -395,6 +425,14 @@ function remote_attr(flags)
   return self.attribute_flags
 end
 
+function remote_bhvr(flags)
+  if flags ~= nil then
+    -- TODO: implement
+    self.behavior_flags = flags
+  end
+  return self.behavior_flags
+end
+
 function remote_elas(elasticity_percentage)
   if elasticity_percentage ~= nil then
     self.elasticity = elasticity_percentage
@@ -421,7 +459,7 @@ end
 function remote_accg(gravity_pixels)
   if gravity_pixels ~= nil then
     self.gravity = gravity_pixels
-    local newGravity = gravity_pixels / c2sb_ticks(1) / c2sb_ticks(1) * c2sb_pixels(1)
+    local newGravity = gravity_pixels * 20 * 20 / 16.0
     mcontroller.controlParameters({
       gravityMultiplier = newGravity / world.gravity(mcontroller.position())
     })
@@ -439,10 +477,10 @@ end
 
 function remote_pose(pose_index)
   if (pose_index ~= nil) then
-    self.pose_image = pose_index
+    self.caos.pose_image = pose_index
     updateImageFrame()
   end
-  return self.pose_image
+  return self.caos.pose_image
 end
 
 function remote_setv(variable_id, value)
@@ -452,10 +490,10 @@ end
 
 function remote_tick(tick_rate)
   if (tick_rate ~= nil) then
-    self.tick_rate = tick_rate
+    self.caos.tick_rate = tick_rate
     self.last_tick_time = world.time()
   end
-  return self.tick_rate
+  return self.caos.tick_rate
 end
 
 function remote_kill()
@@ -467,12 +505,12 @@ function remote_velo(x_velocity, y_velocity)
 end
 
 function remote_fall()
-  return bool_to_int(mcontroller.falling())
+  return fromSB.boolean(mcontroller.falling())
 end
 
 function remote_rnge(range)
   if range ~= nil then
-    self.range_check = range
+    self.caos.range_check = range
   end
-  return self.range_check
+  return self.caos.range_check
 end
