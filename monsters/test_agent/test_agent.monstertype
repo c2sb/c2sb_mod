@@ -20,12 +20,12 @@
 
     "renderLayer" : "ForegroundEntity",
 
-    "metaBoundBox" : [-2.5, -2.5, 2.5, 2.5],
+    "metaBoundBox" : [0, 0, 0, 0],
     "scale" : 0.5,
 
     "movementSettings" : {
       "collisionEnabled" : true,
-      "collisionPoly" : [ [-2.5, 2.5], [2.5, 2.5],  [2.5, -2.5], [-2.5, -2.5] ],
+      "collisionPoly" : [ [-5, 5], [5, 5],  [5, -5], [-5, -5] ],
       
       "gravityModifier" : 1.0
     },

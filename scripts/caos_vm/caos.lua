@@ -14,12 +14,25 @@ function updateImageFrame()
   assert(type(self.base_image) == "number", "base_image is not a number")
   assert(type(self.pose_image) == "number", "pose_image is not a number")
   local frameno = self.first_image + self.base_image + self.pose_image
+  if self.lastframeno == frameno then return end  -- because frame updates might become expensive
+  self.lastframeno = frameno
   animator.setGlobalTag("frameno", frameno)
   
-  local image_size = root.imageSize("/monsters/test_agent/atlas.png:10")
-  local imge_bounds = root.nonEmptyRegion("/monsters/test_agent/atlas.png:10")
+  local image_size = root.imageSize("/monsters/test_agent/atlas.png:"..tostring(frameno))
+  local image_bounds = root.nonEmptyRegion("/monsters/test_agent/atlas.png:"..tostring(frameno))
   
-  logInfo("IMAGE SIZE: %s, %s", util.tableToString(image_size), util.tableToString(imge_bounds))
+  -- We can have a 64x64 image, where the image bounds are 4, 4, 8, 8
+  -- But IIRC the center of the object is at the center of the image.
+  
+  local center_x = image_size[1] / 2
+  local center_y = image_size[2] / 2
+  local left = (image_bounds[1] - center_x) / 16.0
+  local top = (image_bounds[2] - center_y) / 16.0
+  local right = (image_bounds[3] - center_x) / 16.0
+  local bottom = (image_bounds[4] - center_y) / 16.0
+  mcontroller.controlParameters({
+    collisionPoly = { {left, top}, {right, top}, {right, bottom}, {left, bottom} }
+  })
 end
 
 function getv(variable)
