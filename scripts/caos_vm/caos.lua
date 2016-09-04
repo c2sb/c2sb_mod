@@ -119,6 +119,20 @@ function esee_wrap(family, genus, species, fcn_callback)
   self.TARG = originalTarg
 end
 
+function enum_wrap(family, genus, species, fcn_callback)
+  local entities = world.entityQuery(mcontroller.position(), 99999999, {
+    callScript = "matches_species",
+    callScriptArgs = { family, genus, species }
+  })
+  
+  local originalTarg = self.TARG
+  for i,entity in ipairs(entities) do
+    self.TARG = entity
+    fcn_callback()
+  end
+  self.TARG = originalTarg
+end
+
 function init_scriptorium_space(family, genus, species)
   if scriptorium == nil then scriptorium = {} end
   if scriptorium[family] == nil then scriptorium[family] = {} end
@@ -168,6 +182,10 @@ function scrp(family, genus, species, event, fcn_callback)
   --sb.logInfo("scrp %s %s %s %s", family, genus, species, event)
   init_scriptorium_space(family, genus, species)
   scriptorium[family][genus][species][event] = fcn_callback
+end
+
+function scrx(family, genus, species, event)
+  scriptorium[family][genus][species][event] = nil
 end
 
 function new_simp(family, genus, species, sprite_file, image_count, first_image, plane)
