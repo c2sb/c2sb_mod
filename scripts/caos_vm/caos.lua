@@ -13,26 +13,36 @@ function updateImageFrame()
   assert(type(self.first_image) == "number", "first_image is not a number")
   assert(type(self.base_image) == "number", "base_image is not a number")
   assert(type(self.pose_image) == "number", "pose_image is not a number")
+  
   local frameno = self.first_image + self.base_image + self.pose_image
-  if self.lastframeno == frameno then return end  -- because frame updates might become expensive
+  if self.lastframeno == frameno then return end  -- because frame updates might be expensive
   self.lastframeno = frameno
+  
+  -- Set the frame
   animator.setGlobalTag("frameno", frameno)
   
+  -- Retrieve properties for the current image
   local image_size = root.imageSize("/monsters/test_agent/atlas.png:"..tostring(frameno))
   local image_bounds = root.nonEmptyRegion("/monsters/test_agent/atlas.png:"..tostring(frameno))
   
-  -- We can have a 64x64 image, where the image bounds are 4, 4, 8, 8
-  -- But IIRC the center of the object is at the center of the image.
-  
+  -- Set the collision polygon
   local center_x = image_size[1] / 2
   local center_y = image_size[2] / 2
   local left = (image_bounds[1] - center_x) / 16.0
   local top = (image_bounds[2] - center_y) / 16.0
   local right = (image_bounds[3] - center_x) / 16.0
   local bottom = (image_bounds[4] - center_y) / 16.0
+  
+  local collision_poly =  { {left, top}, {right, top}, {right, bottom}, {left, bottom} }
   mcontroller.controlParameters({
-    collisionPoly = { {left, top}, {right, top}, {right, bottom}, {left, bottom} }
+    collisionPoly = collision_poly
   })
+  
+  -- Resolve collision issues, if any (i.e. getting stuck under the floor is a common one)
+  local newPosition = world.resolvePolyCollision(collision_poly, mcontroller.position(), 16)
+  if newPosition ~= nil then
+    mcontroller.setPosition(newPosition)
+  end
 end
 
 function getv(variable)
@@ -84,7 +94,7 @@ function sb2c_tiles(tile_value)
 end
 
 function bool_to_int(value)
-  if value then
+  if value == true then
     return 1
   end
   return 0
@@ -135,6 +145,32 @@ function init_scriptorium_space(family, genus, species)
   if scriptorium[family][genus][species] == nil then scriptorium[family][genus][species] = {} end
 end
 
+function caos_number_arg(argument)
+  if type(argument) == "string" then
+    return getv(argument)
+  end
+  return argument
+end
+
+function caos_targfunction_wrap0(name)
+  logInfo("%s", name)
+  if (self.TARG == nil) then
+    logInfo("ERROR: TARG is null")
+    return 0
+  end
+  return world.callScriptedEntity(self.TARG, "remote_"..name)
+end
+
+function caos_targfunction_wrap1(name, arg1)
+  logInfo("%s %s", name, arg1)
+  if (self.TARG == nil) then
+    logInfo("ERROR: TARG is null")
+    return 0
+  end
+  arg1 = caos_number_arg(arg1)
+  return world.callScriptedEntity(self.TARG, "remote_"..name, arg1)
+end
+
 --------------------
 -- CAOS FUNCTIONS --
 --------------------
@@ -145,53 +181,48 @@ function scrp(family, genus, species, event, fcn_callback)
   scriptorium[family][genus][species][event] = fcn_callback
 end
 
-function new_simp(family_, genus_, species_, sprite_file_, image_count_, first_image_, plane_)
-  logInfo("new: simp %s %s %s \"%s\" %s %s %s", family_, genus_, species_, sprite_file_, image_count_, first_image_, plane_)
+function new_simp(family, genus, species, sprite_file, image_count, first_image, plane)
+  logInfo("new: simp %s %s %s \"%s\" %s %s %s", family, genus, species, sprite_file, image_count, first_image, plane)
+  family = caos_number_arg(family)
+  genus = caos_number_arg(genus)
+  species = caos_number_arg(species)
+  image_count = caos_number_arg(image_count)
+  first_image = caos_number_arg(first_image)
+  plane = caos_number_arg(plane)
+  
   self.TARG = world.spawnMonster("test_agent", mcontroller.position(), {
-    family = family_,
-    genus = genus_,
-    species = species_,
-    sprite_file = sprite_file_,
-    image_count = image_count_,
-    first_image = first_image_,
-    plane = plane_
+    family = family,
+    genus = genus,
+    species = species,
+    sprite_file = sprite_file,
+    image_count = image_count,
+    first_image = first_image,
+    plane = plane
   })
 end
 
 function attr(flags)
-  logInfo("attr %s", flags)
-  if (self.TARG == nil) then return end
-  world.callScriptedEntity(self.TARG, "remote_attr", flags)
+  return caos_targfunction_wrap1("attr", flags)
 end
 
 function elas(elasticity_percentage)
-  logInfo("elas %s", elasticity_percentage)
-  if (self.TARG == nil) then return end
-  world.callScriptedEntity(self.TARG, "remote_elas", elasticity_percentage)
+  return caos_targfunction_wrap1("elas", elasticity_percentage)
 end
 
 function fric(friction)
-  logInfo("fric %s", friction)
-  if (self.TARG == nil) then return end
-  world.callScriptedEntity(self.TARG, "remote_fric", friction)
+  return caos_targfunction_wrap1("fric", friction)
 end
 
 function accg(gravity_pixels)
-  logInfo("accg %s", gravity_pixels)
-  if (self.TARG == nil) then return end
-  world.callScriptedEntity(self.TARG, "remote_accg", gravity_pixels)
+  return caos_targfunction_wrap1("accg", gravity_pixels)
 end
 
 function perm(permiability)
-  logInfo("perm %s", permiability)
-  if (self.TARG == nil) then return end
-  world.callScriptedEntity(self.TARG, "remote_perm", permiability)
+  return caos_targfunction_wrap1("perm", permiability)
 end
 
 function pose(pose_index)
-  logInfo("pose %s", pose_index)
-  if (self.TARG == nil) then return end
-  return world.callScriptedEntity(self.TARG, "remote_pose", pose_index)
+  return caos_targfunction_wrap1("pose", pose_index)
 end
 
 function setv(variable, value)
@@ -200,6 +231,8 @@ function setv(variable, value)
     logInfo("setv invalid variable: %s", variable)
     return
   end
+  
+  value = caos_number_arg(value)
   
   local variable_name = variable:gsub("^%l", string.lower)
   local variable_prefix = variable_name:sub(1, 2)
@@ -220,13 +253,14 @@ function setv(variable, value)
 end
 
 function tick(tick_rate)
-  logInfo("tick %s", tick_rate)
-  if (self.TARG == nil) then return end
-  world.callScriptedEntity(self.TARG, "remote_tick", tick_rate)
+  return caos_targfunction_wrap1("tick", tick_rate)
 end
 
 function rand(value1, value2)
   logInfo("rand %s %s", value1, value2)
+  value1 = caos_number_arg(value1)
+  value2 = caos_number_arg(value2)
+  
   if value1 == value2 then
     return value1
   elseif value1 > value2 then
@@ -237,12 +271,14 @@ end
 
 function wait(ticks)
   logInfo("wait %s", ticks)
+  ticks = caos_number_arg(ticks)
   local actual_ticks = c2sb_ticks(ticks)
   util.wait(actual_ticks)
 end
 
 function kill(target)
   logInfo("kill %s", target)
+  target = caos_number_arg(target)
   if target == entity.id() then
     killSelf()
     coroutine.yield()
@@ -265,19 +301,20 @@ end
 
 function addv(variable, value)
   logInfo("addv %s %s", variable, value)
+  value = caos_number_arg(value)
   setv(variable, getv(variable) + value)
 end
 
 function velo(x_velocity, y_velocity)
   logInfo("velo %s %s", x_velocity, y_velocity)
+  x_velocity = caos_number_arg(x_velocity)
+  y_velocity = caos_number_arg(y_velocity)
   if (self.TARG == nil) then return end
   world.callScriptedEntity(self.TARG, "remote_velo", x_velocity, y_velocity)
 end
 
 function fall()
-  logInfo("fall")
-  if (self.TARG == nil) then return end
-  world.callScriptedEntity(self.TARG, "remote_fall")
+  return caos_targfunction_wrap0("fall")
 end
 
 -- Not implemented
@@ -287,13 +324,12 @@ function carr()
 end
 
 function rnge(range)
-  logInfo("rnge %s", range)
-  if (self.TARG == nil) then return end
-  return world.callScriptedEntity(self.TARG, "remote_rnge", range)
+  return caos_targfunction_wrap1("rnge", range)
 end
 
 function targ(target)
   logInfo("targ %s", target)
+  target = caos_number_arg(target)
   if target ~= nil then
     self.TARG = target
   end
@@ -310,56 +346,69 @@ end
 ---------------------------
 
 function remote_attr(flags)
-  if (flags & CAOS.ATTRIBUTES.CARRYABLE) ~= 0 then
-    -- TODO
+  if flags ~= nil then
+    if (flags & CAOS.ATTRIBUTES.CARRYABLE) ~= 0 then
+      -- TODO
+    end
+    if (flags & CAOS.ATTRIBUTES.MOUSEABLE) ~= 0 then
+      -- TODO
+    end
+    
+    -- CAOS.ATTRIBUTES.ACTIVATEABLE
+    monster.setInteractive((flags & CAOS.ATTRIBUTES.ACTIVATEABLE) ~= 0)
+    
+    if (flags & CAOS.ATTRIBUTES.GREEDY_CABIN) ~= 0 then
+      -- TODO
+    end
+    if (flags & CAOS.ATTRIBUTES.INVISIBLE) ~= 0 then
+      -- TODO
+    end
+    if (flags & CAOS.ATTRIBUTES.FLOATABLE) ~= 0 then
+      -- TODO
+    end
+    
+    -- CAOS.ATTRIBUTES.SUFFER_COLLISIONS
+    mcontroller.controlParameters({
+      collisionEnabled = (flags & CAOS.ATTRIBUTES.SUFFER_COLLISIONS) ~= 0
+    })
+    
+    -- CAOS.ATTRIBUTES.SUFFER_PHYSICS
+    mcontroller.controlParameters({
+      gravityEnabled = (flags & CAOS.ATTRIBUTES.SUFFER_PHYSICS) ~= 0
+    })
+    
+    if (flags & CAOS.ATTRIBUTES.CAMERA_SHY) ~= 0 then
+      -- TODO
+    end
+    if (flags & CAOS.ATTRIBUTES.OPEN_AIR_CABIN) ~= 0 then
+      -- TODO
+    end
+    if (flags & CAOS.ATTRIBUTES.ROTATABLE) ~= 0 then
+      -- TODO
+    end
+    if (flags & CAOS.ATTRIBUTES.PRESENCE) ~= 0 then
+      -- TODO
+    end
+    
+    self.attribute_flags = flags
   end
-  if (flags & CAOS.ATTRIBUTES.MOUSEABLE) ~= 0 then
-    -- TODO
-  end
-  
-  -- CAOS.ATTRIBUTES.ACTIVATEABLE
-  monster.setInteractive((flags & CAOS.ATTRIBUTES.ACTIVATEABLE) ~= 0)
-  
-  if (flags & CAOS.ATTRIBUTES.GREEDY_CABIN) ~= 0 then
-    -- TODO
-  end
-  if (flags & CAOS.ATTRIBUTES.INVISIBLE) ~= 0 then
-    -- TODO
-  end
-  if (flags & CAOS.ATTRIBUTES.FLOATABLE) ~= 0 then
-    -- TODO
-  end
-  
-  -- CAOS.ATTRIBUTES.SUFFER_COLLISIONS
-  mcontroller.controlParameters({
-    collisionEnabled = (flags & CAOS.ATTRIBUTES.SUFFER_COLLISIONS) ~= 0
-  })
-  
-  -- CAOS.ATTRIBUTES.SUFFER_PHYSICS
-  mcontroller.controlParameters({
-    gravityEnabled = (flags & CAOS.ATTRIBUTES.SUFFER_PHYSICS) ~= 0
-  })
-  
-  if (flags & CAOS.ATTRIBUTES.CAMERA_SHY) ~= 0 then
-    -- TODO
-  end
-  if (flags & CAOS.ATTRIBUTES.OPEN_AIR_CABIN) ~= 0 then
-    -- TODO
-  end
-  if (flags & CAOS.ATTRIBUTES.ROTATABLE) ~= 0 then
-    -- TODO
-  end
-  if (flags & CAOS.ATTRIBUTES.PRESENCE) ~= 0 then
-    -- TODO
-  end
+  return self.attribute_flags
 end
 
 function remote_elas(elasticity_percentage)
-  mcontroller.controlParameters({ bounceFactor = elasticity_percentage / 100.0 })
+  if elasticity_percentage ~= nil then
+    self.elasticity = elasticity_percentage
+    mcontroller.controlParameters({ bounceFactor = elasticity_percentage / 100.0 })
+  end
+  return self.elasticity
 end
 
 function remote_fric(friction)
-  mcontroller.controlParameters({ groundFriction = friction })
+  if friction ~= nil then
+    self.friction = friction
+    mcontroller.controlParameters({ groundFriction = friction })
+  end
+  return self.friction
 end
 
 -- TODO: Figure out what Starbound gravity is _actually_ measured in to come up with a correct formula.
@@ -370,15 +419,22 @@ end
 -- We also have that newGravity = worldGravity * gravityMultiplier => gravityMultiplier = newGravity / worldGravity
 -- Example: (5 px / tick^2) * (20 tick / s) * (20 tick / s) / (16 px / tile)   =   (125 tiles / s)
 function remote_accg(gravity_pixels)
-  local newGravity = gravity_pixels / c2sb_ticks(1) / c2sb_ticks(1) * c2sb_pixels(1)
-  mcontroller.controlParameters({
-    gravityMultiplier = newGravity / world.gravity(mcontroller.position())
-  })
+  if gravity_pixels ~= nil then
+    self.gravity = gravity_pixels
+    local newGravity = gravity_pixels / c2sb_ticks(1) / c2sb_ticks(1) * c2sb_pixels(1)
+    mcontroller.controlParameters({
+      gravityMultiplier = newGravity / world.gravity(mcontroller.position())
+    })
+  end
+  return self.gravity
 end
 
 function remote_perm(permiability)
-  self.perm = permiability
+  if permiability ~= nil then
+    self.perm = permiability
+  end
   -- TODO other stuff
+  return self.perm
 end
 
 function remote_pose(pose_index)

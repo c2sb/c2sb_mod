@@ -31,7 +31,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, CAOS.EVENT.TIMER, functio
     for i = 1, 7 do
         wait(rand(120, 400))
         addv(va06, 1)
-        pose(getv(va06))
+        pose(va06)
     end
 
     wait(rand(120, 400))
@@ -101,7 +101,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, CAOS.EVENT.COLLIDE, func
 end)
 
 --scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.EATEN, function()
---    --lock
+--    lock
 --    sndc "chwp"
 --    stim writ from 79 1
 --    kill(ownr())
@@ -121,7 +121,7 @@ end)
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.TIMER, function()
     if fall() == 1 then
-       return
+      return
     end
     if carr() ~= nil then
        return
@@ -155,7 +155,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.TIMER, functio
 end)
 
 --scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.EATEN, function()
---    --lock
+--    lock
 --    sndc "chwp"
 --    chem 5 50
 --    chem 12 25
