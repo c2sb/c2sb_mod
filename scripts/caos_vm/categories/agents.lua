@@ -94,8 +94,9 @@ end
 -- each valid agent in turn. family, genus and/or species can be zero to act as wildcards. NEXT
 -- terminates the block of code which is executed with each TARG. After an ENUM, TARG is set to OWNR.
 function enum(family, genus, species, fcn_callback)
-  local entities = world.entityQuery(mcontroller.position(), 99999999, {
+  local entities = world.entityQuery(entity.position(), 9999, {
     callScript = "matches_species",
+    boundMode = "position",       -- Simple position comparison should take some load off
     callScriptArgs = { family, genus, species }
   })
   
@@ -121,8 +122,9 @@ function esee(family, genus, species, fcn_callback)
   
   local entities = world.entityQuery(world.entityPosition(target), toSB.coordinate(radius), {
     withoutEntityId = target,
-    callScript = "matches_species",
-    callScriptArgs = { family, genus, species }
+    boundMode = "position",       -- Simple position comparison should take some load off
+    callScript = "target_visible",
+    callScriptArgs = { entity.position(), family, genus, species }
   })
   
   local originalTarg = self.TARG
@@ -227,7 +229,6 @@ end
 
 -- Returns X position of centre of target.
 function posx()
-  -- TODO reimplement, because entityPosition doesn't account for the altered bounding box
   logInfo("posx")
   if (self.TARG == nil) then return 0 end
   return fromSB.coordinate(world.entityPosition(self.TARG)[1])
@@ -235,7 +236,6 @@ end
 
 -- Returns Y position of centre of target.
 function posy()
-  -- TODO reimplement, because entityPosition doesn't account for the altered bounding box
   logInfo("posy")
   if (self.TARG == nil) then return 0 end
   return fromSB.y_coordinate(world.entityPosition(self.TARG)[2])

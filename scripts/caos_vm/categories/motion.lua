@@ -20,7 +20,7 @@ function remote_accg(gravity_pixels)
     self.gravity = gravity_pixels
     local newGravity = gravity_pixels * 20 * 20 / 16.0
     mcontroller.controlParameters({
-      gravityMultiplier = newGravity / world.gravity(mcontroller.position())
+      gravityMultiplier = newGravity / world.gravity(entity.position())
     })
   end
   return self.gravity

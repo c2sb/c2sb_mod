@@ -42,7 +42,7 @@ function updateImageFrame()
   })
   
   -- Resolve collision issues, if any (i.e. getting stuck under the floor is a common one)
-  local newPosition = world.resolvePolyCollision(collision_poly, mcontroller.position(), 16)
+  local newPosition = world.resolvePolyCollision(collision_poly, entity.position(), 16)
   if newPosition ~= nil then
     mcontroller.setPosition(newPosition)
   end
@@ -64,6 +64,10 @@ function matches_species(family, genus, species)
   end
   
   return species == 0 or species == self.caos.species
+end
+
+function target_visible(position, family, genus, species)
+  return matches_species(family, genus, species) and not world.lineTileCollision(position, entity.position())
 end
 
 function init_scriptorium_space(family, genus, species)
@@ -100,7 +104,7 @@ function caos_targfunction_wrap1(name, arg1)
 end
 
 function isReasonableMove(targetCaosPosition)
-  local targPosition = mcontroller.position()
+  local targPosition = entity.position()
   if world.magnitude(targPosition, {toSB.coordinate(targetCaosPosition[1]), toSB.y_coordinate(targetCaosPosition[2])}) > 1024 then
     return false
   end
