@@ -1,4 +1,4 @@
-require("/scripts/caos_vm/constants.lua")
+require("/scripts/caos_vm/caos.lua")
 
 -- NOTES:
 -- 6205: Actual plant
@@ -86,7 +86,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, CAOS.EVENT.TIMER, functio
     kill(ownr())
 end)
 
-scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, CAOS.EVENT.COLLIDE, function()
+scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, CAOS.EVENT.COLLISION, function()
     setv(va10, posx())
     setv(va11, posy())
     addv(va11, 20)
@@ -141,7 +141,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.TIMER, functio
     kill(ownr())
 end)
 
-scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.COLLIDE, function()
+scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.COLLISION, function()
     pose(0)
 end)
 

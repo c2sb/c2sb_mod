@@ -140,45 +140,298 @@ CAOS.UI_SYSTEM = {
   SPEECH_BUBBLE = 10
 }
 
-CAOS.EVENT = {
-  DEACTIVATE = 0,
-  ACTIVATE_1 = 1,   -- push
-  ACTIVATE_2 = 2,   -- pull
+CAOS.MESSAGE = {
+  -- Calls the Activate 1 script. If the message is from a creature, and the permissions set with
+  -- BHVR disallow it, then the script is not executed.
+  ACTIVATE_1 = 0,
+  -- Calls the Activate 2 script. The permissions set with BHVR are checked first.
+  ACTIVATE_2 = 1,
+  -- Calls the Deactivate script. The permissions set with BHVR are checked first.
+  DEACTIVATE = 2,
+  -- Calls the Hit script. If the message is from a creature, and the permissions set with BHVR
+  -- disallow it, then the message is not sent.
   HIT = 3,
+  -- The agent is picked up by the agent that the message was FROM. The permissions set with BHVR
+  -- are checked first.
   PICKUP = 4,
+  --  If the agent is being carried, then it is dropped.
   DROP = 5,
-  COLLIDE = 6,
+  -- Calls the Eat script. The permissions set with BHVR are checked first.
+  EAT = 12,
+  -- Causes a creature to hold hands with the pointer.
+  START_HOLD_HANDS = 13,
+  -- Causes a creature to stop holding hands with the pointer. Since messages take a tick to be
+  -- procesed, calling NOHH is quicker than using this message.
+  STOP_HOLD_HANDS = 14
+}
+
+CAOS.EVENT = {
+  -- Called when the agent receives a deactivate message.
+  DEACTIVATE = 0,
+  -- Called when the agent receives an activate 1 message. (push)
+  ACTIVATE_1 = 1,
+  -- Called when the agent receives an activate 2 message. (pull)
+  ACTIVATE_2 = 2,
+  -- Called when the agent receives a hit message.
+  HIT = 3,
+  -- Called when the agent has been picked up by something other than a vehicle.
+  PICKUP = 4,
+  -- Called when the agent has been dropped by something other than a vehicle.
+  DROP = 5,
+  -- Called when the agent collides with an obstacle. _P1_ and _P2_ are the x and y components of
+  -- the collision velocity.
+  COLLISION = 6,
+  -- Called when a creature walks into a wall.
   BUMP = 7,
+  -- The event an object receives when the world starts up
+  C2_ENTER_SCOPE = 7,
+  -- Called when an agent's presence impacts with another agent's presence (this is assuming both
+  -- agents have their presence switched on).
   IMPACT = 8,
+  -- Called at a regular time interval, as set by TICK.
   TIMER = 9,
-  CREATED = 10,
+  -- Called on creation.
+  CONSTRUCTOR = 10,
+
+  C2_PUSH_LEFT = 10,
+  C2_PUSH_RIGHT = 11,
   
+  -- Called when the creature eats something.
   EATEN = 12,
+  -- Called when a creature starts holding hands with the pointer.
+  START_HOLD_HANDS = 13,
+  -- Called when a creature stops holding hands with the pointer.
+  STOP_HOLD_HANDS = 14,
   
-  
+  -- Scripts 16 - 30 are executed on a creature when it decides to do something with its attention
+  -- on an ordinary agent (rather than a creature). The script should perform this action.
+  -- Quiescent means stand and watch it. The catalogue entry "Action Script To Neuron Mappings"
+  -- maps the brain to these scripts, although which scripts require an it object are hard-wired.
+  AGENT_QUIESCENT = 16,
+  -- Activate 1 it.
+  AGENT_ACTIVATE_1 = 17,
+  -- Activate 2 it.
+  AGENT_ACTIVATE_2 = 18,
+  -- Deactivate it.
+  AGENT_DEACTIVATE = 19,
+  -- Go up and look at it.
+  AGENT_APPROACH = 20,
+  -- Walk or run away from it.
+  AGENT_RETREAT = 21,
+  -- Pick it up.
+  AGENT_PICKUP = 22,
+  -- Drop anything you're carrying.
+  AGENT_DROP = 23,
+  -- Say what's bothering you.
+  AGENT_NEED = 24,
+  -- Becoming sleepy.
+  AGENT_REST = 25,
+  -- Walk idly to west.
+  AGENT_WEST = 26,
+  -- Walk idly to east.
+  AGENT_EAST = 27,
+  -- Eat it.
+  AGENT_EAT = 28,
+  -- Hit it.
+  AGENT_HIT = 29,
+  -- For future expansion.
+  AGENT_UNDEFINED_1 = 30,
+  -- For future expansion.
+  AGENT_UNDEFINED_2 = 31,
+
+  -- Scripts 32 - 47 are executed on a creature when it decides to do something with its attention
+  -- on another creature. Quiescent means stand and twiddle your thumbs.
+  CREATURE_QUIESCENT = 32,
+  -- Mating script.
+  CREATURE_ACTIVATE_1 = 33,
+  -- Mating script.
+  CREATURE_ACTIVATE_2 = 34,
+  -- Deactivate it.
+  CREATURE_DEACTIVATE = 35,
+  -- Go up and look at it.
+  CREATURE_APPROACH = 36,
+  -- Walk or run away from it.
+  CREATURE_RETREAT = 37,
+  -- Pick it up.
+  CREATURE_PICKUP = 38,
+  -- Drop anything you're carrying.
+  CREATURE_DROP = 39,
+  -- Say what's bothering you.
+  CREATURE_NEED = 40,
+  -- Rest or sleep.
+  CREATURE_REST = 41,
+  -- Walk idly to west.
+  CREATURE_WEST = 42,
+  -- Walk idly to east.
+  CREATURE_EAST = 43,
+  -- Eat it.
+  CREATURE_EAT = 44,
+  -- Hit it.
+  CREATURE_HIT = 45,
+  -- For future expansion.
+  CREATURE_UNDEFINED_1 = 46,
+  -- For future expansion.
+  CREATURE_UNDEFINED_2 = 47,
+
+  -- POINTER - Left button click causing an Activate 1
+  C2_POINTER_ACTIVATE_1 = 50,
+  -- POINTER - Left button click causing an Activate 2
+  C2_POINTER_ACTIVATE_2 = 51,
+  -- POINTER - Left button click causing a Deactivate
+  C2_POINTER_DEACTIVATE = 52,
+  -- POINTER - Right button click, grab object
+  C2_POINTER_PICKUP = 53,
+  -- POINTER - Right button click to drop a held object
+  C2_POINTER_DROP = 54,
+  -- POINTER - Left button click in push pointer mode
+  C2_POINTER_PUSH_LEFT = 55,
+  -- POINTER - Left button click in push pointer mode
+  C2_POINTER_PUSH_RIGHT = 56,
+
+  -- Involuntary action called when the creature flinches.
+  FLINCH = 64,
+  --  Involuntary action called when the creature lays an egg.
+  LAY_EGG = 65,
+  -- Involuntary action called when the creature sneezes.
+  SNEEZE = 66,
+  -- Involuntary action called when the creature coughs.
+  COUGH = 67,
+  -- Involuntary action called when the creature shivers.
+  SHIVER = 68,
+  -- Involuntary action called when the creature sleeps.
+  SLEEP = 69,
+  -- Involuntary action called when the creature faints.
+  FAINTING = 70,
+  -- Involuntary action for future expansion.
+  UNASSIGNED = 71,
+  -- Special involuntary action called when a creature dies. Any death animations go here.
+  DIE = 72,
+
+  -- Called when a key is pressed and IMSK is set. The key code is sent in _P1_.
   KEY_DOWN = 73,
+  -- Called when a key is released and IMSK is set. The key code is sent in _P1_.
   KEY_UP = 74,
+  -- Called when the mouse moves and IMSK is set. The new x and y position is sent in _P1_ and _P2_
   MOUSE_MOVED = 75,
+  -- Called when a mouse button is pressed and IMSK is set. The button is sent in _P1_ - 1 left,
+  -- 2 right, 4 middle.
   MOUSE_DOWN = 76,
+  -- Called when a mouse button is released and IMSK is set. The button is sent in _P1_ - 1 left,
+  -- 2 right, 4 middle.
   MOUSE_UP = 77,
+  -- Called when the mouse wheel is moved and IMSK is set. The delta value is sent in _P1_ - 120
+  -- units per 'click'.
   MOUSE_WHEEL = 78,
+  -- Called when a translated character is received and IMSK is set. For example, on Japanese
+  -- systems the raw key down and up codes can be in Roman characters, but the Input Method Editor
+  -- converts them to Japanese characters, which are sent to the game with this message. The
+  -- translated key code is sent in _P1_. You can use this for character input, but it is easier
+  -- to use PAT: TEXT.
+  TRANSLATED_CHAR = 79,
   
+  -- Called when the mouse clicks on an agent.
   MOUSE_CLICKED = 92,
   
-  WIRE_BROKEN = 118,
+  -- Called on the pointer when an agent is activated 1. The script has the same classifier as the
+  -- agent being activated.
+  POINTER_ACTIVATE_1 = 101,
+  -- Called on the pointer when an agent is activated 2. The script has the same classifier as the
+  -- agent being activated.
+  POINTER_ACTIVATE_2 = 102,
+  -- Called on the pointer when an agent is deactivated. The script has the same classifier as the
+  -- agent being deactivated.
+  POINTER_DEACTIVATE = 103,
+  -- Called on the pointer when an agent is activated 1. The script has the same classifier as the
+  -- agent being activated.
+  POINTER_PICKUP = 104,
+  -- Called on the pointer when an agent is dropped. The script has the same classifier as the
+  -- agent being dropped.
+  POINTER_DROP = 105,
+
+  -- Called on the pointer when you manipulate a port.
+  POINTER_PORT_SELECT = 110,
+  -- Called on the pointer when you complete the connection between two ports.
+  POINTER_PORT_CONNECT = 111,
+  -- Called on the pointer when you complete the disconnection of two previously connected ports.
+  POINTER_PORT_DISCONNECT = 112,
+  -- Called on the pointer if you cancel a port change part way through.
+  POINTER_PORT_CANCEL = 113,
+  -- Called on the pointer if there is some error with the configuration of ports the user is
+  -- trying to make.
+  POINTER_PORT_ERROR = 114,
+
+  -- Called when the pointer is clicked but there aren't any agents under it.
+  POINTER_CLICKED_BACKGROUND = 116,
+  -- Called on the pointer to tell it what action clicking would take on the creature under it.
+  -- _P1_ says what will happen: 0 means no action or not above a creature, 1 means deactivate
+  -- (slap), 2 means activate 1 (tickle).
+  POINTER_ACTION_DISPATCH = 117,
+  -- Called on an agent when any of its ports are broken as a result of exceeding the maximum
+  -- connection distance.
+  CONNECTION_BREAK = 118,
   
+  -- Called on all agents with this script when the selected creature is changed by NORN. _P1_ is
+  -- the new creature, _P2_ is the previously selected creature.
+  SELECTED_CREATURE_CHANGED = 120,
+  -- Called when an agent has been picked up by a vehicle.
   VEHICLE_PICKUP = 121,
+  -- Called when an agent has been dropped by a vehicle.
   VEHICLE_DROP = 122,
+  -- Called on all agents with this script whenever the main view is resized.
   WINDOW_RESIZED = 123,
-  
+  -- Tells an agent that they have just picked something up.
+  GOT_CARRIED_AGENT = 124,
+  -- Tells an agent that they have just dropped something.
+  LOST_CARRIED_AGENT = 125,
+  -- Called when a creature speaks, so scripts can display a speech bubble. Every agent which has
+  -- this script is called. _P1_ is the text being spoken, _P2_ is the creature who is speaking.
+  MAKE_SPEECH_BUBBLE = 126,
+  -- Called whenever there is a new life event, whether an event built into the engine, or a
+  -- custom event sent with HIST EVNT. _P1_ is the moniker that the event happened to, _P2_ is the
+  -- event number as an index into the events for that moniker.
+  LIFE_EVENT = 127,
+  -- Called when the world had just been loaded, whether from bootstrap or from a saved file.
   WORLD_LOADED = 128,
   
-  NET_CONNECTED = 135,
-  NET_DISCONNECTED = 136,
+  -- Connection to the Babel server has been made.
+  NET_ONLINE = 135,
+  -- Connection to the Babel server is broken.
+  NET_OFFLINE = 136,
+  -- User chosen with NET: WHON has gone online. _P1_ contains the user's id.
   USER_ONLINE = 137,
+  -- User chosen with NET: WHON has gone offline. _P1_ contains the user's id.
   USER_OFFLINE = 138,
+
+  -- Called by the approach command with _P1_ and _P2_ set to the IT object's X and Y coordinates
+  -- respectively.
+  CREATURE_NAVIGATION_CALLBACK_VALIDATE_IT = 150,
+  -- Called by the approach command when you are unable to use the CA because you're outside the
+  -- room system.
+  CREATURE_NAVIGATION_CALLBACK_OUTSIDE_ROOM_SYSTEM = 151,
+  -- Called by the approach command if there is no IT object. _P1_ and _P2_ are set to the X and Y
+  -- coordinates of the room's centre with the highest (or lowest if retreating) smell of IT nearby.
+  CREATURE_NAVIGATION_CALLBACK_NEIGHBOUR = 152,
+  -- As for 152 but called when the best room is a link.
+  CREATURE_NAVIGATION_CALLBACK_LINK = 153,
+  -- As for 152 but called when the room you're in is already the best one.
+  CREATURE_NAVIGATION_CALLBACK_CURRENT_ROOM_BEST = 154,
   
+  -- Called when the creature is about to age. _P1_ contains the value of the next age stage.
+  CREATURE_AGING_CALLBACK = 160,
+
+  -- Reserved for use in the mating scripts, but not directly used by the engine.
+  -- Tells a male to mate.
+  MATE = 200,
+  
+  -- This script specifies the behaviour when an agent tries to do something to an invalid agent.
+  -- For example, if you try and access an OVxx with a NULL target. If this script isn't present
+  -- for OWNR, you get a run time error. If it is present, that script is called and you can reset
+  -- variables as necessary.
   AGENT_EXCEPTION = 255
+
+  -- All events from 256 - 65535 are user defined. This allows objects to employ common methods
+  -- across different objects. The events can be triggered using the MESG WRT+ command and/or the
+  -- KMSG command.
 }
 
 ov00 = "ov00"

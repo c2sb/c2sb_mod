@@ -33,20 +33,10 @@ function update(dt)
     script_coroutine = nil
   end
   
-  -- Check Collision
-  local isColliding = mcontroller.isColliding()
-  if self.last_colliding_state ~= isColliding then
-    self.last_colliding_state = isColliding
-    if isColliding then
-      create_coroutine(CAOS.EVENT.COLLIDE)
-    end
-  end
-  
-  -- Check Timer
-  if self.caos.tick_rate > 0 and world.time() > self.last_tick_time + toSB.ticks(self.caos.tick_rate) then
-    self.last_tick_time = world.time()
-    create_coroutine(CAOS.EVENT.TIMER)
-  end
+  -- Only create one coroutine this frame
+  local is_coroutine_created = (
+    checkCollision()
+    or checkTimer())
   
   -- Resume script
   if script_coroutine ~= nil and coroutine.status(script_coroutine) == "suspended" then
@@ -55,6 +45,8 @@ function update(dt)
       logInfo("Coroutine finished: %s", message)
     end
   end
+
+  self.last_velocity = mcontroller.velocity()
 end
 
 function interact(args)
@@ -75,8 +67,31 @@ end
 function uninit()
 end
 
------------------------------------------ END callbacks
+----------------------------------------- END callbacks -----------------------------------------
 
+----------------------------------------- EVENT CHECKS -----------------------------------------
+function checkCollision()
+  local isColliding = mcontroller.isColliding()
+  if self.last_colliding_state ~= isColliding then
+    self.last_colliding_state = isColliding
+    if isColliding then
+      return create_coroutine(CAOS.EVENT.COLLISION, self.last_velocity[1], -self.last_velocity[2])
+    end
+  end
+  return false
+end
+
+function checkTimer()
+  if self.caos.tick_rate > 0 and world.time() > self.last_tick_time + toSB.ticks(self.caos.tick_rate) then
+    self.last_tick_time = world.time()
+    return create_coroutine(CAOS.EVENT.TIMER)
+  end
+  return false
+end
+
+----------------------------------------- Other functions -----------------------------------------
+
+-- Initializes caos-related values/variables
 function initCaosVars()
   self.caos = {}
   self.caos.family = tonumber(config.getParameter("family", CAOS.FAMILY.INVALID))
@@ -92,25 +107,32 @@ function initCaosVars()
   self.caos.base_image = 0
   self.caos.pose_image = 0
   self.caos.tick_rate = 0
-  self.caos.range_check = 100
+  self.caos.range_check = 500
 end
 
+-- Kills the agent
 function killSelf()
   self.killed = true
   -- Attempt to hide it for the delay between this call and the shouldDie() callback
   animator.setAnimationState("body", "invisible")
 end
 
-function create_coroutine(event)
+-- Creates a coroutine for the given event. Returns true if the event script exists and is not
+-- already running, and false if the event was not created.
+function create_coroutine(event, param1, param2)
   -- Prevent events from interrupting themselves
   if script_coroutine ~= nil and coroutine.status(script_coroutine) ~= "dead" and self.current_event == event then
-    return
+    return false
   end
   
   if scriptorium[self.caos.family][self.caos.genus][self.caos.species][event] ~= nil then
     logInfo("Running event script %s", event)
     self.TARG = self.OWNR
     self.current_event = event
+    _p1_ = param1
+    _p2_ = param2
     script_coroutine = coroutine.create(scriptorium[self.caos.family][self.caos.genus][self.caos.species][event])
+    return true
   end
+  return false
 end

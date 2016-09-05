@@ -8,17 +8,17 @@ function accg(acceleration)
   return caos_targfunction_wrap1("accg", acceleration)
 end
 
--- TODO: Figure out what Starbound gravity is _actually_ measured in to come up with a correct formula.
+-- TODO: Figure out what Starbound gravity is _actually_ measured in to come up with a correct formula. This is inaccurate.
 -- For now, we assume starbound gravity is in tiles/s^2 (ship gravity is 80)
 -- Note that ACCG is measured in "pixels per tick squared", where a tick is 1/20 of a second
 --      but we can only set a gravity multiplier, not the gravity itself.
--- To convert creatures gravity to starbound gravity, we know that: 1 tile = 16 px, 20 tick = 1 s
+-- To convert creatures gravity to starbound gravity, we know that: 1 tile = 8 px, 20 tick = 1 s
 -- We also have that newGravity = worldGravity * gravityMultiplier => gravityMultiplier = newGravity / worldGravity
--- Example: (5 px / tick^2) * (20 tick / s) * (20 tick / s) / (16 px / tile)   =   (125 tiles / s)
+-- Example: (5 px / tick^2) * (20 tick / s) * (20 tick / s) / (8 px / tile)   =   (250 tiles / s^2)
 function remote_accg(gravity_pixels)
   if gravity_pixels ~= nil then
     self.gravity = gravity_pixels
-    local newGravity = gravity_pixels * 20 * 20 / 16.0
+    local newGravity = gravity_pixels * 20 * 20 / 8.0
     mcontroller.controlParameters({
       gravityMultiplier = newGravity / world.gravity(entity.position())
     })

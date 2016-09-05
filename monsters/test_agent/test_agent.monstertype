@@ -21,10 +21,17 @@
     "imageScale" : 0.4,     // "scale" doesn't pixelate the image when resizing
 
     "movementSettings" : {
-      "collisionEnabled" : true,
       "collisionPoly" : [ [-1, 1], [1, 1],  [1, -1], [-1, -1] ],
       
-      "gravityModifier" : 1.0
+      // Below are default values determined by the Creatures engine
+
+      // Default value of ACCG is 0.3, using the flawed formula described in motion.lua gives us this value
+      "gravityModifier" : 0.1875,   // accg
+      "bounceFactor" : 1.0,         // elas
+      "groundFriction" : 100,       // fric
+      "airFriction" : 0,            // aero
+      "collisionEnabled" : false,   // attr (SUFFER_COLLISIONS)
+      "gravityEnabled" : false      // attr (GRAVITY_ENABLED)
     },
 
     "bodyMaterialKind" : "organic",
