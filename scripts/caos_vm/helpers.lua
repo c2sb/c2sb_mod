@@ -6,6 +6,10 @@ function logInfo(fmt, ...)
   sb.logInfo("[%s:%s,%s,%s] "..fmt, entity.id(), self.caos.family, self.caos.genus, self.caos.species, ...)
 end
 
+function getImageSize(agentName, spriteFile, frameNumber)
+  return root.imageSize("/agents/"..agentName.."/"..spriteFile.."_"..tostring(frameNumber)..".png")
+end
+
 function updateImageFrame()
   assert(type(self.caos.first_image) == "number", "first_image is not a number")
   assert(type(self.caos.base_image) == "number", "base_image is not a number")
@@ -22,9 +26,7 @@ function updateImageFrame()
   -- agent is created ???
 
   -- Retrieve properties for the current image
-
-  local image_size = root.imageSize("/creatures/images/"..self.caos.sprite_file.."/"..self.caos.sprite_file.."_"..tostring(frameno)..".png")
-  --local image_bounds = root.nonEmptyRegion("/monsters/test_agent/atlas.png:"..tostring(frameno))
+  local image_size = getImageSize(self.agentName, self.caos.sprite_file, frameno)
   
   -- Set the collision polygon
   local half_width = image_size[1] / 2

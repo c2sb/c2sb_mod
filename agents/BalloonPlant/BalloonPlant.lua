@@ -5,12 +5,15 @@ require("/scripts/caos_vm/constants.lua")
 -- 6204: The balloon
 -- 6203: Fruit
 -- 6201: The seed
+
+BalloonPlant = {}
+
 -----------------------------------------------------------------------------------
 --* Script 1 extracted from Balloonplant.agents by Mirality REVELATION
 
 --*The plant itself!
 
-function install()
+function BalloonPlant.install()
     inst()
     new_simp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, "BulbBalloon", 0, 0, 4567)
  
@@ -25,7 +28,7 @@ function install()
     tick(10)
 end
 
-function uninstall()
+function BalloonPlant.uninstall()
     enum(2, 6, 6205, function()
         kill(targ())
     end)

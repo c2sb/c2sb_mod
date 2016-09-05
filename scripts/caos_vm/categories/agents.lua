@@ -183,15 +183,20 @@ function new_simp(family, genus, species, sprite_file, image_count, first_image,
   image_count = caos_number_arg(image_count)
   first_image = caos_number_arg(first_image)
   plane = caos_number_arg(plane)
+
+  local size = getImageSize(self.agentName, sprite_file, first_image)
+  local position = entity.position()
+  position = { position[1], position[2] + size[2] / 8.0 }
   
-  self.TARG = world.spawnMonster("test_agent", mcontroller.position(), {
+  self.TARG = world.spawnMonster("test_agent", position, {
     ["family"] = family,
     ["genus"] = genus,
     ["species"] = species,
     ["sprite_file"] = sprite_file,
     ["image_count"] = image_count,
     ["first_image"] = first_image,
-    ["plane"] = plane
+    ["plane"] = plane,
+    ["agentName"] = self.agentName
   })
 end
 

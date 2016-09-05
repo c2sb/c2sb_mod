@@ -1,58 +1,26 @@
---require "/scripts/caos_vm/caos.lua"
---require "/monsters/test_agent/balloonplant.lua"
---require("/scripts/util.lua")
-require "/scripts/caos_vm/constants.lua"
-require "/scripts/caos_vm/convert.lua"
+require "/scripts/caos_vm/caos.lua"
 
 function init()
-  self.caos = {}
-  self.caos.family = tonumber(config.getParameter("family", CAOS.FAMILY.INVALID))
-  if self.caos.family == CAOS.FAMILY.INVALID then
-    self.OWNR = nil
-    self.TARG = nil
-    install()
-    killSelf()
-    return
-  end
-
-  self.caos.genus = tonumber(config.getParameter("genus", -1))
-  self.caos.species = tonumber(config.getParameter("species", -1))
-  self.caos.sprite_file = tostring(config.getParameter("sprite_file", "NOT_FOUND"))
-  self.caos.image_count = tonumber(config.getParameter("image_count", 0))
-  self.caos.first_image = tonumber(config.getParameter("first_image", 0))
-  self.caos.plane = tonumber(config.getParameter("plane", 0))
+  initCaosVars()
 
   self.scale = tonumber(config.getParameter("imageScale", 1))
+  self.agentName = tostring(config.getParameter("agentName", "NO_AGENT"))
   
-  init_scriptorium_space(self.caos.family, self.caos.genus, self.caos.species)
-  if self.caos.family == CAOS.FAMILY.INVALID then
-    self.OWNR = nil
-    install()
-    killSelf()
-    return
-  end
-
-  self.caos.base_image = 0
-  self.caos.pose_image = 0
-  self.caos.tick_rate = 0
-  self.caos.range_check = 100
+  require("/agents/"..self.agentName.."/"..self.agentName..".lua")
 
   self.last_tick_time = world.time()
   self.killed = false
-  
   self.last_colliding_state = false
   self.TARG = nil
   self.OWNR = entity.id()
-  
   self.random = sb.makeRandomSource(world.time())
 
   animator.setGlobalTag("scale", self.scale)
-
   animator.setGlobalTag("sprite_file", self.caos.sprite_file)
-  mcontroller.setAutoClearControls(false)   -- Fixes gravity override and some other things from being cleared every frame
-  
+  animator.setGlobalTag("agentName", self.agentName)
   animator.setAnimationState("body", "idle")
 
+  mcontroller.setAutoClearControls(false)   -- Fixes gravity override and some other things from being cleared every frame
   updateImageFrame()
 end
 
@@ -102,6 +70,24 @@ function uninit()
 end
 
 ----------------------------------------- END callbacks
+
+function initCaosVars()
+  self.caos = {}
+  self.caos.family = tonumber(config.getParameter("family", CAOS.FAMILY.INVALID))
+  self.caos.genus = tonumber(config.getParameter("genus", -1))
+  self.caos.species = tonumber(config.getParameter("species", -1))
+  self.caos.sprite_file = tostring(config.getParameter("sprite_file", "NO_SPRITE"))
+  self.caos.image_count = tonumber(config.getParameter("image_count", 0))
+  self.caos.first_image = tonumber(config.getParameter("first_image", 0))
+  self.caos.plane = tonumber(config.getParameter("plane", 0))
+
+  init_scriptorium_space(self.caos.family, self.caos.genus, self.caos.species)
+
+  self.caos.base_image = 0
+  self.caos.pose_image = 0
+  self.caos.tick_rate = 0
+  self.caos.range_check = 100
+end
 
 function killSelf()
   self.killed = true

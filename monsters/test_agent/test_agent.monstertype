@@ -12,9 +12,7 @@
 
   "baseParameters" : {
     "scripts" : [
-     "/monsters/test_agent/test_agent.lua",
-     "/scripts/caos_vm/caos.lua",
-     "/monsters/test_agent/balloonplant.lua"
+     "/monsters/test_agent/test_agent.lua"
     ],
     "initialScriptDelta" : 1,
 

@@ -20,7 +20,7 @@
           "body" : {
             "idle" : {
               "properties" : {
-                "image" : "creatures/images/<sprite_file>/<sprite_file>_<frameno>.png?scale=<scale>"
+                "image" : "agents/<agentName>/<sprite_file>_<frameno>.png?scale=<scale>"
               }
             },
             "invisible" : {
