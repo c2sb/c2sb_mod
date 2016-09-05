@@ -18,17 +18,21 @@ function updateImageFrame()
   -- Set the frame
   animator.setGlobalTag("frameno", frameno)
   
+  -- TODO I am pretty sure setting the collision polygon here is incorrect. It may be set when the
+  -- agent is created ???
+
   -- Retrieve properties for the current image
-  local image_size = root.imageSize("/monsters/test_agent/atlas.png:"..tostring(frameno))
-  local image_bounds = root.nonEmptyRegion("/monsters/test_agent/atlas.png:"..tostring(frameno))
+
+  local image_size = root.imageSize("/creatures/images/"..self.caos.sprite_file.."/"..self.caos.sprite_file.."_"..tostring(frameno)..".png")
+  --local image_bounds = root.nonEmptyRegion("/monsters/test_agent/atlas.png:"..tostring(frameno))
   
   -- Set the collision polygon
-  local center_x = image_size[1] / 2
-  local center_y = image_size[2] / 2
-  local left = toSB.coordinate(image_bounds[1] - center_x)
-  local top = toSB.coordinate(image_bounds[2] - center_y)
-  local right = toSB.coordinate(image_bounds[3] - center_x)
-  local bottom = toSB.coordinate(image_bounds[4] - center_y)
+  local half_width = image_size[1] / 2
+  local half_height = image_size[2] / 2
+  local left = toSB.coordinate(-half_width)
+  local top = toSB.coordinate(half_height)
+  local right = toSB.coordinate(half_width)
+  local bottom = toSB.coordinate(-half_height)
   
   local collision_poly =  { {left, top}, {right, top}, {right, bottom}, {left, bottom} }
   mcontroller.controlParameters({
@@ -40,6 +44,12 @@ function updateImageFrame()
   if newPosition ~= nil then
     mcontroller.setPosition(newPosition)
   end
+end
+
+-- Given the object's top left position, returns the center
+function topLeftPixelsToCenter(position)
+  local bounds = mcontroller.boundBox()
+  return { position[1] - bounds[1], position[2] - bounds[2] }
 end
 
 function matches_species(family, genus, species)
@@ -87,8 +97,8 @@ function caos_targfunction_wrap1(name, arg1)
   return world.callScriptedEntity(self.TARG, "remote_"..name, arg1)
 end
 
-function isReasonableMove(entityId, targetCaosPosition)
-  local targPosition = world.entityPosition(entityId)
+function isReasonableMove(targetCaosPosition)
+  local targPosition = mcontroller.position()
   if world.magnitude(targPosition, {toSB.coordinate(targetCaosPosition[1]), toSB.y_coordinate(targetCaosPosition[2])}) > 1024 then
     return false
   end

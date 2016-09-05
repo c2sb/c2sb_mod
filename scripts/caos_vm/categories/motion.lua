@@ -72,15 +72,16 @@ function mvsf(x, y)
   x = caos_number_arg(x)
   y = caos_number_arg(y)
   if (self.TARG == nil) then return end
-  if not isReasonableMove(self.TARG, {x, y}) then return end
   
   world.callScriptedEntity(self.TARG, "remote_mvsf", x, y)
 end
 
 function remote_mvsf(x, y)
+  if not isReasonableMove({x, y}) then return end
+
   local newPosition = world.resolvePolyCollision(mcontroller.collisionPoly(), { toSB.coordinate(x), toSB.y_coordinate(y) }, 16)
   if newPosition ~= nil then
-    mcontroller.setPosition(newPosition)
+    mcontroller.setPosition(topLeftPixelsToCenter(newPosition))
   end
 end
 
@@ -91,13 +92,13 @@ function mvto(x, y)
   x = caos_number_arg(x)
   y = caos_number_arg(y)
   if (self.TARG == nil) then return end
-  if not isReasonableMove(self.TARG, {x, y}) then return end
-  
+
   world.callScriptedEntity(self.TARG, "remote_mvto", x, y)
 end
 
 function remote_mvto(x, y)
-  mcontroller.setPosition({ toSB.coordinate(x), toSB.y_coordinate(y) })
+  if not isReasonableMove({x, y}) then return end
+  mcontroller.setPosition(topLeftPixelsToCenter({ toSB.coordinate(x), toSB.y_coordinate(y) }))
 end
 
 -- Set velocity, measured in pixels per tick.

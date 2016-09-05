@@ -7,15 +7,31 @@ require "/scripts/caos_vm/convert.lua"
 function init()
   self.caos = {}
   self.caos.family = tonumber(config.getParameter("family", CAOS.FAMILY.INVALID))
+  if self.caos.family == CAOS.FAMILY.INVALID then
+    self.OWNR = nil
+    self.TARG = nil
+    install()
+    killSelf()
+    return
+  end
+
   self.caos.genus = tonumber(config.getParameter("genus", -1))
   self.caos.species = tonumber(config.getParameter("species", -1))
-  self.caos.sprite_file = config.getParameter("sprite_file", "NOT_FOUND")
+  self.caos.sprite_file = tostring(config.getParameter("sprite_file", "NOT_FOUND"))
   self.caos.image_count = tonumber(config.getParameter("image_count", 0))
   self.caos.first_image = tonumber(config.getParameter("first_image", 0))
   self.caos.plane = tonumber(config.getParameter("plane", 0))
+
+  self.scale = tonumber(config.getParameter("imageScale", 1))
   
   init_scriptorium_space(self.caos.family, self.caos.genus, self.caos.species)
-  
+  if self.caos.family == CAOS.FAMILY.INVALID then
+    self.OWNR = nil
+    install()
+    killSelf()
+    return
+  end
+
   self.caos.base_image = 0
   self.caos.pose_image = 0
   self.caos.tick_rate = 0
@@ -30,17 +46,14 @@ function init()
   
   self.random = sb.makeRandomSource(world.time())
 
-  self.scale = tonumber(config.getParameter("imageScale", 1))
   animator.setGlobalTag("scale", self.scale)
-  updateImageFrame()
+
+  animator.setGlobalTag("sprite_file", self.caos.sprite_file)
   mcontroller.setAutoClearControls(false)   -- Fixes gravity override and some other things from being cleared every frame
   
-  if (self.caos.family == CAOS.FAMILY.INVALID) then
-    self.OWNR = nil
-    install()
-    
-    killSelf()
-  end
+  animator.setAnimationState("body", "idle")
+
+  updateImageFrame()
 end
 
 function update(dt)
