@@ -41,5 +41,10 @@
 
   "effects" : {},
 
-  "particleEmitters" : {}
+  "particleEmitters" : {},
+  "sounds" : {
+    "channel0" : [],
+    "channel1" : [],
+    "channel2" : []
+  }
 }

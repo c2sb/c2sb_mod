@@ -42,3 +42,11 @@ end
 toSB.ticks = function(value)
   return value / 20.0
 end
+
+fromSB.volume = function(value)
+  return math.floor(value * 10000) - 10000
+end
+
+toSB.volume = function(value)
+  return (value + 10000) / 10000.0
+end

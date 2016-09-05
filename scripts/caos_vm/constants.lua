@@ -434,6 +434,12 @@ CAOS.EVENT = {
   -- KMSG command.
 }
 
+CAOS.SOUND_CHANNEL = {
+  EFFECT = 0,
+  MIDI = 1,
+  GENERATED_MUSIC = 2
+}
+
 ov00 = "ov00"
 ov01 = "ov01"
 ov02 = "ov02"
