@@ -26,6 +26,21 @@ function remote_accg(gravity_pixels)
   return self.gravity
 end
 
+
+-- Set aerodynamic factor as a percentage. The velocity is reduced by this factor each tick.
+-- Returns aerodynamic factor as a percentage.
+function aero(aerodynamics)
+  return caos_targfunction_wrap1("aero", aerodynamics)
+end
+
+function remote_aero(aerodynamics)
+  if aerodynamics ~= nil then
+    self.aerodynamics = aerodynamics
+    mcontroller.controlParameters({ airFriction = aerodynamics })
+  end
+  return self.aerodynamics
+end
+
 -- Set the elasticity percentage. An agent with elasticity 100 will bounce perfectly, one with
 -- elasticity 0 won't bounce at all.
 -- Return the elasticity percentage.

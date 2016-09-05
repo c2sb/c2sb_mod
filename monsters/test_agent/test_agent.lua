@@ -13,7 +13,7 @@ function init()
   self.last_colliding_state = false
   self.TARG = nil
   self.OWNR = entity.id()
-  self.random = sb.makeRandomSource(world.time() + entity.id() * 1000)
+  self.random = sb.makeRandomSource(world.time() + entity.id() * 10000)
   self.messages = {}
 
   animator.setGlobalTag("scale", self.scale)
@@ -34,20 +34,23 @@ function update(dt)
     script_coroutine = nil
   end
   
-  -- Only create one coroutine this frame
-  local is_coroutine_created = (
-    checkCollision()
-    or checkTimer()
-    or checkMessages())
+  if not self.locked then
+    -- Only create one coroutine this frame
+    local is_coroutine_created = (
+      checkCollision()
+      or checkTimer()
+      or checkMessages())
+  end
   
   -- Resume script
-  if script_coroutine ~= nil and coroutine.status(script_coroutine) == "suspended" then
+  if isScriptActive() and coroutine.status(script_coroutine) == "suspended" then
     local result, message = coroutine.resume(script_coroutine)
     if not result then
-      logInfo("Coroutine finished: %s", message)
+      sb.logError("Coroutine failed: %s", message)
     end
+  elseif not isScriptActive() then
+    self.locked = false
   end
-
   self.last_velocity = mcontroller.velocity()
 end
 
@@ -86,6 +89,8 @@ end
 function checkTimer()
   if self.caos.tick_rate > 0 and world.time() > self.last_tick_time + toSB.ticks(self.caos.tick_rate) then
     self.last_tick_time = world.time()
+    -- Timer shouldn't interrupt other scripts
+    if isScriptActive() then return false end
     return create_coroutine(CAOS.EVENT.TIMER)
   end
   return false
@@ -141,14 +146,14 @@ function killSelf()
   animator.setAnimationState("body", "invisible")
 end
 
+-- Checks if an event script is currently running
+function isScriptActive()
+  return script_coroutine ~= nil and coroutine.status(script_coroutine) ~= "dead"
+end
+
 -- Creates a coroutine for the given event. Returns true if the event script exists and is not
 -- already running, and false if the event was not created.
 function create_coroutine(event, param1, param2)
-  -- Prevent events from interrupting themselves
-  if script_coroutine ~= nil and coroutine.status(script_coroutine) ~= "dead" and self.current_event == event then
-    return false
-  end
-  
   if scriptorium[self.caos.family][self.caos.genus][self.caos.species][event] ~= nil then
     logInfo("Running event script %s", event)
     self.TARG = self.OWNR

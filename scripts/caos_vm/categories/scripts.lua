@@ -19,6 +19,10 @@ function scrp(family, genus, species, event, fcn_callback)
   scriptorium[family][genus][species][event] = fcn_callback
 end
 
+function lock()
+  self.locked = true
+end
+
 -- Remove specified script from the scriptorium.
 function scrx(family, genus, species, event)
   scriptorium[family][genus][species][event] = nil
@@ -38,6 +42,10 @@ end
 -- Stops any currently running script in the target agent. See also STOP.
 function stpt()
   caos_targfunction_wrap0("stpt")
+end
+
+function unlk()
+  self.locked = false
 end
 
 function remote_stpt()

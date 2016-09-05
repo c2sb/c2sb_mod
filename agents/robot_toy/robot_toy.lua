@@ -142,7 +142,7 @@ scrp(2, 21, 20, 1000, function()
 	local function jump()
 		sndc("rob1")
 		frat(1)
-		if getv(ov10) < 0
+		if getv(ov10) < 0 then
 			jump_left()
 		else
 			jump_right()
@@ -178,5 +178,5 @@ end)
 function robot_toy.uninstall()
 	enum(2, 21, 20, function()
 		kill(targ())
-	end
+	end)
 end
