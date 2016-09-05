@@ -26,6 +26,12 @@ end
 
 function update(dt)
   if self.killed then return end
+
+  -- Stop currently running script
+  if self.stop_script then
+    self.stop_script = false
+    script_coroutine = nil
+  end
   
   -- Check Collision
   local isColliding = mcontroller.isColliding()
@@ -96,6 +102,7 @@ function killSelf()
 end
 
 function create_coroutine(event)
+  -- Prevent events from interrupting themselves
   if script_coroutine ~= nil and coroutine.status(script_coroutine) ~= "dead" and self.current_event == event then
     return
   end

@@ -147,10 +147,10 @@ end)
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.TIMER, function()
     if fall() == 1 then
-      return
+      stop()
     end
     if carr() ~= nil then
-       return
+       stop()
     end
     --if rtyp room targ < 5 or rtyp room targ > 7 then
     --   kill(ownr())
