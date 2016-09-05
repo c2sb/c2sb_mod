@@ -13,7 +13,7 @@ function init()
   self.last_colliding_state = false
   self.TARG = nil
   self.OWNR = entity.id()
-  self.random = sb.makeRandomSource(world.time())
+  self.random = sb.makeRandomSource(world.time() + entity.id() * 1000)
   self.messages = {}
 
   animator.setGlobalTag("scale", self.scale)

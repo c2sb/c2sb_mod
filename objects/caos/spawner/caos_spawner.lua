@@ -1,7 +1,7 @@
 require "/scripts/caos_vm/caos.lua"
 
 function init()
-  self.random = sb.makeRandomSource(world.time())
+  self.random = sb.makeRandomSource(world.time() + entity.id() * 1000)
   self.caos = {}
 
   object.setInteractive(true)
