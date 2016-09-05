@@ -42,6 +42,13 @@ CAOS.TIME_OF_DAY = {
   NIGHT = 4
 }
 
+CAOS.SEASON = {
+  SPRING = 0,
+  SUMMER = 1,
+  AUTUMN = 2,
+  WINTER = 3
+}
+
 -- Cellular automata (emit)
 CAOS.CA_INDEX = {
   SOUND = 0,
