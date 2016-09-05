@@ -48,6 +48,15 @@ function updateImageFrame()
   end
 end
 
+function addMessage(message_id, param_1, param_2, delay)
+  table.insert(self.messages, {
+      ["message_id"] = message_id,
+      ["param_1"] = param_1,
+      ["param_2"] = param_2,
+      ["execute_at"] = world.time() + toSB.ticks(delay)
+    })
+end
+
 -- Given the object's top left position, returns the center
 function topLeftPixelsToCenter(position)
   local bounds = mcontroller.boundBox()

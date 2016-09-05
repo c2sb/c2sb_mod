@@ -14,6 +14,7 @@ function init()
   self.TARG = nil
   self.OWNR = entity.id()
   self.random = sb.makeRandomSource(world.time())
+  self.messages = {}
 
   animator.setGlobalTag("scale", self.scale)
   animator.setGlobalTag("sprite_file", self.caos.sprite_file)
@@ -36,7 +37,8 @@ function update(dt)
   -- Only create one coroutine this frame
   local is_coroutine_created = (
     checkCollision()
-    or checkTimer())
+    or checkTimer()
+    or checkMessages())
   
   -- Resume script
   if script_coroutine ~= nil and coroutine.status(script_coroutine) == "suspended" then
@@ -87,6 +89,28 @@ function checkTimer()
     return create_coroutine(CAOS.EVENT.TIMER)
   end
   return false
+end
+
+function checkMessages()
+  local result = false
+  -- Create a coroutine from the next message that should be triggered
+  for i = 1, #self.messages do
+    if self.messages[i].execute_at >= world.time() then
+      result = create_coroutine(self.messages[i].message_id, self.messages[i].param_1, self.messages[i].param_2)
+      if result then
+        break
+      end
+    end
+  end
+
+  -- Remove all other messages that would otherwise be triggered (conflict)
+  -- NOTE: I have no idea if this is the correct behaviour
+  for i = #self.messages, 1, -1 do
+    if self.messages[i].execute_at >= world.time() then
+      table.remove(self.messages, i)
+    end
+  end
+  return result
 end
 
 ----------------------------------------- Other functions -----------------------------------------

@@ -169,6 +169,21 @@ function remote_kill()
   killSelf()
 end
 
+function mesg_writ(agent, message_id)
+  mesg_wrt_plus(agent, message_id, nil, nil, 0)
+end
+
+function mesg_wrt_plus(agent, message_id, param_1, param_2, delay)
+  logInfo("mesg wrt+ %s %s %s %s %s", agent, message_id, param_1, param_2, delay)
+  agent = caos_number_arg(agent)
+  message_id = caos_number_arg(message_id)
+  param_1 = caos_number_arg(param_1)
+  param_2 = caos_number_arg(param_2)
+  delay = caos_number_arg(delay)
+
+  world.callScriptedEntity(agent, "addMessage", message_id, param_1, param_2, delay)
+end
+
 -- Returns whether the lawn was cut last Sunday or not.
 function mows()
   return 1
