@@ -39,7 +39,8 @@ function update(dt)
     local is_coroutine_created = (
       checkCollision()
       or checkTimer()
-      or checkMessages())
+      or checkMessages()
+      or checkActivate())
   end
   
   -- Resume script
@@ -55,11 +56,11 @@ function update(dt)
 end
 
 function interact(args)
-  -- TODO interact script
+  self.interacted = true
 end
 
 function damage(args)
-  -- TODO hit script
+  self.damaged = true
 end
 
 function shouldDie()
@@ -100,8 +101,8 @@ function checkMessages()
   local result = false
   -- Create a coroutine from the next message that should be triggered
   for i = 1, #self.messages do
-    if self.messages[i].execute_at >= world.time() then
-      result = create_coroutine(self.messages[i].message_id, self.messages[i].param_1, self.messages[i].param_2)
+    if self.messages[i].execute_at <= world.time() then
+      result = create_coroutine(self.messages[i].message_id, self.messages[i].param_1, self.messages[i].param_2, self.messages[i].from_entity)
       if result then
         break
       end
@@ -111,11 +112,26 @@ function checkMessages()
   -- Remove all other messages that would otherwise be triggered (conflict)
   -- NOTE: I have no idea if this is the correct behaviour
   for i = #self.messages, 1, -1 do
-    if self.messages[i].execute_at >= world.time() then
+    if self.messages[i].execute_at <= world.time() then
       table.remove(self.messages, i)
     end
   end
   return result
+end
+
+function checkActivate()
+  if self.interacted then
+    self.interacted = false
+
+    -- Randomly choose an activate event
+    local event = CAOS.EVENT.ACTIVATE_1
+    if self.random:randu32() % 2 == 0 then
+      event = CAOS.EVENT.ACTIVATE_2
+    end
+
+    return create_coroutine(event)
+  end
+  return false
 end
 
 ----------------------------------------- Other functions -----------------------------------------
@@ -153,13 +169,14 @@ end
 
 -- Creates a coroutine for the given event. Returns true if the event script exists and is not
 -- already running, and false if the event was not created.
-function create_coroutine(event, param1, param2)
+function create_coroutine(event, param1, param2, from_entity)
   if scriptorium[self.caos.family][self.caos.genus][self.caos.species][event] ~= nil then
     logInfo("Running event script %s", event)
     self.TARG = self.OWNR
     self.current_event = event
     _p1_ = param1
     _p2_ = param2
+    from = from_entity
     script_coroutine = coroutine.create(scriptorium[self.caos.family][self.caos.genus][self.caos.species][event])
     return true
   end

@@ -48,8 +48,9 @@ function updateImageFrame()
   end
 end
 
-function addMessage(message_id, param_1, param_2, delay)
+function addMessage(from_entity, message_id, param_1, param_2, delay)
   table.insert(self.messages, {
+      ["from_entity"] = from_entity,
       ["message_id"] = message_id,
       ["param_1"] = param_1,
       ["param_2"] = param_2,

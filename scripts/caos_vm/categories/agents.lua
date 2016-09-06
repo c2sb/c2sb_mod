@@ -140,6 +140,11 @@ function fmly()
   return caos_targfunction_wrap0("fmly")
 end
 
+-- If we're processing a message, this is the OWNR who sent the message. NULL if the message was
+-- sent from an injected script or an install script. If the message was sent over the network
+-- using NET: WRIT, then this contains the user id of the sender, as a string.
+from = nil
+
 function remote_fmly()
   return self.caos.family
 end
@@ -181,7 +186,7 @@ function mesg_wrt_plus(agent, message_id, param_1, param_2, delay)
   param_2 = caos_number_arg(param_2)
   delay = caos_number_arg(delay)
 
-  world.callScriptedEntity(agent, "addMessage", message_id, param_1, param_2, delay)
+  world.callScriptedEntity(agent, "addMessage", self.OWNR, message_id, param_1, param_2, delay)
 end
 
 -- Returns whether the lawn was cut last Sunday or not.

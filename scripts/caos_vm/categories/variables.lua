@@ -211,3 +211,9 @@ end
 function uppa(any_old)
   any_old:upper()
 end
+
+-- Returns the first parameter sent to a script.
+_p1_ = nil
+
+-- Returns the second parameter sent to a script.
+_p2_ = nil
