@@ -80,6 +80,31 @@ function remote_fric(friction)
   return self.friction
 end
 
+-- Returns the movement status of the target. 
+-- 0 Autonomous
+-- 1 Mouse driven
+-- 2 Floating
+-- 3 In vehicle
+-- 4 Carried
+function movs()
+  return caos_targfunction_wrap0("movs")
+end
+
+function remote_movs()
+  -- Not implemented
+  return 0
+end
+
+-- Move the target agent by relative distances, which can be negative or positive.
+function mvby(delta_x, delta_y)
+  logInfo("mvby %s %s", delta_x, delta_y)
+  delta_x = caos_number_arg(delta_x)
+  delta_y = caos_number_arg(delta_y)
+  if (self.TARG == nil) then return end
+
+  world.callScriptedEntity(self.TARG, "remote_mvto", getx() + delta_x, gety() + delta_y)
+end
+
 -- Move the target agent into a safe map location somewhere in the vicinity of x, y. Only works on
 -- autonomous agents - see MOVS. Works like a safe MVFT for creatures.
 function mvsf(x, y)
