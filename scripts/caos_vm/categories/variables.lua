@@ -18,7 +18,8 @@ function getv(variable)
   elseif (variable_prefix == "mv") then
     target = self.OWNR
   elseif (variable_prefix == "va") then
-    return self[variable_name] or 0
+    self.local_variables = self.local_variables or {}
+    return self.local_variables[variable_name] or 0
   end
   
   if (target ~= nil) then
@@ -30,8 +31,8 @@ function getv(variable)
 end
 
 function remote_getv(variable_id)
-  self.variables = self.variables or {}
-  return self.variables[variable_id] or 0
+  self.caos.variables = self.caos.variables or {}
+  return self.caos.variables[variable_id] or 0
 end
 
 --------------------
@@ -181,7 +182,8 @@ function setv(var, value)
   elseif (var_prefix == "mv") then
     target = self.OWNR
   elseif (var_prefix == "va") then
-    self[var_name] = value
+    self.local_variables = self.local_variables or {}
+    self.local_variables[var_name] = value
   end
   
   if (target ~= nil) then
@@ -190,8 +192,8 @@ function setv(var, value)
 end
 
 function remote_setv(variable_id, value)
-  self.variables = self.variables or {}
-  self.variables[variable_id] = value
+  self.caos.variables = self.caos.variables or {}
+  self.caos.variables[variable_id] = value
 end
 
 -- Calculates a square root.

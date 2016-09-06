@@ -122,10 +122,20 @@ function checkActivate()
   if self.interacted then
     self.interacted = false
 
+    local canActivate1 = (self.caos.behaviors & CAOS.PERMISSIONS.ACTIVATE_1) ~= 0
+    local canActivate2 = (self.caos.behaviors & CAOS.PERMISSIONS.ACTIVATE_2) ~= 0
+
     -- Randomly choose an activate event
-    local event = CAOS.EVENT.ACTIVATE_1
-    if self.random:randu32() % 2 == 0 then
+    local event = nil
+    if canActivate1 and canActivate2 then
+      event = {CAOS.EVENT.ACTIVATE_1, CAOS.EVENT.ACTIVATE_2}
+      event = event[self.random:randu32() % 2 + 1]
+    elseif canActivate1 then
       event = CAOS.EVENT.ACTIVATE_2
+    elseif canActivate2 then
+      event = CAOS.EVENT.ACTIVATE_1
+    else
+      return false
     end
 
     return create_coroutine(event)
@@ -202,6 +212,7 @@ function initCaosVars()
   self.caos.tick_rate = 0
   self.caos.range_check = 500
   self.caos.attributes = 0
+  self.caos.behaviors = 0
 end
 
 -- Kills the agent

@@ -1,3 +1,53 @@
+function applyFlags()
+
+    if (self.caos.attributes & CAOS.ATTRIBUTES.CARRYABLE) ~= 0 then
+      -- TODO
+    end
+    if (self.caos.attributes & CAOS.ATTRIBUTES.MOUSEABLE) ~= 0 then
+      -- TODO
+    end
+    
+    -- CAOS.ATTRIBUTES.ACTIVATEABLE
+    monster.setInteractive(
+      (self.caos.attributes & CAOS.ATTRIBUTES.ACTIVATEABLE) ~= 0 or
+      (self.caos.behaviors & CAOS.PERMISSIONS.ACTIVATE_1) ~= 0 or
+      (self.caos.behaviors & CAOS.PERMISSIONS.ACTIVATE_2) ~= 0)
+    
+    if (self.caos.attributes & CAOS.ATTRIBUTES.GREEDY_CABIN) ~= 0 then
+      -- TODO
+    end
+    if (self.caos.attributes & CAOS.ATTRIBUTES.INVISIBLE) ~= 0 then
+      -- TODO
+    end
+    if (self.caos.attributes & CAOS.ATTRIBUTES.FLOATABLE) ~= 0 then
+      -- TODO
+    end
+    
+    -- CAOS.ATTRIBUTES.SUFFER_COLLISIONS
+    mcontroller.controlParameters({
+      collisionEnabled = (self.caos.attributes & CAOS.ATTRIBUTES.SUFFER_COLLISIONS) ~= 0
+    })
+    
+    -- CAOS.ATTRIBUTES.SUFFER_PHYSICS
+    mcontroller.controlParameters({
+      gravityEnabled = (self.caos.attributes & CAOS.ATTRIBUTES.SUFFER_PHYSICS) ~= 0
+    })
+    
+    if (self.caos.attributes & CAOS.ATTRIBUTES.CAMERA_SHY) ~= 0 then
+      -- TODO
+    end
+    if (self.caos.attributes & CAOS.ATTRIBUTES.OPEN_AIR_CABIN) ~= 0 then
+      -- TODO
+    end
+    if (self.caos.attributes & CAOS.ATTRIBUTES.ROTATABLE) ~= 0 then
+      -- TODO
+    end
+    if (self.caos.attributes & CAOS.ATTRIBUTES.PRESENCE) ~= 0 then
+      -- TODO
+    end
+
+end
+
 --------------------
 -- CAOS FUNCTIONS --
 --------------------
@@ -19,50 +69,8 @@ end
 
 function remote_attr(flags)
   if flags ~= nil then
-    if (flags & CAOS.ATTRIBUTES.CARRYABLE) ~= 0 then
-      -- TODO
-    end
-    if (flags & CAOS.ATTRIBUTES.MOUSEABLE) ~= 0 then
-      -- TODO
-    end
-    
-    -- CAOS.ATTRIBUTES.ACTIVATEABLE
-    monster.setInteractive((flags & CAOS.ATTRIBUTES.ACTIVATEABLE) ~= 0)
-    
-    if (flags & CAOS.ATTRIBUTES.GREEDY_CABIN) ~= 0 then
-      -- TODO
-    end
-    if (flags & CAOS.ATTRIBUTES.INVISIBLE) ~= 0 then
-      -- TODO
-    end
-    if (flags & CAOS.ATTRIBUTES.FLOATABLE) ~= 0 then
-      -- TODO
-    end
-    
-    -- CAOS.ATTRIBUTES.SUFFER_COLLISIONS
-    mcontroller.controlParameters({
-      collisionEnabled = (flags & CAOS.ATTRIBUTES.SUFFER_COLLISIONS) ~= 0
-    })
-    
-    -- CAOS.ATTRIBUTES.SUFFER_PHYSICS
-    mcontroller.controlParameters({
-      gravityEnabled = (flags & CAOS.ATTRIBUTES.SUFFER_PHYSICS) ~= 0
-    })
-    
-    if (flags & CAOS.ATTRIBUTES.CAMERA_SHY) ~= 0 then
-      -- TODO
-    end
-    if (flags & CAOS.ATTRIBUTES.OPEN_AIR_CABIN) ~= 0 then
-      -- TODO
-    end
-    if (flags & CAOS.ATTRIBUTES.ROTATABLE) ~= 0 then
-      -- TODO
-    end
-    if (flags & CAOS.ATTRIBUTES.PRESENCE) ~= 0 then
-      -- TODO
-    end
-    
     self.caos.attributes = flags
+    applyFlags()
   end
   return self.caos.attributes
 end
@@ -81,16 +89,15 @@ end
 -- Sets the creature permissions for target. Sum the entries in the Creature Permissions table to
 -- get the value to use.
 function bhvr(flags)
-  -- Not implemented
   return caos_targfunction_wrap1("bhvr", flags)
 end
 
 function remote_bhvr(flags)
   if flags ~= nil then
-    -- TODO: implement
-    self.behavior_flags = flags
+    self.caos.behaviors = flags
+    applyFlags()
   end
-  return self.behavior_flags
+  return self.caos.behaviors
 end
 
 -- Returns the the agent currently holding the target, or NULL if there is none.
