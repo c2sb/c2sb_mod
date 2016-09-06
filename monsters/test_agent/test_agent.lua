@@ -15,11 +15,15 @@ function init()
   self.OWNR = entity.id()
   self.random = sb.makeRandomSource(world.time() + entity.id() * 10000)
   self.messages = {}
+  self.animation = {}
+  self.animation_index = 0
 
   animator.setGlobalTag("scale", self.scale)
   animator.setGlobalTag("sprite_file", self.caos.sprite_file)
   animator.setGlobalTag("agentName", self.agentName)
   animator.setAnimationState("body", "idle")
+
+  setFrameRate()
 
   mcontroller.setAutoClearControls(false)   -- Fixes gravity override and some other things from being cleared every frame
   updateImageFrame()
@@ -33,7 +37,7 @@ function update(dt)
     self.stop_script = false
     script_coroutine = nil
   end
-  
+
   if not self.locked then
     -- Only create one coroutine this frame
     local is_coroutine_created = (
@@ -152,6 +156,7 @@ function initCaosVars()
   self.caos.base_image = 0
   self.caos.pose_image = 0
   self.caos.tick_rate = 0
+  self.caos.frame_rate = 1
   self.caos.range_check = 500
 end
 

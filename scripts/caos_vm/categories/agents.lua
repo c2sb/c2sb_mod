@@ -108,6 +108,10 @@ function enum(family, genus, species, fcn_callback)
   self.TARG = originalTarg
 end
 
+-- As ENUM, except only enumerates through agents which OWNR can see. An agent can see another if
+-- it is within RNGE, its PERM allows it to see through all intervening walls, and for creatures
+-- ATTR Invisible isn't set. See also STAR and SEEE. In install scripts, when there is no OWNR,
+-- TARG is used instead.
 function esee(family, genus, species, fcn_callback)
   local target = nil
   local radius = nil
@@ -140,14 +144,25 @@ function fmly()
   return caos_targfunction_wrap0("fmly")
 end
 
+function remote_fmly()
+  return self.caos.family
+end
+
+-- This command sets the frame rate on the TARG agent. If it is a compound agent, then the part
+-- affected can be set with the PART command. Valid rates are from 1 to 255. 1 is Normal rate, 2
+-- is half speed etc...
+function frat(framerate)
+  caos_targfunction_wrap1("frat")
+end
+
+function remote_frat(framerate)
+  setFramerate(framerate)
+end
+
 -- If we're processing a message, this is the OWNR who sent the message. NULL if the message was
 -- sent from an injected script or an install script. If the message was sent over the network
 -- using NET: WRIT, then this contains the user id of the sender, as a string.
 from = nil
-
-function remote_fmly()
-  return self.caos.family
-end
 
 -- Returns genus of target. See also FMLY, SPCS.
 function gnus()

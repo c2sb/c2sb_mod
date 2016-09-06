@@ -58,6 +58,16 @@ function addMessage(from_entity, message_id, param_1, param_2, delay)
     })
 end
 
+-- Sets the frame rate using Creatures values as the rate.
+function setFrameRate(rate)
+  rate = rate or 1
+
+  -- Update delta is in frames.
+  -- Starbound: 60fps
+  -- Creatures: 20fps
+  script.setUpdateDelta(3 * rate)
+end
+
 -- Given the object's top left position, returns the center
 function topLeftPixelsToCenter(position)
   local bounds = mcontroller.boundBox()
