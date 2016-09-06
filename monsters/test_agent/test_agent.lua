@@ -6,7 +6,7 @@ function init()
   self.scale = tonumber(config.getParameter("imageScale", 1))
   self.agentName = tostring(config.getParameter("agentName", "NO_AGENT"))
   
-  require("/agents/"..self.agentName.."/"..self.agentName..".lua")
+  require("/agents/scripts/"..self.agentName..".lua")
 
   self.last_tick_time = world.time()
   self.killed = false
@@ -19,7 +19,6 @@ function init()
 
   animator.setGlobalTag("scale", self.scale)
   animator.setGlobalTag("sprite_file", self.caos.sprite_file)
-  animator.setGlobalTag("agentName", self.agentName)
   animator.setAnimationState("body", "idle")
 
   setFrameRate()

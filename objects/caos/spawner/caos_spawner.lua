@@ -14,13 +14,13 @@ function onInteraction(args)
 end
 
 function injectAgent(agentName)
-  require("/agents/"..agentName.."/"..agentName..".lua")
+  require("/agents/scripts/"..agentName..".lua")
   self.agentName = agentName
   _ENV[agentName].install()
 end
 
 function removeAgent(agentName)
-  require("/agents/"..agentName.."/"..agentName..".lua")
+  require("/agents/scripts/"..agentName..".lua")
   self.agentName = agentName
   _ENV[agentName].uninstall()
 end
