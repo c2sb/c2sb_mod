@@ -248,9 +248,7 @@ function new_simp(family, genus, species, sprite_file, image_count, first_image,
 end
 
 -- Returns a null agent pointer.
-function null()
-  return nil
-end
+null = nil
 
 -- Wait until the current agent/part's ANIMation is over before continuing. Looping anims stop this
 -- command terminating until the animation is changed to a non-looping one.
