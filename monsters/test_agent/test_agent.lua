@@ -23,6 +23,7 @@ function init()
   animator.setAnimationState("body", "idle")
 
   setFrameRate()
+  self.frame_loop_number = 0
 
   mcontroller.setAutoClearControls(false)   -- Fixes gravity override and some other things from being cleared every frame
   updateImageFrame()
@@ -30,6 +31,8 @@ end
 
 function update(dt)
   if self.killed then return end
+
+  advanceUpdateLoop()
 
   -- Stop currently running script
   if self.stop_script then
@@ -47,16 +50,8 @@ function update(dt)
       or checkMessages()
       or checkActivate())
   end
-  
-  -- Resume script
-  if isScriptActive() and coroutine.status(script_coroutine) == "suspended" then
-    local result, message = coroutine.resume(script_coroutine)
-    if not result then
-      sb.logError("Coroutine failed: %s", message)
-    end
-  elseif not isScriptActive() then
-    self.locked = false
-  end
+
+  resumeScript()
   self.last_velocity = mcontroller.velocity()
 end
 
@@ -141,10 +136,32 @@ end
 
 ----------------------------------------- Other functions -----------------------------------------
 
+function advanceUpdateLoop()
+  self.frame_loop_number = self.frame_loop_number + 1
+  self.is_update_frame = false
+  if self.frame_loop_number >= self.frame_rate then
+    self.frame_loop_number = 0
+    self.is_update_frame = true
+  end
+end
+
+function resumeScript()
+  if not self.is_update_frame then return end
+
+  if isScriptActive() and coroutine.status(script_coroutine) == "suspended" then
+    local result, message = coroutine.resume(script_coroutine)
+    if not result then
+      sb.logError("Coroutine failed: %s", message)
+    end
+  elseif not isScriptActive() then
+    self.locked = false
+  end
+end
+
 -- Updates the emulated animation state.
 -- Returns true if it shouldn't be interrupted.
 function updateAnimation()
-  if self.animation == nil then return end
+  if self.animation == nil or not self.is_update_frame then return end
 
   -- Retrieves the next pose, or loop back if the pose is 255
   -- Note that animation_index is 0-based, but lua arrays are 1-based
@@ -185,6 +202,7 @@ function initCaosVars()
   self.caos.pose_image = 0
   self.caos.tick_rate = 0
   self.caos.range_check = 500
+  self.caos.attributes = 0
 end
 
 -- Kills the agent

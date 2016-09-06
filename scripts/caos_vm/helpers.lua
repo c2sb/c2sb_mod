@@ -65,7 +65,9 @@ function setFrameRate(rate)
   -- Update delta is in frames.
   -- Starbound: 60fps
   -- Creatures: 20fps
-  script.setUpdateDelta(3 * rate)
+  -- Note: We can't modify the update delta unfortunately because we need to listen for collisions
+  --script.setUpdateDelta(3 * rate)
+  self.frame_rate = 3 * rate
 end
 
 -- Given the object's top left position, returns the center

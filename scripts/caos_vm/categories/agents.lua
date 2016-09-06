@@ -62,9 +62,9 @@ function remote_attr(flags)
       -- TODO
     end
     
-    self.attribute_flags = flags
+    self.caos.attributes = flags
   end
-  return self.attribute_flags
+  return self.caos.attributes
 end
 
 -- Set the base image for this agent or part. The index is relative to the first_image specified in
