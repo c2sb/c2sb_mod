@@ -22,7 +22,8 @@
 
     "movementSettings" : {
       "collisionPoly" : [ [-1, 1], [1, 1],  [1, -1], [-1, -1] ],
-      
+      "mass" : 2,
+
       // Below are default values determined by the Creatures engine
 
       // Default value of ACCG is 0.3, using the flawed formula described in motion.lua gives us this value
