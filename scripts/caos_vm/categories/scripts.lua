@@ -56,6 +56,8 @@ end
 function wait(ticks)
   logInfo("wait %s", ticks)
   ticks = caos_number_arg(ticks)
-  local actual_ticks = toSB.ticks(ticks)
-  util.wait(actual_ticks)
+  local target_time = toSB.ticks(ticks) + world.time()
+  while world.time() < target_time do
+    coroutine.yield()
+  end
 end

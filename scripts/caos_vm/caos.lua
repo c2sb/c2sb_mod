@@ -3,7 +3,6 @@
 -- 
 --
 
-require("/scripts/util.lua")
 require("/scripts/caos_vm/constants.lua")
 require("/scripts/caos_vm/convert.lua")
 require("/scripts/caos_vm/helpers.lua")
