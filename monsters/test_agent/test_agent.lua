@@ -234,6 +234,7 @@ function create_coroutine(event, param1, param2, from_entity)
     logInfo("Running event script %s", event)
     self.TARG = self.OWNR
     self.current_event = event
+    self.local_variables = {}
     _p1_ = param1
     _p2_ = param2
     from = from_entity

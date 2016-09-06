@@ -100,6 +100,29 @@ function remote_bhvr(flags)
   return self.caos.behaviors
 end
 
+function call(event_no, param_1, param_2)
+  local call_fn = scriptorium[self.caos.family][self.caos.genus][self.caos.species][event_no]
+  if call_fn ~= nil then
+    -- Save state
+    local oldP1 = _p1_
+    local oldP2 = _p2_
+    local oldVariables = self.local_variables
+
+    -- Reset state
+    _p1_ = param_1
+    _p2_ = param_2
+    self.local_variables = {}
+    
+    -- Make the call
+    call_fn()
+
+    -- Restore state
+    _p1_ = oldP1
+    _p2_ = oldP2
+    self.local_variables = oldVariables
+  end
+end
+
 -- Returns the the agent currently holding the target, or NULL if there is none.
 -- Not implemented
 function carr()

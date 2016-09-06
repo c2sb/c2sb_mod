@@ -141,6 +141,25 @@ function remote_mvto(x, y)
   mcontroller.setPosition(topLeftPixelsToCenter({ toSB.coordinate(x), toSB.y_coordinate(y) }))
 end
 
+-- Test if target can move to the given location and still lie validly within the room system.
+-- Returns 1 if it can, 0 if it can't.
+function tmvt(x, y)
+  logInfo("tmvt %s %s", x, y)
+  x = caos_number_arg(x)
+  y = caos_number_arg(y)
+  if (self.TARG == nil) then return end
+  
+  return world.callScriptedEntity(self.TARG, "remote_tmvt", x, y)
+end
+
+function remote_tmvt(x, y)
+  if isReasonableMove({x, y}) and world.resolvePolyCollision(mcontroller.collisionPoly(), { toSB.coordinate(x), toSB.y_coordinate(y) }, 1) ~= nil then
+    return 1
+  else
+    return 0
+  end
+end
+
 -- Set velocity, measured in pixels per tick.
 function velo(x_velocity, y_velocity)
   logInfo("velo %s %s", x_velocity, y_velocity)
