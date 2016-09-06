@@ -18,7 +18,7 @@ function RubberBall.install()
 
 
 	for i = 1, 5 do
-		new_simp(2, 21, 31, "rubber ball", 2, 0, 5000)
+		new: simp(2, 21, 31, "rubber ball", 2, 0, 5000)
 		--new: comp 2 21 31 "rubber ball" 2 0 5000
 		--pat: dull 1 "rubber ball" 1 0 0 -1
 		bhvr (43)

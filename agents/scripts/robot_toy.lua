@@ -4,7 +4,7 @@ robot_toy = {}
 --**Robot toy
 
 function robot_toy.install()
-	new_simp(2, 21, 20, "robot_toy", 23, 0, 2000)
+	new: simp(2, 21, 20, "robot_toy", 23, 0, 2000)
 	attr(199)
 	--act1, act2, hit, pickup
 	bhvr(43)

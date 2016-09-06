@@ -222,7 +222,7 @@ end
 -- Create a new simple agent, using the specified sprite file. The agent will have image_count
 -- sprites available, starting at first_image in the file. The plane is the screen depth to show
 -- the agent at - the higher the number, the nearer the camera.
-function new_simp(family, genus, species, sprite_file, image_count, first_image, plane)
+function new.simp(_, family, genus, species, sprite_file, image_count, first_image, plane)
   logInfo("new: simp %s %s %s \"%s\" %s %s %s", family, genus, species, sprite_file, image_count, first_image, plane)
   family = caos_number_arg(family)
   genus = caos_number_arg(genus)

@@ -3,6 +3,16 @@
 -- 
 --
 
+-- These are for holding on to the CAOS colon-syntax commands
+brn = {}
+dbg = {}
+net = {}
+new = {}
+pat = {}
+prt = {}
+
+
+-- Include all CAOS constants, helpers, and commands
 require("/scripts/caos_vm/constants.lua")
 require("/scripts/caos_vm/convert.lua")
 require("/scripts/caos_vm/helpers.lua")
