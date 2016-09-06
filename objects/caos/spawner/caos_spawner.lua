@@ -10,6 +10,7 @@ end
 function onInteraction(args)
   injectAgent("BalloonPlant")
   injectAgent("robot_toy")
+  injectAgent("RubberBall")
 end
 
 function injectAgent(agentName)
