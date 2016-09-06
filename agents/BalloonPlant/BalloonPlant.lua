@@ -126,12 +126,12 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, CAOS.EVENT.COLLISION, fu
     kill(ownr())
 end)
 
---scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.EATEN, function()
---    lock
---    sndc "chwp"
---    stim writ from 79 1
---    kill(ownr())
---end)
+scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.EATEN, function()
+    lock()
+    sndc("chwp")
+    stim_writ(from(), 79, 1)
+    kill(ownr())
+end)
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.PICKUP, function()
     pose(1)
@@ -180,10 +180,10 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.TIMER, functio
     kill(ownr())
 end)
 
---scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.EATEN, function()
---    lock
---    sndc "chwp"
---    chem 5 50
---    chem 12 25
---    kill(ownr())
---end)
+scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.EATEN, function()
+    lock()
+    sndc("chwp")
+    --chem(5, 50)
+    --chem(12, 25)
+    kill(ownr())
+end)

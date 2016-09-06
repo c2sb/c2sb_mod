@@ -28,7 +28,7 @@
       // Default value of ACCG is 0.3, using the flawed formula described in motion.lua gives us this value
       "gravityModifier" : 0.1875,   // accg
       "bounceFactor" : 1.0,         // elas
-      "groundFriction" : 100,       // fric
+      "groundFriction" : 1,       // fric
       "airFriction" : 0,            // aero
       "collisionEnabled" : false,   // attr (SUFFER_COLLISIONS)
       "gravityEnabled" : false      // attr (GRAVITY_ENABLED)

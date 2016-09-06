@@ -20,7 +20,8 @@
           "body" : {
             "idle" : {
               "properties" : {
-                "image" : "agents/<agentName>/<sprite_file>_<frameno>.png?scale=<scale>"
+                // I don't know why, but the converted images appear inverted
+                "image" : "agents/<agentName>/<sprite_file>_<frameno>.png?flipx?scale=<scale>"
               }
             },
             "invisible" : {

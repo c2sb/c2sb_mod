@@ -8,7 +8,7 @@ function init()
 end
 
 function onInteraction(args)
-  --injectAgent("BalloonPlant")
+  injectAgent("BalloonPlant")
   injectAgent("robot_toy")
 end
 

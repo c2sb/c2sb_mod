@@ -22,12 +22,12 @@ end
 -- Starbound: Tiles per second
 -- Note: Exclude scale in this calculation
 fromSB.velocity = function(value)
-  return (value * 8.0) / 20
+  return fromSB.coordinate(value) / 20
 end
 
 toSB.velocity = function(value)
   -- 20 ticks per second
-  return (value * 20) / 8.0
+  return toSB.coordinate(value * 20)
 end
 
 fromSB.y_velocity = function(value)

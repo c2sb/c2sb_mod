@@ -36,7 +36,7 @@ end
 function remote_aero(aerodynamics)
   if aerodynamics ~= nil then
     self.aerodynamics = aerodynamics
-    mcontroller.controlParameters({ airFriction = aerodynamics })
+    mcontroller.controlParameters({ airFriction = aerodynamics / 100.0 })
   end
   return self.aerodynamics
 end
@@ -75,7 +75,7 @@ end
 function remote_fric(friction)
   if friction ~= nil then
     self.friction = friction
-    mcontroller.controlParameters({ groundFriction = friction })
+    mcontroller.controlParameters({ groundFriction = friction / 100.0 })
   end
   return self.friction
 end
