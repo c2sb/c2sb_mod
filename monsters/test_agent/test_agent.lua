@@ -15,7 +15,6 @@ function init()
   self.OWNR = entity.id()
   self.random = sb.makeRandomSource(world.time() + entity.id() * 10000)
   self.messages = {}
-  self.animation = {}
   self.animation_index = 0
 
   animator.setGlobalTag("scale", self.scale)
@@ -37,6 +36,8 @@ function update(dt)
     self.stop_script = false
     script_coroutine = nil
   end
+
+  updateAnimation()
 
   if not self.locked then
     -- Only create one coroutine this frame
@@ -85,7 +86,7 @@ function checkCollision()
   if self.last_colliding_state ~= isColliding then
     self.last_colliding_state = isColliding
     if isColliding then
-      return create_coroutine(CAOS.EVENT.COLLISION, self.last_velocity[1], -self.last_velocity[2])
+      return create_coroutine(CAOS.EVENT.COLLISION, fromSB.velocity(self.last_velocity[1]), fromSB.y_velocity(self.last_velocity[2]))
     end
   end
   return false
@@ -140,6 +141,33 @@ end
 
 ----------------------------------------- Other functions -----------------------------------------
 
+-- Updates the emulated animation state.
+-- Returns true if it shouldn't be interrupted.
+function updateAnimation()
+  if self.animation == nil then return end
+
+  -- Retrieves the next pose, or loop back if the pose is 255
+  -- Note that animation_index is 0-based, but lua arrays are 1-based
+  -- See the ANIM command for details
+  local next_pose = self.animation[self.animation_index + 1]
+
+  if next_pose == nil then
+    self.animation = nil
+    self.animation_index = 0
+    return
+  end
+
+  -- Encountered looping opcode
+  if next_pose == 255 then
+    self.animation_index = self.animation[self.animation_index + 2] or 0
+    next_pose = self.animation[self.animation_index + 1]
+  end
+
+  self.animation_index = self.animation_index + 1
+  self.caos.pose_image = next_pose
+  updateImageFrame()
+end
+
 -- Initializes caos-related values/variables
 function initCaosVars()
   self.caos = {}
@@ -156,7 +184,6 @@ function initCaosVars()
   self.caos.base_image = 0
   self.caos.pose_image = 0
   self.caos.tick_rate = 0
-  self.caos.frame_rate = 1
   self.caos.range_check = 500
 end
 

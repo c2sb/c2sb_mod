@@ -2,7 +2,17 @@
 -- CAOS FUNCTIONS --
 --------------------
 
--- Set attributes of target. Sum the values in the Attribute Flags table to get the attribute value to pass into this command.
+-- Specify a list of POSEs such as [1 2 3] to animate the current agent/part. Put 255 at the end to
+-- continually loop. The first number after the 255 is an index into the animation string where the
+-- looping restarts from - this defaults to 0 if not specified. e.g. [0 1 2 10 11 12 255 3] would
+-- loop just the 10, 11, 12 section.
+function anim(pose_list)
+  self.animation = pose_list
+  self.animation_index = 0
+end
+
+-- Set attributes of target. Sum the values in the Attribute Flags table to get the attribute value
+-- to pass into this command.
 function attr(attributes)
   return caos_targfunction_wrap1("attr", attributes)
 end
@@ -152,11 +162,11 @@ end
 -- affected can be set with the PART command. Valid rates are from 1 to 255. 1 is Normal rate, 2
 -- is half speed etc...
 function frat(framerate)
-  caos_targfunction_wrap1("frat")
+  caos_targfunction_wrap1("frat", framerate)
 end
 
 function remote_frat(framerate)
-  setFramerate(framerate)
+  setFrameRate(framerate)
 end
 
 -- If we're processing a message, this is the OWNR who sent the message. NULL if the message was
@@ -240,6 +250,14 @@ end
 -- Returns a null agent pointer.
 function null()
   return nil
+end
+
+-- Wait until the current agent/part's ANIMation is over before continuing. Looping anims stop this
+-- command terminating until the animation is changed to a non-looping one.
+function over()
+  while self.animation ~= nil do
+    coroutine.yield()
+  end
 end
 
 -- Returns the agent who's virtual machine the script is running on. Returns NULL for injected or

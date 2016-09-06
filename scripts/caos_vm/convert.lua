@@ -18,6 +18,26 @@ toSB.y_coordinate = function(value)
   return -toSB.coordinate(value)
 end
 
+-- Creatures: Pixels per tick
+-- Starbound: Tiles per second
+-- Note: Exclude scale in this calculation
+fromSB.velocity = function(value)
+  return (value * 8.0) / 20
+end
+
+toSB.velocity = function(value)
+  -- 20 ticks per second
+  return (value * 20) / 8.0
+end
+
+fromSB.y_velocity = function(value)
+  return -fromSB.velocity(value)
+end
+
+toSB.y_velocity = function(value)
+  return -toSB.velocity(value)
+end
+
 fromSB.boolean = function(value)
   if value == false then
     return 0

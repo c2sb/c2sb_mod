@@ -24,7 +24,7 @@ end
 
 -- Fade out a controlled sound.
 function fade()
-  world.callScriptedEntity(self.TARG, "setVolume", 0, 2.0)
+  world.callScriptedEntity(self.TARG, "setVolume", 0, 1.0)
 end
 
 -- Plays a controlled sound effect emitted from the target. Updates volume and panning as the agent moves.

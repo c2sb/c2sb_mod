@@ -150,7 +150,7 @@ function rand(value1, value2)
   elseif value1 > value2 then
     value1, value2 = value2, value1
   end
-  return self.random:randu32() % (value2 - value1) + value1
+  return self.random:randu32() % (value2 - value1 + 1) + value1
 end
 
 function rndv(variable, min, max)

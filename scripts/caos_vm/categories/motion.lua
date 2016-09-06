@@ -117,7 +117,6 @@ function remote_mvto(x, y)
 end
 
 -- Set velocity, measured in pixels per tick.
--- TODO figure out Starbound conversion
 function velo(x_velocity, y_velocity)
   logInfo("velo %s %s", x_velocity, y_velocity)
   x_velocity = caos_number_arg(x_velocity)
@@ -127,21 +126,19 @@ function velo(x_velocity, y_velocity)
 end
 
 function remote_velo(x_velocity, y_velocity)
-  mcontroller.setVelocity({ x_velocity, -y_velocity })
+  mcontroller.setVelocity({ toSB.velocity(x_velocity), toSB.y_velocity(y_velocity) })
 end
 
 -- Horizontal velocity in pixels per tick - floating point.
--- TODO figure out Starbound conversion
 function velx()
   logInfo("velx")
   if (self.TARG == nil) then return 0 end
-  return world.entityVelocity(self.TARG)[1]
+  return fromSB.velocity(world.entityVelocity(self.TARG)[1])
 end
 
 -- Vertical velocity in pixels per tick - floating point.
--- TODO figure out Starbound conversion
 function vely()
   logInfo("vely")
   if (self.TARG == nil) then return 0 end
-  return -world.entityVelocity(self.TARG)[2]
+  return fromSB.y_velocity(world.entityVelocity(self.TARG)[2])
 end
