@@ -71,7 +71,7 @@ scrp(3, 8, 32201, 2, function()
   setv (va01, rand (1, 3))
   if getv(va01) == 1 then
     snde "1bep"
-  elseif va01 == 2 then
+  elseif getv(va01) == 2 then
     snde "2bep"
   else
     snde "3bep"
@@ -179,8 +179,8 @@ scrp(3, 8, 32201, 9, function()
     else
       setv (va01, 30)
     end
-    setv (va02, posl())
-    setv (va03, post())
+    setv (va02, posl)
+    setv (va03, post)
     if tmvt (va02, va03) == 1 then
       snde "spry"
       inst()
@@ -196,7 +196,7 @@ scrp(3, 8, 32201, 9, function()
       tick (10)
       slow()
     end
-    targ (ownr())
+    targ (ownr)
     addv (ov08, 1)
     --* Stop when 8 created
     if getv(ov08) >= 8 then
@@ -240,16 +240,16 @@ scrp(3, 8, 32201, 9, function()
       --* Find new co-ordinates
       repeat
         -- EDITED --
-          setv (va01, posl())
-          setv (va02, post())
+          setv (va01, posl)
+          setv (va02, post)
           --setv (va01, rand (0, 10000))
           --setv (va02, rand (0, 10000))
-          --* Check exclusion zone for airlocks
-          setv (va03, 0)
-          if getv(va01) >= 3200 and getv(va02) >= 3600 and getv(va01) <= 5600 and getv(va02) <= 4500 then
-            setv (va03, 1)
-          end
         -- END EDIT --
+        --* Check exclusion zone for airlocks
+        setv (va03, 0)
+        if getv(va01) >= 3200 and getv(va02) >= 3600 and getv(va01) <= 5600 and getv(va02) <= 4500 then
+          setv (va03, 1)
+        end
       until tmvt (va01, va02) == 1 and getv(va03) == 0
       --* Fade out
       snde "pl_1"
@@ -284,8 +284,8 @@ scrp(3, 8, 32201, 9, function()
 
   --* Collision check if moving
   if getv(ov01) ~= 0 and getv(ov03) >= 5 then
-    setv (va01, posx())
-    setv (va02, posx())
+    setv (va01, posx)
+    setv (va02, posx)
     subv (va01, 10)
     addv (va02, 10)
     --* Stop if still within 20-pixel range of last check
@@ -296,14 +296,14 @@ scrp(3, 8, 32201, 9, function()
       pose (0)
       setv (ov01, 0)
     end
-    setv (ov04, posx())
+    setv (ov04, posx)
     setv (ov03, 0)
   end
 
   --* Move
   if getv(ov01) ~= 0 then
     inst()
-    velo (ov01, vely())
+    velo (ov01, vely)
     if getv(ov80) == 1 and getv(ov01) > 0 then
       anim {1, 2, 3, 4, 5, 6, 7, 8, 255}
       setv (ov80, 0)
@@ -344,7 +344,7 @@ scrp(1, 1, 32213, 9, function()
       chem (162, -0.01)
     end
   end)
-  targ (ownr())
+  targ (ownr)
   slow()
   --* Change direction?
   if rand (0, 1) == 0 then
@@ -396,7 +396,7 @@ scrp(1, 1, 32214, 9, function()
       until getv(va01) == 90
     end
   end)
-  targ (ownr())
+  targ (ownr)
   slow()
   --* Change direction?
   if rand (0, 1) == 0 then
@@ -416,7 +416,7 @@ scrp(1, 1, 32214, 9, function()
   --* Life timer/kill
   addv (ov00, 1)
   if pose() == 13 then
-    kill (ownr())
+    kill (ownr)
   end
   if pose() == 12 then
     pose (13)
@@ -442,10 +442,10 @@ scrp(1, 1, 32215, 9, function()
   rnge (60)
   esee (2, 32, 23, function()
     if targ() ~= null then
-      kill (targ())
+      kill (targ)
     end
   end)
-  targ (ownr())
+  targ (ownr)
   slow()
   --* Change direction?
   if rand (0, 1) == 0 then
@@ -487,17 +487,17 @@ end)
 function Roamer.uninstall()
   --* Kill roamer
   enum (3, 8, 32201, function()
-    kill (targ())
+    kill (targ)
   end)
   --* Kill clouds
   enum (1, 1, 32213, function()
-    kill (targ())
+    kill (targ)
   end)
   enum (1, 1, 32214, function()
-    kill (targ())
+    kill (targ)
   end)
   enum (1, 1, 32215, function()
-    kill (targ())
+    kill (targ)
   end)
   scrx (3, 8, 32201, 1)
   scrx (3, 8, 32201, 2)

@@ -95,7 +95,7 @@ end)
 --***REMOVAL
 function RubberBall.uninstall()
 	enum(2, 21, 31, function()
-		kill(targ())
+		kill(targ)
 	end)
 	scrx(2, 21, 31, 6)
 end

@@ -30,16 +30,16 @@ end
 
 function BalloonPlant.uninstall()
     enum(2, 6, 6205, function()
-        kill(targ())
+        kill(targ)
     end)
     enum(2, 4, 6204, function()
-        kill(targ())
+        kill(targ)
     end)
     enum(2, 11, 6203, function()
-        kill(targ())
+        kill(targ)
     end)
     enum(2, 3, 6201, function()
-        kill(targ())
+        kill(targ)
     end)
     scrx(2, 6, 6205, 9)
     scrx(2, 4, 6204, 6)
@@ -53,7 +53,7 @@ end
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, CAOS.EVENT.TIMER, function()
 
-    setv(va06, pose())
+    setv(va06, pose)
     for i = 1, 7 do
         wait(rand(120, 400))
         addv(va06, 1)
@@ -61,8 +61,8 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, CAOS.EVENT.TIMER, functio
     end
 
     wait(rand(120, 400))
-    setv(va08, posx())
-    setv(va09, posy())
+    setv(va08, posx)
+    setv(va09, posy)
     addv(va08, -30)
     addv(va09, -20)
     addv(ov03, 1)
@@ -78,17 +78,17 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, CAOS.EVENT.TIMER, functio
     velo(rand(10, -10), rand(-10, -25))
     mvsf(va08, va09)
 --****************************************************
-    targ(ownr())
+    targ(ownr)
     pose(8)
     wait(rand(120, 400))
     pose(9)
     wait(200)
-    kill(ownr())
+    kill(ownr)
 end)
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, CAOS.EVENT.COLLISION, function()
-    setv(va10, posx())
-    setv(va11, posy())
+    setv(va10, posx)
+    setv(va11, posy)
     addv(va11, 20)
     for i = 1, (rand(5, 7)) do
         pose(0)
@@ -128,9 +128,9 @@ end)
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.EATEN, function()
     lock()
-    sndc("chwp")
-    stim_writ(from(), 79, 1)
-    kill(ownr())
+    sndc "chwp"
+    stim_writ(from, 79, 1)
+    kill(ownr)
 end)
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.PICKUP, function()
@@ -138,7 +138,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.PICKUP, functi
 end)
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.TIMER, function()
-    kill(ownr())
+    kill(ownr)
 end)
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.COLLISION, function()
@@ -161,10 +161,10 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.TIMER, functio
        addv(va99, 1)
     end)
     if getv(va99) > 2 then
-       kill(ownr())
+       kill(ownr)
     end
-    setv(va08, posx())
-    setv(va09, posy())
+    setv(va08, posx)
+    setv(va09, posy)
     addv(va08, -30)
     addv(va09, -20)
     new: simp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, "BulbBalloon", 0, 0, 4567)
@@ -177,13 +177,13 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.TIMER, functio
     pose(0)
     mvsf(va08, va09)
     tick(10)
-    kill(ownr())
+    kill(ownr)
 end)
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.EATEN, function()
     lock()
-    sndc("chwp")
+    sndc "chwp"
     --chem(5, 50)
     --chem(12, 25)
-    kill(ownr())
+    kill(ownr)
 end)
