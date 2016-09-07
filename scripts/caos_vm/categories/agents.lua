@@ -58,69 +58,69 @@ end
 -- (0). Alpha graphics are drawn much slower, so use sparingly and turn it off completely rather
 -- than using an intensity value of 0 or 256. At the moment alpha channels only work on compressed,
 -- non-mirrored, non-zoomed sprites.
-function alph(alpha_value, yesorno)
-  logInfo("alph %s %s", alpha_value, yesorno)
-  alpha_value = caos_number_arg(alpha_value)
-  yesorno = caos_number_arg(yesorno)
-  
-  world.callScriptedEntity(self.TARG, "remote_alph", alpha_value, yesorno)
-end
-
-function remote_alph(alpha_value, yesorno)
+CAOS.TargCmd("alph", function(alpha_value, yesorno)
   self.caos.alpha_value = alpha_value
   self.caos.alpha_blending = yesorno
   updateImageFrame()
-end
+end)
 
 -- Specify a list of POSEs such as [1 2 3] to animate the current agent/part. Put 255 at the end to
 -- continually loop. The first number after the 255 is an index into the animation string where the
 -- looping restarts from - this defaults to 0 if not specified. e.g. [0 1 2 10 11 12 255 3] would
 -- loop just the 10, 11, 12 section.
-function anim(pose_list)
+-- NOTE: anim doesn't support strings, but it's easier to convert a CAOS list to string by adding
+-- and extra set of square brackets!
+CAOS.Cmd("anim", function(pose_list)
+  -- If pose_list is a string, then convert it by calling anms
+  -- (which in turn calls this again with a table)
+  if type(pose_list) == "string" then
+    anms(pose_list)
+    return
+  end
+
   self.animation = pose_list
   self.animation_index = 0
-end
+end)
+
+CAOS.Cmd("anms", function(anim_string)
+  local poses = {}
+  for s in string.gmatch(pose_list, "%S+") do
+    table.insert(poses, s)
+  end
+  anim(poses)
+end)
 
 -- Set attributes of target. Sum the values in the Attribute Flags table to get the attribute value
 -- to pass into this command.
-function attr(attributes)
-  return caos_targfunction_wrap1("attr", attributes)
-end
-
-function remote_attr(flags)
-  if flags ~= nil then
-    self.caos.attributes = flags
+CAOS.TargCmd("attr", function(attributes)
+  if attributes ~= nil then
+    self.caos.attributes = attributes
     applyFlags()
   end
   return self.caos.attributes
-end
+end)
 
 -- Set the base image for this agent or part. The index is relative to the first_image specified in
 -- the NEW: command. Future POSE/ANIM commands and any ANIM in progress are relative to this new base.
 -- Returns the BASE image for the current agent/part. Returns -1 if an invalid part.
-function base(index)
-  logInfo("base %s", name, index)
+CAOS.Cmd("base", function(index)
   if index ~= nil then
-    self.caos.base_image = caos_number_arg(index)
+    self.caos.base_image = index
   end
   return self.caos.base_imag
-end
+end)
 
 -- Sets the creature permissions for target. Sum the entries in the Creature Permissions table to
 -- get the value to use.
-function bhvr(flags)
-  return caos_targfunction_wrap1("bhvr", flags)
-end
-
-function remote_bhvr(flags)
+CAOS.TargCmd("bhvr", function(flags)
   if flags ~= nil then
     self.caos.behaviors = flags
     applyFlags()
   end
   return self.caos.behaviors
-end
+end)
 
-function call(event_no, param_1, param_2)
+CAOS.Cmd("call", function(event_no, param_1, param_2)
   local call_fn = scriptorium[self.caos.family][self.caos.genus][self.caos.species][event_no]
   if call_fn ~= nil then
     -- Save state
@@ -141,38 +141,36 @@ function call(event_no, param_1, param_2)
     _p2_ = oldP2
     self.local_variables = oldVariables
   end
-end
+end)
 
 -- Returns the the agent currently holding the target, or NULL if there is none.
 -- Not implemented
-function carr()
-  logInfo("carr")
+CAOS.TargCmd("carr", function()
   return nil
-end
+end)
 
 -- Iterate through each agent which conforms to the given classification, setting TARG to point to
 -- each valid agent in turn. family, genus and/or species can be zero to act as wildcards. NEXT
 -- terminates the block of code which is executed with each TARG. After an ENUM, TARG is set to OWNR.
-function enum(family, genus, species, fcn_callback)
+CAOS.Cmd("enum", function(family, genus, species, fcn_callback)
   local entities = world.entityQuery(entity.position(), 9999, {
     callScript = "matches_species",
     boundMode = "position",       -- Simple position comparison should take some load off
     callScriptArgs = { family, genus, species }
   })
   
-  local originalTarg = self.TARG
-  for i,entity in ipairs(entities) do
+  for i, entity in ipairs(entities) do
     self.TARG = entity
     fcn_callback()
   end
-  self.TARG = originalTarg
-end
+  self.TARG = self.OWNR
+end, 1 << 3)
 
 -- As ENUM, except only enumerates through agents which OWNR can see. An agent can see another if
 -- it is within RNGE, its PERM allows it to see through all intervening walls, and for creatures
 -- ATTR Invisible isn't set. See also STAR and SEEE. In install scripts, when there is no OWNR,
 -- TARG is used instead.
-function esee(family, genus, species, fcn_callback)
+CAOS.ConditionalTargCmd("esee", function(family, genus, species, fcn_callback)
   local target = nil
   local radius = nil
   if (self.OWNR ~= nil) then
@@ -203,33 +201,29 @@ function esee(family, genus, species, fcn_callback)
     sb.logWarn("Family not supported: %s", family)
   end
   
-  local originalTarg = self.TARG
   for i,entity in ipairs(entities) do
     self.TARG = entity
     fcn_callback()
   end
-  self.TARG = originalTarg
-end
+  self.TARG = self.OWNR
+end, 1 << 3)
+
+-- As ENUM, except only enumerates through agents which OWNR is touching. Agents are said to be
+-- touching if their bounding rectangles overlap. See also TTAR. In install scripts, when there is
+-- no OWNR, TARG is used instead.
+CAOS.ConditionalTargCmd("etch")
 
 -- Returns family of target. See also GNUS, SPCS.
-function fmly()
-  return caos_targfunction_wrap0("fmly")
-end
-
-function remote_fmly()
+CAOS.TargCmd("fmly", function()
   return self.caos.family
-end
+end)
 
 -- This command sets the frame rate on the TARG agent. If it is a compound agent, then the part
 -- affected can be set with the PART command. Valid rates are from 1 to 255. 1 is Normal rate, 2
 -- is half speed etc...
-function frat(framerate)
-  caos_targfunction_wrap1("frat", framerate)
-end
-
-function remote_frat(framerate)
+CAOS.TargCmd("frat", function(framerate)
   setFrameRate(framerate)
-end
+end)
 
 -- If we're processing a message, this is the OWNR who sent the message. NULL if the message was
 -- sent from an injected script or an install script. If the message was sent over the network
@@ -237,55 +231,43 @@ end
 from = nil
 
 -- Returns genus of target. See also FMLY, SPCS.
-function gnus()
-  return caos_targfunction_wrap0("gnus")
-end
-
-function remote_gnus()
+CAOS.TargCmd("gnus", function()
   return self.caos.genus
-end
+end)
 
 -- Destroys an agent. The pointer won't be destroyed. For creatures, you probably want to use DEAD first.
-function kill(target)
-  logInfo("kill %s", target)
-  target = caos_number_arg(target)
+CAOS.Cmd("kill", function(target)
   if target == entity.id() then
     killSelf()
     coroutine.yield()
   else
-    world.callScriptedEntity(target, "remote_kill")
+    world.callScriptedEntity(target, "killSelf")
   end
-end
+end)
 
-function remote_kill()
-  killSelf()
-end
-
-function mesg_writ(agent, message_id)
+-- Send a message to another agent. The message_id is from the table of Message Numbers; remember
+-- that early Message Numbers differ slightly from Script Numbers. If used from an install script,
+-- then FROM for the message to NULL rather than OWNR.
+CAOS.Cmd("mesg_writ", function(agent, message_id)
   mesg_wrt_plus(agent, message_id, nil, nil, 0)
-end
+end)
 
-function mesg_wrt_plus(agent, message_id, param_1, param_2, delay)
-  logInfo("mesg wrt+ %s %s %s %s %s", agent, message_id, param_1, param_2, delay)
-  agent = caos_number_arg(agent)
-  message_id = caos_number_arg(message_id)
-  param_1 = caos_number_arg(param_1)
-  param_2 = caos_number_arg(param_2)
-  delay = caos_number_arg(delay)
-
+-- Send a message with parameters to another agent. Waits delay ticks before sending the message.
+-- The message_id is from the table of Message Numbers.
+CAOS.Cmd("mesg_wrt_plus", function(agent, message_id, param_1, param_2, delay)
   world.callScriptedEntity(agent, "addMessage", self.OWNR, message_id, param_1, param_2, delay)
-end
+end)
 
 -- Returns whether the lawn was cut last Sunday or not.
-function mows()
+CAOS.Cmd("mows", function()
   return 1
-end
+end)
 
 -- Create a new simple agent, using the specified sprite file. The agent will have image_count
 -- sprites available, starting at first_image in the file. The plane is the screen depth to show
 -- the agent at - the higher the number, the nearer the camera.
 function new.simp(_, family, genus, species, sprite_file, image_count, first_image, plane)
-  logInfo("new: simp %s %s %s \"%s\" %s %s %s", family, genus, species, sprite_file, image_count, first_image, plane)
+  sb.logInfo("new: simp %s %s %s \"%s\" %s %s %s", family, genus, species, sprite_file, image_count, first_image, plane)
   family = caos_number_arg(family)
   genus = caos_number_arg(genus)
   species = caos_number_arg(species)
@@ -314,138 +296,100 @@ null = nil
 
 -- Wait until the current agent/part's ANIMation is over before continuing. Looping anims stop this
 -- command terminating until the animation is changed to a non-looping one.
-function over()
+CAOS.Cmd("over", function()
   while self.animation ~= nil do
     coroutine.yield()
   end
-end
+end)
 
 -- Returns the agent who's virtual machine the script is running on. Returns NULL for injected or
 -- install scripts.
-function ownr()
+CAOS.Cmd("ownr", function()
   return self.OWNR
-end
+end)
 
 -- Returns bottom position of target's bounding box.
-function posb()
-  return caos_targfunction_wrap0("posb")
-end
-
-function remote_posb()
+CAOS.TargCmd("posb", function()
   local bounds = mcontroller.boundBox()
   return fromSB.y_coordinate(entity.position()[2] + bounds[4])
-end
+end)
 
 -- Specify a frame in the sprite file for the target agent/part. Relative to any index specified by BASE.
 -- Return the current POSE of the target agent/part, or -1 if invalid part.
-function pose(pose_index)
-  return caos_targfunction_wrap1("pose", pose_index)
-end
-
-function remote_pose(pose_index)
+CAOS.TargCmd("pose", function(pose_index)
   if (pose_index ~= nil) then
     self.caos.pose_image = pose_index
     updateImageFrame()
   end
   return self.caos.pose_image
-end
+end)
 
 -- Returns left position of target's bounding box.
-function posl()
-  return caos_targfunction_wrap0("posl")
-end
-
-function remote_posl()
+CAOS.TargCmd("posl", function()
   local bounds = mcontroller.boundBox()
   return fromSB.coordinate(entity.position()[1] + bounds[1])
-end
+end)
 
 -- Returns right position of target's bounding box.
-function posr()
-  return caos_targfunction_wrap0("posr")
-end
-
-function remote_posr()
+CAOS.TargCmd("posr", function()
   local bounds = mcontroller.boundBox()
   return fromSB.coordinate(entity.position()[1] + bounds[3])
-end
+end)
 
 -- Returns top position of target's bounding box.
-function post()
-  return caos_targfunction_wrap0("post")
-end
-
-function remote_post()
+CAOS.TargCmd("post", function()
   local bounds = mcontroller.boundBox()
   return fromSB.y_coordinate(entity.position()[2] + bounds[2])
-end
+end)
 
 -- Returns X position of centre of target.
-function posx()
-  logInfo("posx")
-  if (self.TARG == nil) then return 0 end
-  return fromSB.coordinate(world.entityPosition(self.TARG)[1])
-end
+CAOS.TargCmd("posx", function()
+  return entity.position()[1]
+end)
 
 -- Returns Y position of centre of target.
-function posy()
-  logInfo("posy")
-  if (self.TARG == nil) then return 0 end
-  return fromSB.y_coordinate(world.entityPosition(self.TARG)[2])
-end
+CAOS.TargCmd("posy", function()
+  return entity.position()[2]
+end)
 
 -- Sets the distance that the target can see and hear, and the distance used to test for potential
 -- collisions. See also ESEE, OBST.
 -- Returns the target's range. See ESEE, OBST.
-function rnge(distance)
-  return caos_targfunction_wrap1("rnge", distance)
-end
-
-function remote_rnge(distance)
+CAOS.TargCmd("rnge", function(distance)
   if distance ~= nil then
     self.caos.range_check = distance
   end
   return self.caos.range_check
-end
+end)
 
 -- Returns species of target. See also FMLY, GNUS.
-function spcs()
-  return caos_targfunction_wrap0("spcs")
-end
-
-function remote_spcs()
+CAOS.TargCmd("spcs", function()
   return self.caos.species
-end
+end)
 
 -- This sets the TARG variable to the agent specified.
 -- Returns current target, on whom many commands act.
-function targ(agent)
-  logInfo("targ %s", agent)
-  agent = caos_number_arg(agent)
+CAOS.Cmd("targ", function(agent)
   if agent ~= nil then
     self.TARG = agent
   end
   return self.TARG
-end
+end)
 
 -- Start agent timer, calling Timer script every tick_rate ticks. Set to 0 to turn off the timer.
 -- Returns the current timer rate set by the command TICK.
-function tick(tick_rate)
-  return caos_targfunction_wrap1("tick", tick_rate)
-end
-
-function remote_tick(tick_rate)
+CAOS.TargCmd("tick", function(tick_rate)
   if (tick_rate ~= nil) then
     self.caos.tick_rate = tick_rate
     self.last_tick_time = world.time()
   end
   return self.caos.tick_rate
-end
+end)
 
 -- This returns the equivalent of "uname -a" on compatible systems, or a description of your
 -- operating system on others. This is a descriptive string and should not be taken as fixed format,
 -- or parseable.
-function ufos()
+CAOS.Cmd("ufos", function()
   -- Assume this is our super cool OS
   return "FakeOS 3000"
-end
+end)

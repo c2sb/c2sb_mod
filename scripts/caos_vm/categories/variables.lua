@@ -3,8 +3,9 @@
 ----------------------
 
 function getv(variable)
+  assert(type(variable) == "string")
   if (variable:len() ~= 4) then
-    logInfo("getv invalid variable: %s", variable)
+    sb.logInfo("getv invalid variable: %s", variable)
     return 0
   end
   
@@ -25,7 +26,7 @@ function getv(variable)
   if (target ~= nil) then
     return world.callScriptedEntity(target, "remote_getv", variable_number)
   else
-    logInfo("getv has nil target, prefix: %s, number: %s", variable_prefix, variable_number)
+    sb.logInfo("getv has nil target, prefix: %s, number: %s", variable_prefix, variable_number)
     return 0
   end
 end
@@ -42,117 +43,89 @@ end
 -- Makes a variable positive (its absolute value), so if var is negative var = 0 - var, otherwise
 -- var is left alone.
 function absv(var)
-  logInfo("absv %s", var)
   setv(var, math.abs(getv(var)))
 end
 
 -- Returns arccosine of x in degrees.
-function acos(x)
-  logInfo("acos %s", x)
-  x = caos_number_arg(x)
+CAOS.Cmd("acos", function(x)
   return math.acos(x) * 180.0 / math.pi
-end
+end)
 
 -- Concatenates two strings, so var = var + append.
-function adds(var, append)
-  logInfo("adds %s %s", var, append)
+CAOS.Cmd("adds", function(var, append)
   setv(var, getv(var)..append)
-end
+end, 1)
 
 -- Adds two integers or floats, so var = var + sum.
-function addv(var, sum)
-  logInfo("addv %s %s", var, sum)
-  sum = caos_number_arg(sum)
+CAOS.Cmd("addv", function(var, sum)
   setv(var, getv(var) + sum)
-end
+end, 1)
 
 -- Peform a bitwise AND on an integer variable, so var = var & value.
-function andv(var, value)
-  logInfo("andv %s %s", var, value)
-  value = caos_number_arg(value)
+CAOS.Cmd("andv", function(var, value)
   setv(var, getv(var) & value)
-end
+end, 1)
 
 -- Returns arcsine of x in degrees.
-function asin(x)
-  logInfo("asin %s", x)
-  x = caos_number_arg(x)
+CAOS.Cmd("asin", function(x)
   return math.asin(x) * 180.0 / math.pi
-end
+end)
 
 -- Returns arctangent of x in degrees.
-function atan(x)
-  logInfo("atan %s", x)
-  x = caos_number_arg(x)
+CAOS.Cmd("atan", function(x)
   return math.atan(x) * 180.0 / math.pi
-end
+end)
 
 -- Divides a variable by an integer or float, so var = var / div. Uses integer division if both
 -- numbers are integers, or floating point division otherwise.
-function divv(var, div)
-  logInfo("divv %s %s", var, div)
-  div = caos_number_arg(div)
+CAOS.Cmd("divv", function(var, div)
   setv(var, getv(var) / div)
-end
+end, 1)
 
 -- Returns the game name. For example "Creatures 3".
-function gnam()
-  return "Starbound"
-end
+gnam = "Starbound"
 
 -- Converts the given string into all lower case letters.
-function lowa(any_old)
-  any_old:lower()
-end
+CAOS.Cmd("lowa", function(any_old)
+  return any_old:lower()
+end)
 
 -- Gives the remainder (or modulus) when a variable is divided by an integer, so var = var % mod.
 -- Both values should to be integers.
-function modv(var, mod)
-  logInfo("modv %s %s", var, mod)
-  mod = caos_number_arg(mod)
+CAOS.Cmd("modv", function(var, mod)
   setv(var, getv(var) % mod)
-end
+end, 1)
 
 -- Multiplies a variable by an integer or float, so var = var * mul.
-function mulv(var, mul)
-  logInfo("mulv %s %s", var, mul)
-  mul = caos_number_arg(mul)
+CAOS.Cmd("mulv", function(var, mul)
   setv(var, getv(var) * mul)
-end
+end, 1)
 
 -- Reverse the sign of the given integer or float variable, so var = 0 - var.
 function negv(var)
-  logInfo("negv %s", var)
   setv(var, -getv(var))
 end
 
 -- Peform a bitwise NOT on an integer variable.
 function notv(var)
-  logInfo("notv %s", var)
   setv(var, ~getv(var))
 end
 
 -- Peform a bitwise OR on an integer variable, so var = var | value.
-function orrv(var, value)
-  logInfo("orrv %s %s", var, value)
-  value = caos_number_arg(value)
+CAOS.Cmd("orrv", function(var, value)
   setv(var, getv(var) | value)
-end
+end, 1)
 
 -- Returns a random integer between value1 and value2 inclusive of both values. You can use negative
 -- values, and have them either way round.
-function rand(value1, value2)
-  --logInfo("rand %s %s", value1, value2)
-  value1 = caos_number_arg(value1)
-  value2 = caos_number_arg(value2)
-  
+CAOS.Cmd("rand", function(value1, value2)
   if value1 == value2 then
     return value1
   elseif value1 > value2 then
     value1, value2 = value2, value1
   end
   return self.random:randu32() % (value2 - value1 + 1) + value1
-end
+end)
 
 function rndv(variable, min, max)
   setv(variable, rand(min, max))
@@ -164,13 +137,11 @@ function seta(var, value)
 end
 
 -- Stores an integer or float in a variable.
-function setv(var, value)
+CAOS.Cmd("setv", function(var, value)
   if (var:len() ~= 4) then
-    logInfo("setv invalid variable: %s", var)
+    sb.logInfo("setv invalid variable: %s", var)
     return
   end
-  
-  value = caos_number_arg(value)
   
   local var_name = var:gsub("^%l", string.lower)
   local var_prefix = var_name:sub(1, 2)
@@ -189,7 +160,7 @@ function setv(var, value)
   if (target ~= nil) then
     world.callScriptedEntity(target, "remote_setv", var_number, value)
   end
-end
+end, 1)
 
 function remote_setv(variable_id, value)
   self.caos.variables = self.caos.variables or {}
@@ -197,22 +168,19 @@ function remote_setv(variable_id, value)
 end
 
 -- Calculates a square root.
-function sqrt(value)
-  value = caos_number_arg(value)
+CAOS.Cmd("sqrt", function(value)
   return math.sqrt(value)
-end
+end)
 
 -- Subtracts an integer or float from a variable, so var = var - sub.
-function subv(variable, value)
-  logInfo("subv %s %s", variable, value)
-  value = caos_number_arg(value)
-  setv(variable, getv(variable) - value)
-end
+CAOS.Cmd("subv", function(var, value)
+  setv(var, getv(var) - value)
+end, 1)
 
 -- Converts the given string into all upper case letters.
-function uppa(any_old)
-  any_old:upper()
-end
+CAOS.Cmd("uppa", function(any_old)
+  return any_old:upper()
+end)
 
 -- Returns the first parameter sent to a script.
 _p1_ = nil

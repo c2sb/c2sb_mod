@@ -5,5 +5,6 @@
 -- CAOS FUNCTIONS --
 --------------------
 
-function stim_writ(creature, stimulus, strength)
-end
+-- Send stimulus to a specific creature. Can be used from an install script, but the stimulus will
+-- be from NULL, so the creature will react but not learn.
+CAOS.Cmd("stim_writ")

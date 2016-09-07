@@ -4,81 +4,60 @@
 
 -- Set acceleration due to gravity in pixels per tick squared.
 -- Returns target's acceleration due to gravity in pixels per tick squared.
-function accg(acceleration)
-  return caos_targfunction_wrap1("accg", acceleration)
-end
-
--- TODO: Figure out what Starbound gravity is _actually_ measured in to come up with a correct formula. This is inaccurate.
--- For now, we assume starbound gravity is in tiles/s^2 (ship gravity is 80)
--- Note that ACCG is measured in "pixels per tick squared", where a tick is 1/20 of a second
---      but we can only set a gravity multiplier, not the gravity itself.
--- To convert creatures gravity to starbound gravity, we know that: 1 tile = 8 px, 20 tick = 1 s
--- We also have that newGravity = worldGravity * gravityMultiplier => gravityMultiplier = newGravity / worldGravity
--- Example: (5 px / tick^2) * (20 tick / s) * (20 tick / s) / (8 px / tile)   =   (250 tiles / s^2)
-function remote_accg(gravity_pixels)
-  if gravity_pixels ~= nil then
-    self.gravity = gravity_pixels
-    local newGravity = gravity_pixels * 20 * 20 / 8.0 / 2
+CAOS.TargCmd("accg", function(acceleration)
+  -- TODO: Figure out what Starbound gravity is _actually_ measured in to come up with a correct formula. This is inaccurate.
+  -- For now, we assume starbound gravity is in tiles/s^2 (ship gravity is 80)
+  -- Note that ACCG is measured in "pixels per tick squared", where a tick is 1/20 of a second
+  --      but we can only set a gravity multiplier, not the gravity itself.
+  -- To convert creatures gravity to starbound gravity, we know that: 1 tile = 8 px, 20 tick = 1 s
+  -- We also have that newGravity = worldGravity * gravityMultiplier => gravityMultiplier = newGravity / worldGravity
+  -- Example: (5 px / tick^2) * (20 tick / s) * (20 tick / s) / (8 px / tile)   =   (250 tiles / s^2)
+  if acceleration ~= nil then
+    self.gravity = acceleration
+    local newGravity = acceleration * 20 * 20 / 8.0 / 2
     mcontroller.controlParameters({
       gravityMultiplier = newGravity / world.gravity(entity.position())
     })
   end
   return self.gravity
-end
+end)
 
 
 -- Set aerodynamic factor as a percentage. The velocity is reduced by this factor each tick.
 -- Returns aerodynamic factor as a percentage.
-function aero(aerodynamics)
-  return caos_targfunction_wrap1("aero", aerodynamics)
-end
-
-function remote_aero(aerodynamics)
+CAOS.TargCmd("aero", function(aerodynamics)
   if aerodynamics ~= nil then
     self.aerodynamics = aerodynamics
     mcontroller.controlParameters({ airFriction = aerodynamics / 100.0 })
   end
   return self.aerodynamics
-end
+end)
 
 -- Set the elasticity percentage. An agent with elasticity 100 will bounce perfectly, one with
 -- elasticity 0 won't bounce at all.
 -- Return the elasticity percentage.
-function elas(elasticity)
-  return caos_targfunction_wrap1("elas", elasticity)
-end
-
-function remote_elas(elasticity_percentage)
-  if elasticity_percentage ~= nil then
-    self.elasticity = elasticity_percentage
-    mcontroller.controlParameters({ bounceFactor = elasticity_percentage / 100.0 })
+CAOS.TargCmd("elas", function(elasticity)
+  if elasticity ~= nil then
+    self.elasticity = elasticity
+    mcontroller.controlParameters({ bounceFactor = elasticity / 100.0 })
   end
   return self.elasticity
-end
+end)
 
 -- Returns 1 if target is moving under the influence of gravity, or 0 if it is at rest.
-function fall()
-  return caos_targfunction_wrap0("fall")
-end
-
-function remote_fall()
+CAOS.TargCmd("fall", function()
   return fromSB.boolean(mcontroller.falling())
-end
+end)
 
 -- Set physics friction percentage, normally from 0 to 100. Speed is lost by this amount when an
 -- agent slides along the floor.
-function fric(friction)
-  return caos_targfunction_wrap1("fric", friction)
-end
-
--- Return physics friction percentage.
-function remote_fric(friction)
+CAOS.TargCmd("fric", function(friction)
   if friction ~= nil then
     self.friction = friction
     mcontroller.controlParameters({ groundFriction = friction / 100.0 })
   end
   return self.friction
-end
+end)
 
 -- Returns the movement status of the target. 
 -- 0 Autonomous
@@ -86,103 +65,55 @@ end
 -- 2 Floating
 -- 3 In vehicle
 -- 4 Carried
-function movs()
-  return caos_targfunction_wrap0("movs")
-end
-
-function remote_movs()
+CAOS.TargCmd("movs", function()
   -- Not implemented
   return 0
-end
+end)
 
 -- Move the target agent by relative distances, which can be negative or positive.
-function mvby(delta_x, delta_y)
-  logInfo("mvby %s %s", delta_x, delta_y)
-  delta_x = caos_number_arg(delta_x)
-  delta_y = caos_number_arg(delta_y)
-  if (self.TARG == nil) then return end
-
-  world.callScriptedEntity(self.TARG, "remote_mvto", getx() + delta_x, gety() + delta_y)
-end
+CAOS.Cmd("mvby", function(delta_x, delta_y)
+  mvto(getx() + delta_x, gety() + deltay)
+end)
 
 -- Move the target agent into a safe map location somewhere in the vicinity of x, y. Only works on
 -- autonomous agents - see MOVS. Works like a safe MVFT for creatures.
-function mvsf(x, y)
-  logInfo("mvsf %s %s", x, y)
-  x = caos_number_arg(x)
-  y = caos_number_arg(y)
-  if (self.TARG == nil) then return end
-  
-  world.callScriptedEntity(self.TARG, "remote_mvsf", x, y)
-end
-
-function remote_mvsf(x, y)
+CAOS.TargCmd("mvsf", function(x, y)
   if not isReasonableMove({x, y}) then return end
 
   local newPosition = world.resolvePolyCollision(mcontroller.collisionPoly(), { toSB.coordinate(x), toSB.y_coordinate(y) }, 16)
   if newPosition ~= nil then
     mcontroller.setPosition(topLeftPixelsToCenter(newPosition))
   end
-end
+end)
 
 -- Move the top left corner of the target agent to the given world coordinates. Use MVFT instead to
 -- move creatures.
-function mvto(x, y)
-  logInfo("mvto %s %s", x, y)
-  x = caos_number_arg(x)
-  y = caos_number_arg(y)
-  if (self.TARG == nil) then return end
-
-  world.callScriptedEntity(self.TARG, "remote_mvto", x, y)
-end
-
-function remote_mvto(x, y)
+CAOS.TargCmd("mvto", function(x, y)
   if not isReasonableMove({x, y}) then return end
   mcontroller.setPosition(topLeftPixelsToCenter({ toSB.coordinate(x), toSB.y_coordinate(y) }))
-end
+end)
 
 -- Test if target can move to the given location and still lie validly within the room system.
 -- Returns 1 if it can, 0 if it can't.
-function tmvt(x, y)
-  logInfo("tmvt %s %s", x, y)
-  x = caos_number_arg(x)
-  y = caos_number_arg(y)
-  if (self.TARG == nil) then return end
-  
-  return world.callScriptedEntity(self.TARG, "remote_tmvt", x, y)
-end
-
-function remote_tmvt(x, y)
+CAOS.TargCmd("tmvt", function(x, y)
   if isReasonableMove({x, y}) and world.resolvePolyCollision(mcontroller.collisionPoly(), { toSB.coordinate(x), toSB.y_coordinate(y) }, 1) ~= nil then
     return 1
   else
     return 0
   end
-end
+end)
 
 -- Set velocity, measured in pixels per tick.
-function velo(x_velocity, y_velocity)
-  logInfo("velo %s %s", x_velocity, y_velocity)
-  x_velocity = caos_number_arg(x_velocity)
-  y_velocity = caos_number_arg(y_velocity)
-  if (self.TARG == nil) then return end
-  world.callScriptedEntity(self.TARG, "remote_velo", x_velocity, y_velocity)
-end
-
-function remote_velo(x_velocity, y_velocity)
+CAOS.TargCmd("velo", function(x_velocity, y_velocity)
   mcontroller.setVelocity({ toSB.velocity(x_velocity), toSB.y_velocity(y_velocity) })
-end
+end)
 
 -- Horizontal velocity in pixels per tick - floating point.
-function velx()
-  logInfo("velx")
-  if (self.TARG == nil) then return 0 end
+CAOS.Cmd("velx", function()
   return fromSB.velocity(world.entityVelocity(self.TARG)[1])
-end
+end)
 
 -- Vertical velocity in pixels per tick - floating point.
-function vely()
-  logInfo("vely")
-  if (self.TARG == nil) then return 0 end
+CAOS.Cmd("vely", function()
   return fromSB.y_velocity(world.entityVelocity(self.TARG)[2])
-end
+end)

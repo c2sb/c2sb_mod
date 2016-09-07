@@ -8,9 +8,7 @@
 -- is broken either manually, using a SLOW command, or implictly, if a blocking instruction is
 -- encountered (eg WAIT). Blocking instructions force the remainder of the script's timeslice to be
 -- discarded.
-function inst()
-  -- TODO
-end
+CAOS.Cmd("inst")
 
 -- Registers a script in the scriptorium.
 function scrp(family, genus, species, event, fcn_callback)
@@ -19,9 +17,9 @@ function scrp(family, genus, species, event, fcn_callback)
   scriptorium[family][genus][species][event] = fcn_callback
 end
 
-function lock()
+CAOS.Cmd("lock", function()
   self.locked = true
-end
+end)
 
 -- Remove specified script from the scriptorium.
 function scrx(family, genus, species, event)
@@ -29,35 +27,27 @@ function scrx(family, genus, species, event)
 end
 
 -- Turn off INST state.
-function slow()
-  -- TODO
-end
+CAOS.Cmd("slow")
 
 -- Stops running the current script. Compare STPT.
-function stop()
+CAOS.Cmd("stop", function()
   self.stop_script = true
   coroutine.yield()
-end
+end)
 
 -- Stops any currently running script in the target agent. See also STOP.
-function stpt()
-  caos_targfunction_wrap0("stpt")
-end
-
-function unlk()
-  self.locked = false
-end
-
-function remote_stpt()
+CAOS.TargCmd("stpt", function()
   self.stop_script = true
-end
+end)
+
+CAOS.Cmd("unlk", function()
+  self.locked = false
+end)
 
 -- Block the script for the specified number of ticks. This command does an implicit SLOW.
-function wait(ticks)
-  logInfo("wait %s", ticks)
-  ticks = caos_number_arg(ticks)
+CAOS.Cmd("wait", function(ticks)
   local target_time = toSB.ticks(ticks) + world.time()
   while world.time() < target_time do
     coroutine.yield()
   end
-end
+end)

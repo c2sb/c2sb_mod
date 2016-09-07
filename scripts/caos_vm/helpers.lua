@@ -2,10 +2,6 @@
 -- HELPER FUNCTIONS --
 ----------------------
 
-function logInfo(fmt, ...)
-  --sb.logInfo("[%s:%s,%s,%s] "..fmt, entity.id(), self.caos.family, self.caos.genus, self.caos.species, ...)
-end
-
 function getImageSize(spriteFile, frameNumber)
   return root.imageSize("/agents/images/"..spriteFile.."/"..spriteFile.."_"..tostring(frameNumber)..".png")
 end
@@ -103,25 +99,6 @@ function caos_number_arg(argument)
     return getv(argument)
   end
   return argument
-end
-
-function caos_targfunction_wrap0(name)
-  logInfo("%s", name)
-  if (self.TARG == nil) then
-    logInfo("ERROR: TARG is null")
-    return 0
-  end
-  return world.callScriptedEntity(self.TARG, "remote_"..name)
-end
-
-function caos_targfunction_wrap1(name, arg1)
-  logInfo("%s %s", name, arg1)
-  if (self.TARG == nil) then
-    logInfo("ERROR: TARG is null")
-    return 0
-  end
-  arg1 = caos_number_arg(arg1)
-  return world.callScriptedEntity(self.TARG, "remote_"..name, arg1)
 end
 
 function isReasonableMove(targetCaosPosition)
