@@ -440,6 +440,406 @@ CAOS.SOUND_CHANNEL = {
   GENERATED_MUSIC = 2
 }
 
+CAOS.CHEM = {
+  -- An unknown chemical that takes no part in Norn biochemistry.
+  UNKNOWNASE = 0,
+  -- Produced when Norn is suffocating or drowning, and sugars cannot be combusted into carbon
+  -- dioxide. Causes slight injury to the muscle organ
+  LACTATE = 1,
+  -- Late stage digestion product. Part of energy production metabolism
+  PYRUVATE = 2,
+  -- All food is broken down into glucose eventually to make energy
+  GLUCOSE = 3,
+  -- Starch storage chemical.
+  GLYCOGEN = 4,
+  -- Food source, found mainly in seeds, but also in small amounts in fruit
+  STARCH = 5,
+  -- A stage in the breakdown of fat
+  FATTY_ACID = 6,
+  -- Bi-product of the breakdown of fat
+  CHOLESTEROL = 7,
+  -- A stage in the breakdown of fat
+  TRIGLYCERIDE = 8,
+  -- Long term fat storage chemical
+  ADIPOSE_TISSUE = 9,
+  -- Food source found in food and to a lesser extent, in fruit
+  FAT = 10,
+  -- Long term protein storage chemical
+  MUSCLE_TISSUE = 11,
+  -- Food source, found in fruit and food
+  PROTEIN = 12,
+  -- Protein is broken down into amino acid when digested
+  ANIMO_ACID = 13,
+  -- Produced when a Norn goes downhill, and makes it adopt a 'going downhill' gait
+  DOWNATROPHIN = 17,
+  -- Produced when a Norn goes uphill, and makes it adopt a 'going uphill' gait
+  UPATROPHIN = 18,
+  -- Bi-product of digestion. Removed from the body by the lungs
+  DISSOLVED_CARBON_DIOXIDE = 24,
+  -- Waste product from protein digestion. Controls urination (yes, Norns do...)
+  UREA = 25,
+  -- Waste product from protein digestion, and a mild poison. Is turned into the safer chemical,
+  -- Urea, for excretion.
+  AMMONIA = 26,
+  -- Indicates the presence of breathable air, with water produces oxygen.
+  AIR = 29,
+  -- Used to break down glucose and make energy.
+  OXYGEN = 30,
+  -- Bi-product of the Norn's metabolism, and also used as a coolant
+  WATER = 33,
+  -- One of the final products of glucose breakdown
+  ENERGY = 34,
+  -- Ultimate energy source for all functions in the Norn's body
+  ATP = 35,
+  -- Energy depleted form of ATP
+  ADP = 36,
+  -- Produced when the Norn is fertile, and ready to mate. Needs a creature of the right species
+  -- and sex to become sex drive
+  AROUSAL_POTENTIAL = 39,
+  -- Lowers the sex drive when the Norn is not ready to mate for any reason
+  LIBIDO_LOWERER = 40,
+  -- This Is produced when a creature senses another creature of the correct Species and sex, the
+  -- presence of this chemical triggers the convert of arousal potential into sex drive.
+  OPPOSITE_SEX = 41,
+  -- American spelling: Estrogen. Controls fertility in females
+  OESTROGEN = 46,
+  -- Produced during pregnancy. Eggs are laid when it is as its peak, and it prevents the Norn
+  -- becoming pregnant again when it already is!
+  PROGESTERONE = 48,
+  -- Controls fertility in males.
+  TESTOSTERONE = 53,
+  -- Theoretically controls production of testosterone, but not actually used in C3
+  INHIBIN = 54,
+  -- A poison: slowly eats away the immune system. It also can cause mutations in unborn children.
+  HEAVY_METALS = 66,
+  -- A severe poison: slows down the creation of ATP
+  CYANIDE = 67,
+  -- Slows down the rate of the organ that controls energy status in the Norn. It also upsets
+  -- regulatory functions, such as maintenance of hunger, etc.
+  BELLADONNA = 68,
+  -- Injected by biting insects, slowly destroys fat reserves (adipose tissue).
+  GEDDONASE = 69,
+  -- Quickly destroys the main glucose reserve (glycogen).
+  GLYCOTOXIN = 70,
+  -- Causes sleepiness, in case you couldn't guess. A side effect of some infections
+  SLEEP_TOXIN = 71,
+  -- Causes a high temperature and shivering. A side effect of some infections
+  FEVER_TOXIN = 72,
+  -- Causes sneezing. A side effect of some infections
+  HISTAMINE_A = 73,
+  -- Causes coughing. A side effect of some infections
+  HISTAMINE_B = 74,
+  -- Intoxicant. Causes a drunken walk, plus other well known side effects
+  ALCOHOL = 75,
+  -- Extreme poison. The nastiest of the lot. Turns ATP back into ADP. Wave goodbye to your Norn!
+  ATP_DECOUPLER = 78,
+  -- Makes it difficult for the Norn to get enough oxygen
+  CARBON_MONOXIDE = 79,
+  -- Causes an irrational feeling of terror
+  FEAR_TOXIN = 80,
+  -- Poison: slowly destroys muscle tissue
+  MUSCLE_TOXIN = 81,
+  -- Disease causing chemical in bacterial infections. Damages organs
+  ANTIGEN_0 = 82,
+  -- Disease causing chemical in bacterial infections. Damages organs
+  ANTIGEN_1 = 83,
+  -- Disease causing chemical in bacterial infections. Damages organs
+  ANTIGEN_2 = 84,
+  -- Disease causing chemical in bacterial infections. Damages organs
+  ANTIGEN_3 = 85,
+  -- Disease causing chemical in bacterial infections. Damages organs
+  ANTIGEN_4 = 86,
+  -- Disease causing chemical in bacterial infections. This antigen is by far the nastiest, and can
+  -- cause death
+  ANTIGEN_5 = 87,
+  -- Disease causing chemical in bacterial infections. Damages organs
+  ANTIGEN_6 = 88,
+  -- Disease causing chemical in bacterial infections. Damages organs
+  ANTIGEN_7 = 89,
+  -- A measure of how battered and beat up your Norn is. If the levels of this chemical get very
+  -- high, the Norn dies.
+  WOUNDED = 90,
+  -- Cure for ATP decoupler poisoning. However, you'll be lucky if you get it to work fast enough!
+  MEDICINE_ONE = 92,
+  -- Cure for Carbon Monoxide poisoning
+  ANTI_OXIDANT = 93,
+  -- Assists in the healing process after any injuring illness
+  PROSTAGLANDIN = 94,
+  -- Cure for heavy metal poisoning
+  EDTA = 95,
+  -- Cure for Cyanide poisoning
+  SODIUM_THIOSULPHATE = 96,
+  -- A herbal extract said to help glycotoxin poisoning
+  ARNICA = 97,
+  -- Keeps the reproductive organs healthy
+  VITAMIN_E = 98,
+  -- Keeps Norn bones healthy, and promotes good healing after injury
+  VITAMIN_C = 99,
+  -- Clears up coughs and sneezes caused by the two histamines
+  ANTIHISTAMINE = 100,
+  -- Cures infection by antigen 0 bacteria
+  ANTIBODY_0 = 102,
+  -- Cures infection by antigen 1 bacteria
+  ANTIBODY_1 = 103,
+  -- Cures infection by antigen 2 bacteria
+  ANTIBODY_2 = 104,
+  -- Cures infection by antigen 3 bacteria
+  ANTIBODY_3 = 105,
+  -- Cures infection by antigen 4 bacteria
+  ANTIBODY_4 = 106,
+  -- Cures infection by antigen 5 bacteria
+  ANTIBODY_5 = 107,
+  -- Cures infection by antigen 6 bacteria
+  ANTIBODY_6 = 108,
+  -- Cures infection by antigen 7 bacteria
+  ANTIBODY_7 = 109,
+  -- Causes build up of muscle tissue. Do not use if your Norn is taking part in the Olympics.
+  -- It'll get disqualified
+  ANABOLIC_STEROID = 112,
+  -- Large amounts trigger urination
+  PISTLE = 113,
+  -- In theory, regulates storage of glucose as glycogen. In practice, not used
+  INSULIN = 114,
+  -- In theory, regulates breakdown of glycogen into glucose. In practice, not used
+  GLYCOLASE = 115,
+  -- Produced when the creature is under stress,liberating glucose for energy. It also controls
+  -- fight or flight responses to attack
+  ADRENALIN = 116,
+  -- Found in grendels only. Used by the friend or foe lobe to help make decisions about the
+  -- friendliness of other creatures
+  GRENDEL_NITRATE = 117,
+  -- Found in ettins only. Used by the friend or foe lobe to help make decisions about the
+  -- friendliness of other creatures
+  ETTIN_NITRATE = 118,
+  -- In theory, is a measure of muscle activity. In practice, not used.
+  ACTIVASE = 124,
+  -- Life decays slowly over a Norn's life, working as a biological clock. Injecting your Norn with
+  -- this chemical now and again can make it immortal!
+  LIFE = 125,
+  -- Internal signal to the Norn that is has been wounded. Stimulates production of healing
+  -- chemicals (prostaglandin)
+  INJURY = 127,
+  -- Produced when any drive in the Norn is high for a long time, and damaging to the Norn's long
+  -- term health
+  STRESS = 128,
+  -- Controls sleeping in Norns when tired
+  SLEEPASE = 129,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  PAIN_BACKUP = 131,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  HUNGER_FOR_PROTEIN_BACKUP = 132,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  HUNGER_FOR_CARB_BACKUP = 133,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  HUNGER_FOR_FAT_BACKUP = 134,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  COLDNESS_BACKUP = 135,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  HOTNESS_BACKUP = 136,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  TIREDNESS_BACKUP = 137,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  SLEEPINESS_BACKUP = 138,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  LONELINESS_BACKUP = 139,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  CROWDED_BACKUP = 140,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  FEAR_BACKUP = 141,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  BOREDOM_BACKUP = 142,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  ANGER_BACKUP = 143,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  SEX_DRIVE_BACKUP = 144,
+  -- The relevant drive chemical is converted to this storage form when another more important need
+  -- takes over, such as fear or pain. It is converted back again when the crisis is over
+  COMFORT_BACKUP = 145,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  PAIN = 148,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  HUNGER_FOR_PROTEIN = 149,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it. Carbohydrate is another name for starch
+  HUNGER_FOR_CARBOHYDRATE = 150,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  HUNGER_FOR_FAT = 151,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  COLDNESS = 152,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  HOTNESS = 153,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  TIREDNESS = 154,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  SLEEPINESS = 155,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  LONELINESS = 156,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  CROWDED = 157,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  FEAR = 158,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  BOREDOM = 159,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  ANGER = 160,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  SEX_DRIVE = 161,
+  -- A drive chemical- works like the Norn's emotions. When a Norn has a high level of a drive
+  -- chemical, it has to learn a way to reduce it
+  COMFORT = 162,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the sound levels in the Norn's
+  -- vicinity
+  CA_SOUND = 165,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the light levels in the Norn's
+  -- vicinity
+  CA_LIGHT = 166,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the heat levels in the Norn's
+  -- vicinity
+  CA_HEAT = 167,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the rain levels in the Norn's
+  -- vicinity
+  CA_WATER = 168,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the nutrient levels in the Norn's
+  -- vicinity
+  CA_NUTRIENT = 169,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the bodies of standing water in
+  -- the Norn's vicinity
+  CA_WATER = 170,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the protein smells in the Norn's
+  -- vicinity
+  CA_PROTEIN = 171,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the starch smells in the Norn's
+  -- vicinity
+  CA_CARBOYDRATE = 172,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the fat smells (ugh!) in the
+  -- Norn's vicinity
+  CA_FAT = 173,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the flower scent in the Norn's
+  -- vicinity
+  CA_FLOWERS = 174,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the smell of machinery in the
+  -- Norn's vicinity
+  CA_MACHINERY = 175,
+  -- Spare smell chemical
+  CA_SMELL_11 = 176,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the Norn smells in the Norn's
+  -- vicinity
+  CA_NORN_SMELL = 177,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the grendel smells in the Norn's
+  -- vicinity
+  CA_GRENDEL_SMELL = 178,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the ettin smells in the Norn's
+  -- vicinity
+  CA_ETTIN_SMELL = 179,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the smell of the Norn terrarium
+  CA_NORN_HOME_SMELL = 180,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the smell of the grendel jungle
+  CA_GRENDEL_HOME_SMELL = 181,
+  -- All environmental stimuli on the Shee ship exist as particle gradients as if they were smells,
+  -- which the creatures use to navigate. This chemical represents the smell of the ettin desert
+  CA_ETTIN_HOME_SMELL = 182,
+  -- Spare smell chemical
+  CA_SMELL_18 = 183,
+  -- Spare smell chemical
+  CA_SMELL_19 = 184,
+  -- This chemical represents stress caused specifically by great hunger for carbohydrate.
+  STRESS_HIGH_H4C = 187,
+  -- This chemical represents stress caused specifically by great hunger for protein.
+  STRESS_HIGH_H4P = 188,
+  -- This chemical represents stress caused specifically by great hunger for fat.
+  STRESS_HIGH_H4F = 189,
+  -- This chemical represents stress caused specifically by great anger.
+  STRESS_HIGH_ANGER = 190,
+  -- This chemical represents stress caused specifically by great fear.
+  STRESS_HIGH_FEAR = 191,
+  -- This chemical represents stress caused specifically by great pain.
+  STRESS_HIGH_PAIN = 192,
+  -- This chemical represents stress caused specifically by great tiredness.
+  STRESS_HIGH_TIRED = 193,
+  -- This chemical represents stress caused specifically by great sleepiness.
+  STRESS_HIGH_SLEEP = 194,
+  -- This chemical represents stress caused specifically by great crowdedness.
+  STRESS_HIGH_CROWDED = 195,
+  -- One of the chemicals used for learning, this chemical represents a situation where the Norn
+  -- tried something that didn't work (such as eating doors)
+  DISAPPOINTMENT = 198,
+  -- Used for navigation by the Norn
+  UP = 199,
+  -- Used for navigation by the Norn
+  DOWN = 200,
+  -- Used for navigation by the Norn
+  EXIT = 201,
+  -- Used for navigation by the Norn
+  ENTER = 202,
+  -- Used for navigation by the Norn
+  WAIT = 203,
+  -- This chemical takes part in the formation of positive memories. The Norn remembers the action
+  -- that made the reward chemical as a good one for future reference
+  REWARD = 204,
+  -- This chemical takes part in the formation of negative memories. The Norn remembers the action
+  -- that made the punishment chemical as a bad one for future reference
+  PUNISHMENT = 205,
+  -- Spare chemical, not currently in use
+  BRAIN_CHEMICAL_9 = 206,
+  -- Spare chemical, not currently in use
+  BRAIN_CHEMICAL_10 = 207,
+  -- Spare chemical, not currently in use
+  BRAIN_CHEMICAL_11 = 208,
+  -- Spare chemical, not currently in use
+  BRAIN_CHEMICAL_12 = 209,
+  -- Spare chemical, not currently in use
+  BRAIN_CHEMICAL_13 = 210,
+  -- Spare chemical, not currently in use
+  BRAIN_CHEMICAL_14 = 211,
+  -- Controls dreaming in Norns. Norns need to dream in order to process their instincts.
+  PRE_REM = 212,
+  -- Controls dreaming in Norns.
+  REM = 213
+}
+
 ov00 = "ov00"
 ov01 = "ov01"
 ov02 = "ov02"
