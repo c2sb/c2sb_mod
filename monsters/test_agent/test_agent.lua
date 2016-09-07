@@ -160,7 +160,7 @@ function resumeScript()
   if isScriptActive() and coroutine.status(script_coroutine) == "suspended" then
     local result, message = coroutine.resume(script_coroutine)
     if not result then
-      sb.logError("Coroutine failed: %s", message)
+      sb.logError("Coroutine failed: %s", tostring(message))
     end
   elseif not isScriptActive() then
     self.locked = false
@@ -213,6 +213,8 @@ function initCaosVars()
   self.caos.range_check = 500
   self.caos.attributes = 0
   self.caos.behaviors = 0
+  self.caos.alpha_value = 0
+  self.caos.alpha_blending = 0
 end
 
 -- Kills the agent

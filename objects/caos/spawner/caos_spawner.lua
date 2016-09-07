@@ -8,9 +8,9 @@ function init()
 end
 
 function onInteraction(args)
-  injectAgent("BalloonPlant")
-  injectAgent("robot_toy")
-  injectAgent("RubberBall")
+  --injectAgent("BalloonPlant")
+  --injectAgent("robot_toy")
+  --injectAgent("RubberBall")
   injectAgent("Roamer")
 end
 

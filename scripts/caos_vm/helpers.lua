@@ -16,11 +16,10 @@ function updateImageFrame()
   assert(type(self.caos.pose_image) == "number", "pose_image is not a number")
   
   local frameno = self.caos.first_image + self.caos.base_image + self.caos.pose_image
-  if self.lastframeno == frameno then return end  -- because frame updates might be expensive
-  self.lastframeno = frameno
   
   -- Set the frame
   animator.setGlobalTag("frameno", frameno)
+  animator.setGlobalTag("color_multiply", string.format("FFFFFF%2x", 255 - math.min(self.caos.alpha_value, 255)))
   
   -- TODO I am pretty sure setting the collision polygon here is incorrect. It may be set when the
   -- agent is created ???

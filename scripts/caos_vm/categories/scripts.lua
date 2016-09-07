@@ -9,7 +9,7 @@
 -- encountered (eg WAIT). Blocking instructions force the remainder of the script's timeslice to be
 -- discarded.
 function inst()
-  -- Not necessary
+  -- TODO
 end
 
 -- Registers a script in the scriptorium.
@@ -30,7 +30,7 @@ end
 
 -- Turn off INST state.
 function slow()
-  -- Not necessary
+  -- TODO
 end
 
 -- Stops running the current script. Compare STPT.

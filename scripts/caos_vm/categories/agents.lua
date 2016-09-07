@@ -52,6 +52,26 @@ end
 -- CAOS FUNCTIONS --
 --------------------
 
+-- The agent will be drawn alpha blended against the background by the given value - from 256 for
+-- invisible to 0 for completely solid. For compound agents set the PART to affect a particular
+-- part or to -1 to affect all parts. The second parameter switches alpha blending on (1) or off
+-- (0). Alpha graphics are drawn much slower, so use sparingly and turn it off completely rather
+-- than using an intensity value of 0 or 256. At the moment alpha channels only work on compressed,
+-- non-mirrored, non-zoomed sprites.
+function alph(alpha_value, yesorno)
+  logInfo("alph %s %s", alpha_value, yesorno)
+  alpha_value = caos_number_arg(alpha_value)
+  yesorno = caos_number_arg(yesorno)
+  
+  world.callScriptedEntity(self.TARG, "remote_alph", alpha_value, yesorno)
+end
+
+function remote_alph(alpha_value, yesorno)
+  self.caos.alpha_value = alpha_value
+  self.caos.alpha_blending = yesorno
+  updateImageFrame()
+end
+
 -- Specify a list of POSEs such as [1 2 3] to animate the current agent/part. Put 255 at the end to
 -- continually loop. The first number after the 255 is an index into the animation string where the
 -- looping restarts from - this defaults to 0 if not specified. e.g. [0 1 2 10 11 12 255 3] would
@@ -164,12 +184,24 @@ function esee(family, genus, species, fcn_callback)
   end
   if (target == nil) then return {} end
   
-  local entities = world.entityQuery(world.entityPosition(target), toSB.coordinate(radius), {
-    withoutEntityId = target,
-    boundMode = "position",       -- Simple position comparison should take some load off
-    callScript = "target_visible",
-    callScriptArgs = { entity.position(), family, genus, species }
-  })
+  local entities = nil
+  if family == CAOS.FAMILY.CREATURE then
+    entities = world.entityQuery(world.entityPosition(target), toSB.coordinate(radius), {
+      withoutEntityId = target,
+      boundMode = "position",       -- Simple position comparison should take some load off
+      callScript = "entity.entityInSight",
+      callScriptArgs = { entity.id() }
+    })
+  elseif family == CAOS.FAMILY.OBJECT then
+    entities = world.entityQuery(world.entityPosition(target), toSB.coordinate(radius), {
+      withoutEntityId = target,
+      boundMode = "position",       -- Simple position comparison should take some load off
+      callScript = "target_visible",
+      callScriptArgs = { entity.position(), family, genus, species }
+    })
+  else
+    sb.logWarn("Family not supported: %s", family)
+  end
   
   local originalTarg = self.TARG
   for i,entity in ipairs(entities) do
@@ -294,6 +326,16 @@ function ownr()
   return self.OWNR
 end
 
+-- Returns bottom position of target's bounding box.
+function posb()
+  return caos_targfunction_wrap0("posb")
+end
+
+function remote_posb()
+  local bounds = mcontroller.boundBox()
+  return fromSB.y_coordinate(entity.position()[2] + bounds[4])
+end
+
 -- Specify a frame in the sprite file for the target agent/part. Relative to any index specified by BASE.
 -- Return the current POSE of the target agent/part, or -1 if invalid part.
 function pose(pose_index)
@@ -306,6 +348,36 @@ function remote_pose(pose_index)
     updateImageFrame()
   end
   return self.caos.pose_image
+end
+
+-- Returns left position of target's bounding box.
+function posl()
+  return caos_targfunction_wrap0("posl")
+end
+
+function remote_posl()
+  local bounds = mcontroller.boundBox()
+  return fromSB.coordinate(entity.position()[1] + bounds[1])
+end
+
+-- Returns right position of target's bounding box.
+function posr()
+  return caos_targfunction_wrap0("posr")
+end
+
+function remote_posr()
+  local bounds = mcontroller.boundBox()
+  return fromSB.coordinate(entity.position()[1] + bounds[3])
+end
+
+-- Returns top position of target's bounding box.
+function post()
+  return caos_targfunction_wrap0("post")
+end
+
+function remote_post()
+  local bounds = mcontroller.boundBox()
+  return fromSB.y_coordinate(entity.position()[2] + bounds[2])
 end
 
 -- Returns X position of centre of target.

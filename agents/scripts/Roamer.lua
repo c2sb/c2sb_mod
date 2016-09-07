@@ -154,7 +154,7 @@ scrp(3, 8, 32201, 9, function()
 --*  if ov06 >= 50 and rand 0 30 == 0
 
   --* Release bacteria clouds?
-  if getv(ov06) >= 50 and rand (0, 15) == 0 and getv(va50) ~= 0 and rtyp (grap (posx(), posy())) ~= 8 and rtyp (grap (posx(), posy())) ~= 9 then
+  if getv(ov06) >= 1 and rand (0, 15) == 0 and getv(va50) ~= 0 then --and rtyp (grap (posx(), posy())) ~= 8 and rtyp (grap (posx(), posy())) ~= 9 then
     setv (ov07, 32215)
     setv (ov08, 0)
     setv (ov06, 0)
@@ -163,7 +163,7 @@ scrp(3, 8, 32201, 9, function()
   end
 
   --* Release creature clouds?
-  if getv(ov06) >= 50 and rand (0, 15) == 0 and getv(va51) ~= 0 and rtyp (grap (posx(), posy())) ~= 8 and rtyp (grap (posx(), posy())) ~= 9 then
+  if getv(ov06) >= 1 and rand (0, 15) == 0 and getv(va51) ~= 0 then --and rtyp (grap (posx(), posy())) ~= 8 and rtyp (grap (posx(), posy())) ~= 9 then
     --* Pick random type
     setv (ov07, rand (32213, 32214))
     setv (ov08, 0)
@@ -220,7 +220,7 @@ scrp(3, 8, 32201, 9, function()
       setv (ov04, 0)
       --* Trigger to start animation end) timer
       setv (ov80, 1)
-    elseif va01 == 2 and ov01 == 0 then
+    elseif getv(va01) == 2 and getv(ov01) == 0 then
       fric (10)
       setv (ov01, -5)
       setv (ov04, 0)
@@ -231,52 +231,58 @@ scrp(3, 8, 32201, 9, function()
   end
 
   --* Teleport? (not if creating clouds)
-  if getv(ov05) >= 250 and rand (0, 30) == 0 and getv(ov07) == 0 then
-    lock()
-    --* Make sure autonomous
-    if movs() == 0 then
-      --* Call pickup script - this halts & resets
-      call (4, 0, 0)
-      --* Find new co-ordinates
-      repeat
-        setv (va01, rand (0, 10000))
-        setv (va02, rand (0, 10000))
-        --* Check exclusion zone for airlocks
-        setv (va03, 0)
-        if getv(va01) >= 3200 and getv(va02) >= 3600 and getv(va01) <= 5600 and getv(va02) <= 4500 then
-          setv (va03, 1)
-        end
-      until tmvt (va01, va02) == 1 and getv(va03) == 0
-      --* Fade out
-      snde "pl_1"
-      setv (va03, 0)
-      repeat
-        inst()
-        alph (va03, 1)
-        addv (va03, 8)
-        slow()
-      until getv(va03) > 256
-      --* Move to new position
-      inst()
-      alph (256, 1)
-      mvto (va01, va02)
-      slow()
-      --* Fade in
-      snde "pl_1"
-      setv (va03, 256)
-      repeat
-        inst()
-        alph (va03, 1)
-        subv (va03, 8)
-        slow()
-      until getv(va03) < 0
-      alph (0, 0)
-      --* Call drop script - this re-enables
-      call (5, 0, 0)
-      setv (ov05, 0)
-    end
-    unlk()
-  end
+  --if getv(ov05) >= 250 and rand (0, 30) == 0 and getv(ov07) == 0 then
+  --  lock()
+  --  --* Make sure autonomous
+  --  if movs() == 0 then
+  --    --* Call pickup script - this halts & resets
+  --    call (4, 0, 0)
+  --    --* Find new co-ordinates
+  --    repeat
+  --      -- EDITED --
+  --        setv (va01, posx())
+  --        setv (va02, posy())
+  --        addv (va01, rand (-1000, 1000))
+  --        addv (va02, rand (-1000, 1000))
+  --        --setv (va01, rand (0, 10000))
+  --        --setv (va02, rand (0, 10000))
+  --        --* Check exclusion zone for airlocks
+  --        setv (va03, 0)
+  --        --if getv(va01) >= 3200 and getv(va02) >= 3600 and getv(va01) <= 5600 and getv(va02) <= 4500 then
+  --        --  setv (va03, 1)
+  --        --end
+  --      -- END EDIT --
+  --    until tmvt (va01, va02) == 1 and getv(va03) == 0
+  --    --* Fade out
+  --    snde "pl_1"
+  --    setv (va03, 0)
+  --    repeat
+  --      inst()
+  --      alph (va03, 1)
+  --      addv (va03, 8)
+  --      slow()
+  --    until getv(va03) > 256
+  --    --* Move to new position
+  --    inst()
+  --    alph (256, 1)
+  --    mvto (va01, va02)
+  --    slow()
+  --    --* Fade in
+  --    snde "pl_1"
+  --    setv (va03, 256)
+  --    repeat
+  --      inst()
+  --      alph (va03, 1)
+  --      subv (va03, 8)
+  --      slow()
+  --    until getv(va03) < 0
+  --    alph (0, 0)
+  --    --* Call drop script - this re-enables
+  --    call (5, 0, 0)
+  --    setv (ov05, 0)
+  --  end
+  --  unlk()
+  --end
 
   --* Collision check if moving
   if getv(ov01) ~= 0 and getv(ov03) >= 5 then

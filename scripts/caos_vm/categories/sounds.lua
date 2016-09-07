@@ -24,28 +24,33 @@ end
 
 -- Fade out a controlled sound.
 function fade()
+  logInfo("fade")
   world.callScriptedEntity(self.TARG, "setVolume", 0, 1.0)
 end
 
 -- Plays a controlled sound effect emitted from the target. Updates volume and panning as the agent moves.
 function sndc(sound_file)
+  logInfo("sndc %s", sound_file)
   -- TODO load string variables
   world.callScriptedEntity(self.TARG, "playSoundFile", sound_file)
 end
 
 -- Play a sound effect audible as if emitted from target's current location.
 function snde(sound_file)
+  logInfo("snde %s", sound_file)
   -- TODO load string variables
   sndc(sound_file)
 end
 
 -- Play a sound effect as in SNDC, only the sound is looped.
 function sndl(sound_file)
+  logInfo("sndl %s", sound_file)
   -- TODO load string variables
   world.callScriptedEntity(self.TARG, "playSoundFile", sound_file, -1)
 end
 
 -- Stops a controlled sound.
 function stpc()
+  logInfo("stpc")
   world.callScriptedEntity(self.TARG, "stopSounds")
 end
