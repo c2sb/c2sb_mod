@@ -80,7 +80,7 @@ end)
 CAOS.TargCmd("mvsf", function(x, y)
   if not isReasonableMove({x, y}) then return end
 
-  local newPosition = world.resolvePolyCollision(mcontroller.collisionPoly(), { toSB.coordinate(x), toSB.y_coordinate(y) }, 16)
+  local newPosition = world.resolvePolyCollision(mcontroller.collisionPoly(), { toSB.coordinate(x), toSB.y_coordinate(y) }, 8)
   if newPosition ~= nil then
     mcontroller.setPosition(topLeftPixelsToCenter(newPosition))
   end
@@ -96,8 +96,10 @@ end)
 -- Test if target can move to the given location and still lie validly within the room system.
 -- Returns 1 if it can, 0 if it can't.
 CAOS.TargCmd("tmvt", function(x, y)
-  if isReasonableMove({x, y}) and world.resolvePolyCollision(mcontroller.collisionPoly(), { toSB.coordinate(x), toSB.y_coordinate(y) }, 1) ~= nil then
-    return 1
+  if isReasonableMove({x, y}) then
+    local left, top, right, bottom = table.unpack(mcontroller.boundBox())
+    x, y = table.unpack(topLeftPixelsToCenter({ toSB.coordinate(x), toSB.y_coordinate(y) }))
+    return fromSB.boolean(not world.rectCollision({left + x, top + y, right + x, bottom + y}))
   else
     return 0
   end
