@@ -6,6 +6,9 @@
 -- Returns the value of the down constant.
 down = CAOS.DIRECTIONS.DOWN
 
+-- Target now constantly emits an amount of a CA into the room it is in.
+CAOS.TargCmd("emit")
+
 -- Returns the value of the left constant.
 left = CAOS.DIRECTIONS.LEFT
 
@@ -23,6 +26,13 @@ end)
 
 -- Returns the value of the right constant.
 right = CAOS.DIRECTIONS.RIGHT
+
+-- Returns the id of the room containing the midpoint of the specified agent.
+CAOS.Cmd("room")
+
+-- Sets the type of a room. The meaning of the types depends on the game. RATE also uses the room
+-- type.
+CAOS.Cmd("rtyp")
 
 -- Returns the value of the up constant.
 _up_ = CAOS.DIRECTIONS.UP

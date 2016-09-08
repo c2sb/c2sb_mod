@@ -96,23 +96,45 @@ end)
 -- Returns the distance from the agent to the nearest wall that it might collide with in the given
 -- direction. Directions are LEFT, RGHT, _UP_, or DOWN. If the distance to the collsion is greater
 -- than RNGE then a very large number is returned.
-CAOS.TargCmd("obst", function(direction))
-  local x, y = table.unpack(entity.position())
+CAOS.TargCmd("obst", function(direction)
   local range = toSB.coordinate(self.caos.range_check)
+
+  -- Get the x/y end-point, include entity's bounding box
+  local entity_x, entity_y = table.unpack(entity.position())
+  local targ_x, targ_y = entity_x, entity_y
+  local left, top, right, bottom = table.unpack(mcontroller.boundBox())
   if direction == CAOS.DIRECTIONS.LEFT then
-    x = x - range
+    entity_x = entity_x + left
+    targ_x = entity_x - range
   elseif direction == CAOS.DIRECTIONS.UP then
-    y = y + range
+    entity_y = entity_y - top
+    targ_y = entity_y + range
   elseif direction == CAOS.DIRECTIONS.RIGHT then
-    x = x + range
+    entity_x = entity_x + right
+    targ_x = entity_x + range
   elseif direction == CAOS.DIRECTIONS.DOWN then
-    y = y - range
+    entity_y = entity_y - bottom
+    targ_y = entity_y - range
   end
   
-  local hits = world.collisionBlocksAlongLine(entity.position(), {x, y}, nil, 1)
+  local hits = world.collisionBlocksAlongLine({entity_x, entity_y}, {targ_x, targ_y}, {"Block"}, 1)
   if #hits > 0 then
-    local distance = world.magnitude(entity.position(), hits[1])
-    return fromSB.coordinate(distance)
+    local dist_x, dist_y = table.unpack(world.distance({entity_x, entity_y}, hits[1]))
+    dist_x = math.abs(dist_x)
+    dist_y = math.abs(dist_y)
+
+    -- Subtract 0.5 for half-tile
+    if direction == CAOS.DIRECTIONS.LEFT then
+      return fromSB.coordinate(dist_x - 0.5)
+    elseif direction == CAOS.DIRECTIONS.UP then
+      return fromSB.coordinate(dist_y - 0.5)
+    elseif direction == CAOS.DIRECTIONS.RIGHT then
+      return fromSB.coordinate(dist_x - 0.5)
+    elseif direction == CAOS.DIRECTIONS.DOWN then
+      return fromSB.coordinate(dist_y - 0.5)
+    end
+
+    return 1000000
   else
     return 1000000
   end

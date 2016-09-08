@@ -64,18 +64,23 @@ CAOS.TargCmd("alph", function(alpha_value, yesorno)
   updateImageFrame()
 end)
 
+function animStringToArray(anim_string)
+  local poses = {}
+  for s in string.gmatch(anim_string, "%S+") do
+    table.insert(poses, tonumber(s))
+  end
+  return poses
+end
+
 -- Specify a list of POSEs such as [1 2 3] to animate the current agent/part. Put 255 at the end to
 -- continually loop. The first number after the 255 is an index into the animation string where the
 -- looping restarts from - this defaults to 0 if not specified. e.g. [0 1 2 10 11 12 255 3] would
 -- loop just the 10, 11, 12 section.
 -- NOTE: anim doesn't support strings, but it's easier to convert a CAOS list to string by adding
 -- and extra set of square brackets!
-CAOS.Cmd("anim", function(pose_list)
-  -- If pose_list is a string, then convert it by calling anms
-  -- (which in turn calls this again with a table)
+CAOS.TargCmd("anim", function(pose_list)
   if type(pose_list) == "string" then
-    anms(pose_list)
-    return
+    pose_list = animStringToArray(pose_list)
   end
 
   self.animation = pose_list
@@ -83,11 +88,7 @@ CAOS.Cmd("anim", function(pose_list)
 end)
 
 CAOS.Cmd("anms", function(anim_string)
-  local poses = {}
-  for s in string.gmatch(anim_string, "%S+") do
-    table.insert(poses, tonumber(s))
-  end
-  anim(poses)
+  anim(anim_string)
 end)
 
 -- Set attributes of target. Sum the values in the Attribute Flags table to get the attribute value
@@ -384,6 +385,16 @@ CAOS.TargCmd("tick", function(tick_rate)
     self.last_tick_time = world.time()
   end
   return self.caos.tick_rate
+end)
+
+-- Counts the number of agents in the world matching the classifier.
+CAOS.Cmd("totl", function(family, genus, species)
+  local entities = world.entityQuery(entity.position(), 9999, {
+    callScript = "matches_species",
+    boundMode = "position",       -- Simple position comparison should take some load off
+    callScriptArgs = { family, genus, species }
+  })
+  return #entities
 end)
 
 -- This returns the equivalent of "uname -a" on compatible systems, or a description of your

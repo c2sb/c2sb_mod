@@ -30,12 +30,14 @@ function Botanoid.install()
 end
 
 scrp(3, 8, 4608, 1, function()
-  setv(vely, -10)
+  --setv(vely, -10)
+  velo(velx, -10)
   stim_writ (from, 90, 1)
 end)
 
 scrp(3, 8, 4608, 3, function()
-  setv(vely, -10)
+  --setv(vely, -10)
+  velo(velx, -10)
   snde "spnk"
   addv(ov00, 4)
   stim_writ (from, 92, 1)
@@ -46,47 +48,6 @@ scrp(3, 8, 4608, 4, function()
 end)
 
 scrp(3, 8, 4608, 9, function()
-  tick (1)
-  if getv(ov00) > 3 or rtyp (room (ownr)) == 8 or rtyp (room (ownr)) == 9 then
-    -- TODO: IMPLEMENT RTYP -- crash()
-  end
-  velo (rand(10, -10), rand(5, -3))
-  if obst (down) < 15 and carr() == null then
-    accg (0.5)
-    wait (100)
-    if fall() ~= 1 then
-      check()
-    end
-  else
-    wait (10)
-  end
-
-  local function check()
---*checks if the roomtype is correct. then
-    if rtyp (room (ownr)) < 5 or rtyp (room (ownr)) > 9 then
-      pop()
-    else
-      relaunch()
-    end
-  end
-
-  local function pop()
---**checks if population is okay then
-    ttar (3, 3, 4608)
-    if targ() ~= null then
-      targ (ownr)
-      relaunch()
-    else
-      if totl (3, 3, 4608) > 30 then
-        targ (ownr)
-        addv(ov00, 3)
-        relaunch()
-      else
-        targ (ownr)
-        grow()
-      end
-    end
-  end
 
   local function relaunch()
 --**launches the seed back into the skies
@@ -116,6 +77,27 @@ scrp(3, 8, 4608, 9, function()
     kill(ownr)
   end
 
+  local function pop()
+--**checks if population is okay then
+    -- TODO
+    targ(ownr)
+    grow()
+    --ttar (3, 3, 4608)
+    --if targ() ~= null then
+    --  targ (ownr)
+    --  relaunch()
+    --else
+    --  if totl (3, 3, 4608) > 30 then
+    --    targ (ownr)
+    --    addv(ov00, 3)
+    --    relaunch()
+    --  else
+    --    targ (ownr)
+    --    grow()
+    --  end
+    --end
+  end
+
   local function crash()
 --*Crash and burn baby! Yeah!
 --*Anyways, just drop to the floor and disappear
@@ -126,6 +108,35 @@ scrp(3, 8, 4608, 9, function()
     until fall() ~= 1
     kill(ownr)
   end
+  
+  local function check()
+--*checks if the roomtype is correct. then
+-- TODO: implement rtyp
+    pop()
+    --if rtyp (room (ownr)) < 5 or rtyp (room (ownr)) > 9 then
+    --  pop()
+    --else
+    --  relaunch()
+    --end
+  end
+
+  tick (1)
+-- TODO: implement rtyp
+  if getv(ov00) > 3 then --or rtyp (room (ownr)) == 8 or rtyp (room (ownr)) == 9 then
+    crash()
+  end
+  velo (rand(10, -10), rand(5, -3))
+  sb.logInfo("obst down = %s", obst (down))
+  if obst (down) < 15 and carr() == null then
+    accg (0.5)
+    wait (100)
+    if fall() ~= 1 then
+      check()
+    end
+  else
+    wait (10)
+  end
+
 end)
 
 scrp(3, 3, 4608, 9, function()
@@ -148,7 +159,7 @@ scrp(3, 3, 4608, 9, function()
     unlk()
   end
 
-  local function die()
+  local function die_()
     anim [[23]]
     repeat
       wait (10)
@@ -200,7 +211,7 @@ scrp(3, 3, 4608, 9, function()
       targ (ownr)
     end)
     unlk()
-    die()
+    die_()
   end
 
   local function waste()
@@ -294,7 +305,8 @@ scrp(3, 3, 4608, 9, function()
     subv(va01, 10)
     setv(ov02, va01)
     anim [[0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 255]]
-    setv(vely, -1)
+    --setv(vely, -1)
+    velo(velx, -1)
     tick (1)
     targ (ownr)
     unlk()
@@ -331,9 +343,11 @@ scrp(2, 7, 4608, 9, function()
     kill(ownr)
   end
   if posy() < getv(ov02) then
-    setv(vely, 1)
+    --setv(vely, 1)
+    velo(velx, 1)
   elseif posy() > getv(ov01) then
-    setv(vely, -1)
+    --setv(vely, -1)
+    velo(velx, -1)
   end
 end)
 
