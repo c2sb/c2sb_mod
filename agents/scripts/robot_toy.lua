@@ -76,7 +76,7 @@ end)
 --drop
 scrp(2, 21, 20, 6, function()
 	lock()
-	sndc("dr10")
+	sndc "dr10"
 	if getv(ov10) < 0 then
 		pose(0)
 	else
@@ -90,15 +90,15 @@ scrp(2, 21, 20, 1000, function()
 
 --turn
 	local function turn()
-		sndl("rob2")
+		sndl "rob2"
 --	if you're facing left
 		if getv(ov10) < 0 then
 			frat(3)
-			anim({10, 11, 12})
+			anim [[10 11 12]]
 			over()
 		elseif getv(ov10) > 0 then
 			frat(3)
-			anim({12, 11, 10, 0})
+			anim [[12 11 10 0]]
 			over()
 		end
 		fade()
@@ -107,18 +107,18 @@ scrp(2, 21, 20, 1000, function()
 
 --walking left
 	local function walk_left()
-		anim({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0})
+		anim [[0 1 2 3 4 5 6 7 8 9 10 0]]
 		setv(va99, -5)
 	end
 --walking right
 	local function walk_right()
-		anim({12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 12})
+		anim [[12 13 14 15 16 17 18 19 20 21 22 12]]
 		setv(va99, 5)
 	end
 
 --*walking
 	local function walk()
-		sndc("rob1")
+		sndc "rob1"
 		frat(1)
 		if getv(ov10) < 0 then
 			walk_left()
@@ -129,18 +129,18 @@ scrp(2, 21, 20, 1000, function()
 	end
 --jump left
 	local function jump_left()
-		anim({0, 1, 2, 3, 3, 3, 3, 3, 4, 5, 6})
+		anim [[0 1 2 3 3 3 3 3 4 5 6]]
 		setv(va99, -10)
 	end
 --jump right
 	local function jump_right()
-		anim({12, 13, 14, 15, 15, 15, 15, 15, 16, 17, 18})
+		anim [[12 13 14 15 15 15 15 15 16 17 18]]
 		setv(va99, 10)
 	end
 
 --*jumping	
 	local function jump()
-		sndc("rob1")
+		sndc "rob1"
 		frat(1)
 		if getv(ov10) < 0 then
 			jump_left()
@@ -177,6 +177,6 @@ end)
 --*REMOVAL
 function robot_toy.uninstall()
 	enum(2, 21, 20, function()
-		kill(targ())
+		kill(targ)
 	end)
 end

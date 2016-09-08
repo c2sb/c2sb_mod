@@ -84,8 +84,8 @@ end)
 
 CAOS.Cmd("anms", function(anim_string)
   local poses = {}
-  for s in string.gmatch(pose_list, "%S+") do
-    table.insert(poses, s)
+  for s in string.gmatch(anim_string, "%S+") do
+    table.insert(poses, tonumber(s))
   end
   anim(poses)
 end)

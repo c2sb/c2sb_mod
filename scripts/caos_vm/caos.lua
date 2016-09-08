@@ -49,12 +49,11 @@ CaosCmd = {
   -- Used to determine the purpose of this hash
   T = "CMD",
   -- Only warn that a command isn't implemented once
-  warnOnce = false,
 
   __call = function(t, ...)
     if t.definition == nil then
-      if not t.warnOnce then
-        t.warnOnce = true
+      if not world.getProperty("CAOS.warned."..t.name) then
+        world.setProperty("CAOS.warned."..t.name, true)
         sb.logWarn("CAOS function %s is not implemented.", t.name)
       end
       return
@@ -99,6 +98,14 @@ CaosCmd = {
     elseif operateOn == "TARG" then
       return world.callScriptedEntity(self.TARG, t.name..".definition", table.unpack(args))
     end
+  end,
+
+  __lt = function(t, obj)
+    return CAOS.resolveVariable(t) < CAOS.resolveVariable(obj)
+  end,
+
+  __le = function(t, obj)
+    return CAOS.resolveVariable(t) <= CAOS.resolveVariable(obj)
   end
 }
 
