@@ -93,6 +93,31 @@ CAOS.TargCmd("mvto", function(x, y)
   mcontroller.setPosition(topLeftPixelsToCenter({ toSB.coordinate(x), toSB.y_coordinate(y) }))
 end)
 
+-- Returns the distance from the agent to the nearest wall that it might collide with in the given
+-- direction. Directions are LEFT, RGHT, _UP_, or DOWN. If the distance to the collsion is greater
+-- than RNGE then a very large number is returned.
+CAOS.TargCmd("obst", function(direction))
+  local x, y = table.unpack(entity.position())
+  local range = toSB.coordinate(self.caos.range_check)
+  if direction == CAOS.DIRECTIONS.LEFT then
+    x = x - range
+  elseif direction == CAOS.DIRECTIONS.UP then
+    y = y + range
+  elseif direction == CAOS.DIRECTIONS.RIGHT then
+    x = x + range
+  elseif direction == CAOS.DIRECTIONS.DOWN then
+    y = y - range
+  end
+  
+  local hits = world.collisionBlocksAlongLine(entity.position(), {x, y}, nil, 1)
+  if #hits > 0 then
+    local distance = world.magnitude(entity.position(), hits[1])
+    return fromSB.coordinate(distance)
+  else
+    return 1000000
+  end
+end)
+
 -- Test if target can move to the given location and still lie validly within the room system.
 -- Returns 1 if it can, 0 if it can't.
 CAOS.TargCmd("tmvt", function(x, y)
