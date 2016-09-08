@@ -94,13 +94,6 @@ function init_scriptorium_space(family, genus, species)
   if scriptorium[family][genus][species] == nil then scriptorium[family][genus][species] = {} end
 end
 
-function caos_number_arg(argument)
-  if type(argument) == "string" then
-    return getv(argument)
-  end
-  return argument
-end
-
 function isReasonableMove(targetCaosPosition)
   local targPosition = entity.position()
   if world.magnitude(targPosition, {toSB.coordinate(targetCaosPosition[1]), toSB.y_coordinate(targetCaosPosition[2])}) > 1024 then

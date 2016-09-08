@@ -123,7 +123,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, CAOS.EVENT.COLLISION, fu
         velo(rand(10, -10), rand(0, 10))
         tick(rand(0, 250))
     end
-    kill(ownr())
+    kill(ownr)
 end)
 
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.FOOD, 6203, CAOS.EVENT.EATEN, function()
@@ -153,7 +153,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.TIMER, functio
        stop()
     end
     --if rtyp room targ < 5 or rtyp room targ > 7 then
-    --   kill(ownr())
+    --   kill(ownr)
     --end
     rnge(800)
     setv(va99, 0)

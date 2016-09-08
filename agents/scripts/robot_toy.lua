@@ -36,14 +36,14 @@ scrp(2, 21, 20, 1, function()
 
 	fade()
 	stim_writ(from, 97, 1)
-	mesg_wrt_plus(ownr(), 1000, 1, 0, 0)
+	mesg_wrt_plus(ownr, 1000, 1, 0, 0)
 end)
 --act 2
 scrp(2, 21, 20, 2, function()
 	inst()
 	fade()
 	stim_writ(from, 97, 1)
-	mesg_wrt_plus(ownr(), 1000, 2, 0, 0)
+	mesg_wrt_plus(ownr, 1000, 2, 0, 0)
 end)
 --hit
 scrp(2, 21, 20, 3, function()
