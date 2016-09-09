@@ -8,7 +8,9 @@
 -- is broken either manually, using a SLOW command, or implictly, if a blocking instruction is
 -- encountered (eg WAIT). Blocking instructions force the remainder of the script's timeslice to be
 -- discarded.
-CAOS.Cmd("inst")
+CAOS.Cmd("inst", function()
+  self.instant = true
+end)
 
 -- Registers uninstall script
 function rscr(fcn_callback)
@@ -19,7 +21,6 @@ end
 -- Registers a script in the scriptorium.
 -- Note: Must not be constructed.
 function scrp(family, genus, species, event, fcn_callback)
-  --sb.logInfo("scrp %s %s %s %s", family, genus, species, event)
   init_scriptorium_space(family, genus, species)
   scriptorium[family][genus][species][event] = fcn_callback
 end
@@ -34,7 +35,10 @@ function scrx(family, genus, species, event)
 end
 
 -- Turn off INST state.
-CAOS.Cmd("slow")
+CAOS.Cmd("slow", function()
+  self.instant = false
+  coroutine.yield()
+end)
 
 -- Stops running the current script. Compare STPT.
 CAOS.Cmd("stop", function()
@@ -53,6 +57,7 @@ end)
 
 -- Block the script for the specified number of ticks. This command does an implicit SLOW.
 CAOS.Cmd("wait", function(ticks)
+  self.instant = false
   local target_time = toSB.ticks(ticks) + world.time()
   while world.time() < target_time do
     coroutine.yield()

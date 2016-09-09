@@ -74,19 +74,26 @@ CaosCmd = {
     end
 
     -- Next, determine how it's operated.
+    local result = nil
     if operateOn == "OWNR" then
       if t.is_caos_var then
-        return t.definition(t, table.unpack(args))
+        result = t.definition(t, table.unpack(args))
       else
-        return t.definition(table.unpack(args))
+        result = t.definition(table.unpack(args))
       end
     elseif operateOn == "TARG" then
       if t.is_caos_var then
-        return world.callScriptedEntity(self.TARG, t.name..".definition", t, table.unpack(args))
+        result = world.callScriptedEntity(self.TARG, t.name..".definition", t, table.unpack(args))
       else
-        return world.callScriptedEntity(self.TARG, t.name..".definition", table.unpack(args))
+        result = world.callScriptedEntity(self.TARG, t.name..".definition", table.unpack(args))
       end
     end
+
+    -- Uncomment this to behave like Creatures 1 ???
+    --if not self.instant and not self.locked and not t.is_caos_var then
+    --  coroutine.yield()
+    --end
+    return result
   end,
 
   __lt = function(t, obj)

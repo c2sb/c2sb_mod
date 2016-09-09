@@ -128,6 +128,7 @@ CAOS.Cmd("call", function(event_no, param_1, param_2)
     local oldP1 = _p1_
     local oldP2 = _p2_
     local oldVariables = self.local_variables
+    local oldInstantState = self.instant
 
     -- Reset state
     _p1_ = param_1
@@ -141,6 +142,7 @@ CAOS.Cmd("call", function(event_no, param_1, param_2)
     _p1_ = oldP1
     _p2_ = oldP2
     self.local_variables = oldVariables
+    self.instant = oldInstantState
   end
 end)
 

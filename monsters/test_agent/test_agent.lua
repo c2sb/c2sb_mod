@@ -235,10 +235,11 @@ end
 -- already running, and false if the event was not created.
 function create_coroutine(event, param1, param2, from_entity)
   if scriptorium[self.caos.family][self.caos.genus][self.caos.species][event] ~= nil then
-    --sb.logInfo("Running event script %s", event)
     self.TARG = self.OWNR
     self.current_event = event
     self.local_variables = {}
+    self.instant = false
+    self.locked = false
     _p1_ = param1
     _p2_ = param2
     from = from_entity
