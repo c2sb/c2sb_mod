@@ -12,19 +12,26 @@ function onInteraction(args)
   injectAgent("BalloonPlant")
   injectAgent("robot_toy")
   injectAgent("RubberBall")
-  --injectAgent("Roamer")
+  injectAgent("Roamer")
+end
+
+function loadAgentScript(agentName)
+  self.loaded = self.loaded or {}
+  if not self.loaded[agentName] then
+    _ENV[agentName] = {}
+    require("/agents/scripts/"..agentName..".lua")
+    self.loaded[agentName] = true
+  end
 end
 
 function injectAgent(agentName)
-  _ENV[agentName] = {}
   self.agentName = agentName
-  require("/agents/scripts/"..agentName..".lua")
+  loadAgentScript(agentName)
   _ENV[agentName].install()
 end
 
 function removeAgent(agentName)
-  _ENV[agentName] = {}
-  require("/agents/scripts/"..agentName..".lua")
   self.agentName = agentName
+  loadAgentScript(agentName)
   _ENV[agentName].uninstall()
 end
