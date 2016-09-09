@@ -267,15 +267,7 @@ end)
 -- Create a new simple agent, using the specified sprite file. The agent will have image_count
 -- sprites available, starting at first_image in the file. The plane is the screen depth to show
 -- the agent at - the higher the number, the nearer the camera.
-function new.simp(_, family, genus, species, sprite_file, image_count, first_image, plane)
-  --sb.logInfo("new: simp %s %s %s \"%s\" %s %s %s", family, genus, species, sprite_file, image_count, first_image, plane)
-  family = CAOS.resolveVariable(family)
-  genus = CAOS.resolveVariable(genus)
-  species = CAOS.resolveVariable(species)
-  image_count = CAOS.resolveVariable(image_count)
-  first_image = CAOS.resolveVariable(first_image)
-  plane = CAOS.resolveVariable(plane)
-
+CAOS.Cmd("new_simp", function(family, genus, species, sprite_file, image_count, first_image, plane)
   local size = getImageSize(sprite_file, first_image)
   local position = entity.position()
   position = { position[1], position[2] + size[2] / 8.0 }
@@ -290,6 +282,9 @@ function new.simp(_, family, genus, species, sprite_file, image_count, first_ima
     ["plane"] = plane,
     ["agentName"] = self.agentName
   })
+end)
+function new.simp(_, family, genus, species, sprite_file, image_count, first_image, plane)
+  new_simp(family, genus, species, sprite_file, image_count, first_image, plane)
 end
 
 -- Returns a null agent pointer.
@@ -386,6 +381,20 @@ CAOS.TargCmd("tick", function(tick_rate)
   end
   return self.caos.tick_rate
 end)
+
+-- This tints the TARG agent with the r,g,b tint and applies the colour rotation and swap as per
+-- pigment bleed genes. Specify the PART first for compound agents. The tinted agent or part now
+-- uses a cloned gallery, which means it takes up more memory, and the save world files are larger.
+-- However it also no longer needs the sprite file. Also, tinting resets camera shy and other
+-- properties of the gallery. See TINO for a quicker version that tints only one frame.
+-- Returns a tint value for an agent - currently it works only on Skeletal Creatures.
+-- Attribute can be:
+-- 1 - Red
+-- 2 - Green
+-- 3 - Blue
+-- 4 - Rotation
+-- 5 - Swap
+CAOS.TargCmd("tint")
 
 -- Counts the number of agents in the world matching the classifier.
 CAOS.Cmd("totl", function(family, genus, species)

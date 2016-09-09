@@ -8,20 +8,22 @@ function init()
 end
 
 function onInteraction(args)
-  injectAgent("Botanoid")
-  --injectAgent("BalloonPlant")
-  --injectAgent("robot_toy")
-  --injectAgent("RubberBall")
+  --injectAgent("Botanoid")
+  injectAgent("BalloonPlant")
+  injectAgent("robot_toy")
+  injectAgent("RubberBall")
   --injectAgent("Roamer")
 end
 
 function injectAgent(agentName)
-  require("/agents/scripts/"..agentName..".lua")
+  _ENV[agentName] = {}
   self.agentName = agentName
+  require("/agents/scripts/"..agentName..".lua")
   _ENV[agentName].install()
 end
 
 function removeAgent(agentName)
+  _ENV[agentName] = {}
   require("/agents/scripts/"..agentName..".lua")
   self.agentName = agentName
   _ENV[agentName].uninstall()

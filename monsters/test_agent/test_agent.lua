@@ -6,6 +6,8 @@ function init()
   self.scale = tonumber(config.getParameter("imageScale", 1))
   self.agentName = tostring(config.getParameter("agentName", "NO_AGENT"))
   
+  -- Must be set
+  _ENV[self.agentName] = {}
   require("/agents/scripts/"..self.agentName..".lua")
 
   self.last_tick_time = world.time()

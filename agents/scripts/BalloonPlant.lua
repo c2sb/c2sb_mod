@@ -1,12 +1,8 @@
-require("/scripts/caos_vm/caos.lua")
-
 -- NOTES:
 -- 6205: Actual plant
 -- 6204: The balloon
 -- 6203: Fruit
 -- 6201: The seed
-
-BalloonPlant = {}
 
 -----------------------------------------------------------------------------------
 --* Script 1 extracted from Balloonplant.agents by Mirality REVELATION
@@ -28,37 +24,14 @@ function BalloonPlant.install()
     tick(10)
 end
 
-function BalloonPlant.uninstall()
-    enum(2, 6, 6205, function()
-        kill(targ)
-    end)
-    enum(2, 4, 6204, function()
-        kill(targ)
-    end)
-    enum(2, 11, 6203, function()
-        kill(targ)
-    end)
-    enum(2, 3, 6201, function()
-        kill(targ)
-    end)
-    scrx(2, 6, 6205, 9)
-    scrx(2, 4, 6204, 6)
-    scrx(2, 11, 6203, 12)
-    scrx(2, 11, 6203, 4)
-    scrx(2, 11, 6203, 9)
-    scrx(2, 11, 6203, 6)
-    scrx(2, 3, 6201, 9)
-    scrx(2, 3, 6201, 12)
-end
-
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, CAOS.EVENT.TIMER, function()
 
     setv(va06, pose)
-    for i = 1, 7 do
+    reps(7, function()
         wait(rand(120, 400))
         addv(va06, 1)
         pose(va06)
-    end
+    end)
 
     wait(rand(120, 400))
     setv(va08, posx)
@@ -90,7 +63,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, CAOS.EVENT.COLLISION, fu
     setv(va10, posx)
     setv(va11, posy)
     addv(va11, 20)
-    for i = 1, (rand(5, 7)) do
+    reps(rand(5, 7), function()
         pose(0)
         --*this is an edible food blob
   
@@ -107,9 +80,9 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, CAOS.EVENT.COLLISION, fu
         mvsf(va10, va11)
         velo(rand(10, -10), rand(10, -10))
         tick(250)
-    end
+    end)
   
-    for i = 1, (rand(5, 7)) do
+    reps(rand(5, 7), function()
         inst()
         new: simp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, "BulbBalloon", 0, 11, 4567)
   
@@ -122,7 +95,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.PLANT, 6204, CAOS.EVENT.COLLISION, fu
         mvsf(va10, va11)
         velo(rand(10, -10), rand(0, 10))
         tick(rand(0, 250))
-    end
+    end)
     kill(ownr)
 end)
 
@@ -186,4 +159,28 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.EATEN, functio
     --chem(5, 50)
     --chem(12, 25)
     kill(ownr)
+end)
+
+
+rscr(function()
+    enum(2, 6, 6205, function()
+        kill(targ)
+    end)
+    enum(2, 4, 6204, function()
+        kill(targ)
+    end)
+    enum(2, 11, 6203, function()
+        kill(targ)
+    end)
+    enum(2, 3, 6201, function()
+        kill(targ)
+    end)
+    scrx(2, 6, 6205, 9)
+    scrx(2, 4, 6204, 6)
+    scrx(2, 11, 6203, 12)
+    scrx(2, 11, 6203, 4)
+    scrx(2, 11, 6203, 9)
+    scrx(2, 11, 6203, 6)
+    scrx(2, 3, 6201, 9)
+    scrx(2, 3, 6201, 12)
 end)

@@ -1,6 +1,3 @@
-require("/scripts/caos_vm/caos.lua")
-robot_toy = {}
-
 --**Robot toy
 
 function robot_toy.install()
@@ -175,8 +172,8 @@ end)
 
 
 --*REMOVAL
-function robot_toy.uninstall()
+rscr(function()
 	enum(2, 21, 20, function()
 		kill(targ)
 	end)
-end
+end)

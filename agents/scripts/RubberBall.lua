@@ -1,7 +1,3 @@
-require("/scripts/caos_vm/caos.lua")
-RubberBall = {}
-
-
 --* Script 1 extracted from RubberBall/rubber_ball.agents by Mirality REVELATION
 
 function RubberBall.install()
@@ -93,9 +89,9 @@ scrp(2, 21, 31, 6, function()
 end)
 
 --***REMOVAL
-function RubberBall.uninstall()
+rscr(function()
 	enum(2, 21, 31, function()
 		kill(targ)
 	end)
 	scrx(2, 21, 31, 6)
-end
+end)

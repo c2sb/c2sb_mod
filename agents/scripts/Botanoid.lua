@@ -1,6 +1,3 @@
-require("/scripts/caos_vm/caos.lua")
-Botanoid = {}
-
 --* Script 1 extracted from Botanoid/Botanoid.agents by Mirality REVELATION
 
 function Botanoid.install()
@@ -385,7 +382,7 @@ scrp(2, 8, 4608, 9, function()
   kill(ownr)
 end)
 
-function Botanoid.uninstall()
+rscr(function()
   enum(3, 8, 4608, function()
     kill(targ)
   end)
@@ -406,4 +403,4 @@ function Botanoid.uninstall()
   enum(2, 3, 4608, function()
     kill(targ)
   end)
-end
+end)

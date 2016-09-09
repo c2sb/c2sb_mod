@@ -10,7 +10,14 @@
 -- discarded.
 CAOS.Cmd("inst")
 
+-- Registers uninstall script
+function rscr(fcn_callback)
+  CAOS.uninstall = CAOS.uninstall or {}
+  CAOS.uninstall[self.agentName] = fcn_callback
+end
+
 -- Registers a script in the scriptorium.
+-- Note: Must not be constructed.
 function scrp(family, genus, species, event, fcn_callback)
   --sb.logInfo("scrp %s %s %s %s", family, genus, species, event)
   init_scriptorium_space(family, genus, species)

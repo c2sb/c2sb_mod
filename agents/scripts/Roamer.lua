@@ -1,7 +1,3 @@
-require("/scripts/caos_vm/caos.lua")
-Roamer = {}
-
-
 --* Script 1 extracted from roamer/roamer.agents by Mirality REVELATION
 
 --* CREATE
@@ -484,7 +480,7 @@ scrp(1, 1, 32215, 9, function()
   end
 end)
 
-function Roamer.uninstall()
+rscr(function()
   --* Kill roamer
   enum (3, 8, 32201, function()
     kill (targ)
@@ -508,4 +504,4 @@ function Roamer.uninstall()
   scrx (1, 1, 32213, 9)
   scrx (1, 1, 32214, 9)
   scrx (1, 1, 32215, 9)
-end
+end)
