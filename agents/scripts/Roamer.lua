@@ -22,7 +22,7 @@ function Roamer.install()
   --setv (va00, game ("CreatorX"))
   --setv (va01, game ("CreatorY"))
   --* If no values then assume this is C3 only
-  if getv(va00) == 0 and getv(va01) == 0 then
+  if va00() == 0 and va01() == 0 then
     --* Move it to a safe C3 location (just above the incubator area)
     setv (va00, rand (1400, 1550))
     setv (va01, 400)
@@ -44,9 +44,9 @@ end
 scrp(3, 8, 32201, 1, function()
   inst()
   setv (va01, rand (1, 3))
-  if getv(va01) == 1 then
+  if va01() == 1 then
     snde "1bep"
-  elseif getv(va01) == 2 then
+  elseif va01() == 2 then
     snde "2bep"
   else
     snde "3bep"
@@ -65,9 +65,9 @@ end)
 scrp(3, 8, 32201, 2, function()
   inst()
   setv (va01, rand (1, 3))
-  if getv(va01) == 1 then
+  if va01() == 1 then
     snde "1bep"
-  elseif getv(va01) == 2 then
+  elseif va01() == 2 then
     snde "2bep"
   else
     snde "3bep"
@@ -150,7 +150,7 @@ scrp(3, 8, 32201, 9, function()
 --*  if ov06 >= 50 and rand 0 30 == 0
 
   --* Release bacteria clouds?
-  if getv(ov06) >= 50 and rand (0, 15) == 0 and getv(va50) ~= 0 then --and rtyp (grap (posx(), posy())) ~= 8 and rtyp (grap (posx(), posy())) ~= 9 then
+  if ov06 >= 50 and rand (0, 15) == 0 and va50() ~= 0 then --and rtyp (grap (posx(), posy())) ~= 8 and rtyp (grap (posx(), posy())) ~= 9 then
     setv (ov07, 32215)
     setv (ov08, 0)
     setv (ov06, 0)
@@ -159,7 +159,7 @@ scrp(3, 8, 32201, 9, function()
   end
 
   --* Release creature clouds?
-  if getv(ov06) >= 50 and rand (0, 15) == 0 and getv(va51) ~= 0 then --and rtyp (grap (posx(), posy())) ~= 8 and rtyp (grap (posx(), posy())) ~= 9 then
+  if ov06 >= 50 and rand (0, 15) == 0 and va51() ~= 0 then --and rtyp (grap (posx(), posy())) ~= 8 and rtyp (grap (posx(), posy())) ~= 9 then
     --* Pick random type
     setv (ov07, rand (32213, 32214))
     setv (ov08, 0)
@@ -167,10 +167,10 @@ scrp(3, 8, 32201, 9, function()
   end
 
   --* Release a cloud
-  if getv(ov07) ~= 0 then
-    if getv(ov07) == 32213 then
+  if ov07() ~= 0 then
+    if ov07() == 32213 then
       setv (va01, 0)
-    elseif getv(ov07) == 32214 then
+    elseif ov07() == 32214 then
       setv (va01, 15)
     else
       setv (va01, 30)
@@ -195,28 +195,28 @@ scrp(3, 8, 32201, 9, function()
     targ (ownr)
     addv (ov08, 1)
     --* Stop when 8 created
-    if getv(ov08) >= 8 then
+    if ov08 >= 8 then
       setv (ov07, 0)
     end
   end
 
   --* Change direction/stop?
-  if getv(ov02) >= 10 then
+  if ov02 >= 10 then
     setv (va01, rand (0, 2))
-    if getv(va01) == 0 then
+    if va01() == 0 then
       setv (ov01, 0)
       fric (90)
       velo (0, 0)
       anim {}
       pose (0)
     --* No sudden direction change - only change if stopped
-    elseif getv(va01) == 1 and getv(ov01) == 0 then
+    elseif va01() == 1 and ov01() == 0 then
       fric (10)
       setv (ov01, 5)
       setv (ov04, 0)
       --* Trigger to start animation end) timer
       setv (ov80, 1)
-    elseif getv(va01) == 2 and getv(ov01) == 0 then
+    elseif va01() == 2 and ov01() == 0 then
       fric (10)
       setv (ov01, -5)
       setv (ov04, 0)
@@ -227,7 +227,7 @@ scrp(3, 8, 32201, 9, function()
   end
 
   --* Teleport? (not if creating clouds)
-  if getv(ov05) >= 250 and rand (0, 30) == 0 and getv(ov07) == 0 then
+  if ov05 >= 250 and rand (0, 30) == 0 and ov07() == 0 then
     lock()
     --* Make sure autonomous
     if movs() == 0 then
@@ -243,10 +243,10 @@ scrp(3, 8, 32201, 9, function()
         -- END EDIT --
         --* Check exclusion zone for airlocks
         setv (va03, 0)
-        if getv(va01) >= 3200 and getv(va02) >= 3600 and getv(va01) <= 5600 and getv(va02) <= 4500 then
+        if va01 >= 3200 and va02 >= 3600 and va01 <= 5600 and va02 <= 4500 then
           setv (va03, 1)
         end
-      until tmvt (va01, va02) == 1 and getv(va03) == 0
+      until tmvt (va01, va02) == 1 and va03() == 0
       --* Fade out
       snde "pl_1"
       setv (va03, 0)
@@ -255,7 +255,7 @@ scrp(3, 8, 32201, 9, function()
         alph (va03, 1)
         addv (va03, 8)
         slow()
-      until getv(va03) > 256
+      until va03 > 256
       --* Move to new position
       inst()
       alph (256, 1)
@@ -269,7 +269,7 @@ scrp(3, 8, 32201, 9, function()
         alph (va03, 1)
         subv (va03, 8)
         slow()
-      until getv(va03) < 0
+      until va03 < 0
       alph (0, 0)
       --* Call drop script - this re-enables
       call (5, 0, 0)
@@ -279,13 +279,13 @@ scrp(3, 8, 32201, 9, function()
   end
 
   --* Collision check if moving
-  if getv(ov01) ~= 0 and getv(ov03) >= 5 then
+  if ov01() ~= 0 and ov03 >= 5 then
     setv (va01, posx)
     setv (va02, posx)
     subv (va01, 10)
     addv (va02, 10)
     --* Stop if still within 20-pixel range of last check
-    if getv(ov04) > getv(va01) and getv(ov04) < getv(va02) then
+    if ov04 > va01 and ov04 < va02 then
       fric (90)
       velo (0, 0)
       anim {}
@@ -297,14 +297,14 @@ scrp(3, 8, 32201, 9, function()
   end
 
   --* Move
-  if getv(ov01) ~= 0 then
+  if ov01() ~= 0 then
     inst()
     velo (ov01, vely)
-    if getv(ov80) == 1 and getv(ov01) > 0 then
+    if ov80() == 1 and ov01 > 0 then
       anim {1, 2, 3, 4, 5, 6, 7, 8, 255}
       setv (ov80, 0)
     end
-    if getv(ov80) == 1 and getv(ov01) < 0 then
+    if ov80() == 1 and ov01 < 0 then
       anim {1, 8, 7, 6, 5, 4, 3, 2, 255}
       setv (ov80, 0)
     end
@@ -371,7 +371,7 @@ scrp(1, 1, 32213, 9, function()
   if pose() == 10 then
     pose (11)
   end
-  if getv(ov00) >= 50 then
+  if ov00 >= 50 then
     anim {}
     pose (10)
     tick (1)
@@ -389,7 +389,7 @@ scrp(1, 1, 32214, 9, function()
       repeat
         chem (va01, -0.01)
         addv (va01, 1)
-      until getv(va01) == 90
+      until va01() == 90
     end
   end)
   targ (ownr)
@@ -423,7 +423,7 @@ scrp(1, 1, 32214, 9, function()
   if pose() == 10 then
     pose (11)
   end
-  if getv(ov00) >= 50 then
+  if ov00 >= 50 then
     anim {}
     pose (10)
     tick (1)
@@ -472,7 +472,7 @@ scrp(1, 1, 32215, 9, function()
   if pose() == 10 then
     pose (11)
   end
-  if getv(ov00) >= 50 then
+  if ov00 >= 50 then
     anim {}
     pose (10)
     tick (1)

@@ -14,10 +14,10 @@ function robot_toy.install()
 	--puhl(-1, 25, 50)
 
 	setv(ov10, rand(0, 1))
-	if getv(ov10) == 0 then
+	if ov10() == 0 then
 		setv(ov10, -1)
 	end
-	if getv(ov10) < 0 then
+	if ov10 < 0 then
 		pose(0)
 	else
 		pose(12)
@@ -52,7 +52,7 @@ scrp(2, 21, 20, 3, function()
 	anim({10, 11, 12, 11, 255})
 	wait(100)
 	inst()
-	if getv(ov10) < 0 then
+	if ov10 < 0 then
 		pose(0)
 	else
 		pose(12)
@@ -64,7 +64,7 @@ scrp(2, 21, 20, 4, function()
 	inst()
 	fade()
 	stim_writ(from, 97, 1)
-	if getv(ov10) < 0 then
+	if ov10 < 0 then
 		pose(0)
 	else
 		pose(12)
@@ -74,7 +74,7 @@ end)
 scrp(2, 21, 20, 6, function()
 	lock()
 	sndc "dr10"
-	if getv(ov10) < 0 then
+	if ov10 < 0 then
 		pose(0)
 	else
 		pose(12)
@@ -89,11 +89,11 @@ scrp(2, 21, 20, 1000, function()
 	local function turn()
 		sndl "rob2"
 --	if you're facing left
-		if getv(ov10) < 0 then
+		if ov10 < 0 then
 			frat(3)
 			anim [[10 11 12]]
 			over()
-		elseif getv(ov10) > 0 then
+		elseif ov10 > 0 then
 			frat(3)
 			anim [[12 11 10 0]]
 			over()
@@ -117,7 +117,7 @@ scrp(2, 21, 20, 1000, function()
 	local function walk()
 		sndc "rob1"
 		frat(1)
-		if getv(ov10) < 0 then
+		if ov10 < 0 then
 			walk_left()
 		else
 			walk_right()
@@ -139,7 +139,7 @@ scrp(2, 21, 20, 1000, function()
 	local function jump()
 		sndc "rob1"
 		frat(1)
-		if getv(ov10) < 0 then
+		if ov10 < 0 then
 			jump_left()
 		else
 			jump_right()
@@ -151,7 +151,7 @@ scrp(2, 21, 20, 1000, function()
 --P1 = 1 means jump
 	if _p1_ == 1 then
 		setv(va00, rand(0, 3))
-		if getv(va00) == 0 then
+		if va00() == 0 then
 			turn()
 		else
 			jump()
@@ -160,7 +160,7 @@ scrp(2, 21, 20, 1000, function()
 --P1 = 2 means walk
 	if _p1_ == 2 then
 		setv(va00, rand(0, 3))
-		if getv(va00) == 0 then
+		if va00() == 0 then
 			turn()
 		else
 			walk()

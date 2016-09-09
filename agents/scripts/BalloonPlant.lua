@@ -125,7 +125,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.TIMER, functio
     if carr() ~= nil then
        stop()
     end
-    --if rtyp room targ < 5 or rtyp room targ > 7 then
+    --if rtyp (room (targ)) < 5 or rtyp (room (targ)) > 7 then
     --   kill(ownr)
     --end
     rnge(800)
@@ -133,7 +133,7 @@ scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.TIMER, functio
     esee(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.LEAF, 6205, function()
        addv(va99, 1)
     end)
-    if getv(va99) > 2 then
+    if va99 > 2 then
        kill(ownr)
     end
     setv(va08, posx)

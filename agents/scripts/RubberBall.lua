@@ -6,7 +6,7 @@ function RubberBall.install()
 	--setv(va00, game("CreatorX"))
 	--setv(va01, game("CreatorY"))
 	--*	if no values then assume this is C3 only
-	if getv(va00) == 0 and getv(va01) == 0 then
+	if va00() == 0 and va01() == 0 then
 	--*		move it to a safe C3 location (just above the incubator area)
 		setv(va00, rand(1400, 1550))
 		setv(va01, 400)
@@ -83,7 +83,7 @@ scrp(2, 21, 31, 6, function()
 	setv(va01, _p2_)
 	absv(va00)
 	absv(va01)
-	if getv(va00) > 20 or getv(va01) > 20 or rand(0, 10) == 0 then
+	if va00() > 20 or va01() > 20 or rand(0, 10) == 0 then
 		sndc "dsqu"
 	end
 end)

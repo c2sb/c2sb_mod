@@ -119,7 +119,7 @@ scrp(3, 8, 4608, 9, function()
 
   tick (1)
 -- TODO: implement rtyp
-  if getv(ov00) > 3 then --or rtyp (room (ownr)) == 8 or rtyp (room (ownr)) == 9 then
+  if ov00 > 3 then --or rtyp (room (ownr)) == 8 or rtyp (room (ownr)) == 9 then
     crash()
   end
   velo (rand(10, -10), rand(5, -3))
@@ -312,23 +312,23 @@ scrp(3, 3, 4608, 9, function()
   end
 
 --**dun dun dun, the plant script
-  if getv(ov00) == 0 then
+  if ov00() == 0 then
 --**we are in construction phase!
     construct()
   end
-  if getv(ov00) == 1 then
+  if ov00() == 1 then
 --**Time to extend our Whateveritis
     extend()
   end
-  if getv(ov00) == 2 then
+  if ov00() == 2 then
 --**Expell foods!
     waste()
   end
-  if getv(ov00) == 3 then
+  if ov00() == 3 then
 --**make a holographic flower!
     flower()
   end
-  if getv(ov00) == 4 then
+  if ov00() == 4 then
 --**Time to spread seeds!
     seed()
   end
@@ -336,13 +336,13 @@ scrp(3, 3, 4608, 9, function()
 end)
 
 scrp(2, 7, 4608, 9, function()
-  if getv(ov00) == null then
+  if ov00() == null then
     kill(ownr)
   end
-  if posy() < getv(ov02) then
+  if posy < ov02 then
     --setv(vely, 1)
     velo(velx, 1)
-  elseif posy() > getv(ov01) then
+  elseif posy > ov01 then
     --setv(vely, -1)
     velo(velx, -1)
   end
