@@ -189,16 +189,21 @@ CAOS.ConditionalTargCmd("esee", function(family, genus, species, fcn_callback)
   if family == CAOS.FAMILY.CREATURE then
     entities = world.entityQuery(world.entityPosition(target), toSB.coordinate(radius), {
       withoutEntityId = target,
-      boundMode = "position",       -- Simple position comparison should take some load off
-      callScript = "entity.entityInSight",
-      callScriptArgs = { entity.id() }
+      includedTypes = { "npc", "player" },
+      boundMode = "position"       -- Simple position comparison should take some load off
     })
+    for i = #entities, 1, -1 do
+      if not entity.entityInSight(entities[i]) then
+        table.remove(entities, i)
+      end
+    end
   elseif family == CAOS.FAMILY.OBJECT then
     entities = world.entityQuery(world.entityPosition(target), toSB.coordinate(radius), {
       withoutEntityId = target,
+      includedTypes = { "monster" },
       boundMode = "position",       -- Simple position comparison should take some load off
       callScript = "target_visible",
-      callScriptArgs = { entity.position(), family, genus, species }
+      callScriptArgs = { target, family, genus, species }
     })
   else
     sb.logWarn("Family not supported: %s", family)
@@ -236,6 +241,11 @@ from = nil
 -- Returns genus of target. See also FMLY, SPCS.
 CAOS.TargCmd("gnus", function()
   return self.caos.genus
+end)
+
+CAOS.TargCmd("hght", function()
+  local bounds = mcontroller.boundBox()
+  return fromSB.coordinate(bounds[4] - bounds[2])
 end)
 
 -- Destroys an agent. The pointer won't be destroyed. For creatures, you probably want to use DEAD first.
@@ -317,6 +327,8 @@ end)
 CAOS.TargCmd("pose", function(pose_index)
   if (pose_index ~= nil) then
     self.caos.pose_image = pose_index
+    self.animation = nil
+    self.animation_index = 0
     updateImageFrame()
   end
   return self.caos.pose_image
@@ -342,12 +354,12 @@ end)
 
 -- Returns X position of centre of target.
 CAOS.TargCmd("posx", function()
-  return entity.position()[1]
+  return fromSB.coordinate(entity.position()[1])
 end)
 
 -- Returns Y position of centre of target.
 CAOS.TargCmd("posy", function()
-  return entity.position()[2]
+  return fromSB.y_coordinate(entity.position()[2])
 end)
 
 -- Sets the distance that the target can see and hear, and the distance used to test for potential
@@ -415,3 +427,9 @@ CAOS.Cmd("ufos", function()
   -- Assume this is our super cool OS
   return "FakeOS 3000"
 end)
+
+CAOS.TargCmd("wdth", function()
+  local bounds = mcontroller.boundBox()
+  return fromSB.coordinate(bounds[3] - bounds[1])
+end)
+

@@ -6,20 +6,7 @@ function getImageSize(spriteFile, frameNumber)
   return root.imageSize("/agents/images/"..spriteFile.."/"..spriteFile.."_"..tostring(frameNumber)..".png")
 end
 
-function updateImageFrame()
-  assert(type(self.caos.first_image) == "number", "first_image is not a number")
-  assert(type(self.caos.base_image) == "number", "base_image is not a number")
-  assert(type(self.caos.pose_image) == "number", "pose_image is not a number")
-  
-  local frameno = self.caos.first_image + self.caos.base_image + self.caos.pose_image
-  
-  -- Set the frame
-  animator.setGlobalTag("frameno", frameno)
-  animator.setGlobalTag("color_multiply", string.format("FFFFFF%2x", 255 - math.min(self.caos.alpha_value, 255)))
-  
-  -- TODO I am pretty sure setting the collision polygon here is incorrect. It may be set when the
-  -- agent is created ???
-
+function updateCollision(frameno)
   -- Retrieve properties for the current image
   local image_size = getImageSize(self.caos.sprite_file, frameno)
   
@@ -35,12 +22,28 @@ function updateImageFrame()
   mcontroller.controlParameters({
     collisionPoly = collision_poly
   })
-  
+    
   -- Resolve collision issues, if any (i.e. getting stuck under the floor is a common one)
-  local newPosition = world.resolvePolyCollision(collision_poly, entity.position(), 16)
-  if newPosition ~= nil then
-    mcontroller.setPosition(newPosition)
-  end
+  --local newPosition = world.resolvePolyCollision(collision_poly, entity.position(), 16)
+  --if newPosition ~= nil then
+  --  mcontroller.setPosition(newPosition)
+  --end
+end
+
+function updateImageFrame()
+  assert(type(self.caos.first_image) == "number", "first_image is not a number")
+  assert(type(self.caos.base_image) == "number", "base_image is not a number")
+  assert(type(self.caos.pose_image) == "number", "pose_image is not a number")
+  
+  local frameno = self.caos.first_image + self.caos.base_image + self.caos.pose_image
+  
+  -- Set the frame
+  animator.setGlobalTag("frameno", frameno)
+  animator.setGlobalTag("color_multiply", string.format("FFFFFF%2x", 255 - math.min(self.caos.alpha_value, 255)))
+  
+  -- TODO I am pretty sure setting the collision polygon here is incorrect. It may be set when the
+  -- agent is created ???
+  --updateCollision(frameno)
 end
 
 function addMessage(from_entity, message_id, param_1, param_2, delay)
@@ -83,8 +86,8 @@ function matches_species(family, genus, species)
   return species == 0 or species == self.caos.species
 end
 
-function target_visible(position, family, genus, species)
-  return matches_species(family, genus, species) and not world.lineTileCollision(position, entity.position())
+function target_visible(entityId, family, genus, species)
+  return matches_species(family, genus, species) and entity.entityInSight(entityId)
 end
 
 function init_scriptorium_space(family, genus, species)

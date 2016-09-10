@@ -23,6 +23,7 @@ function init()
   animator.setGlobalTag("sprite_file", self.caos.sprite_file)
   animator.setAnimationState("body", "idle")
 
+  updateCollision(self.caos.first_image)
   setFrameRate()
   self.frame_loop_number = 0
 

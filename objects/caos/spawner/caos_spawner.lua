@@ -8,11 +8,11 @@ function init()
 end
 
 function onInteraction(args)
-  --injectAgent("Botanoid")
-  injectAgent("BalloonPlant")
-  injectAgent("robot_toy")
-  injectAgent("RubberBall")
-  injectAgent("Roamer")
+  injectAgent("Botanoid")
+  --injectAgent("BalloonPlant")
+  --injectAgent("robot_toy")
+  --injectAgent("RubberBall")
+  --injectAgent("Roamer")
 end
 
 function loadAgentScript(agentName)
