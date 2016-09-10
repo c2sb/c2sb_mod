@@ -49,6 +49,29 @@ CAOS.SEASON = {
   WINTER = 3
 }
 
+CAOS.ROOMTYPE = {
+  -- Heat and light travel well, nutrients and water do not.
+  ATMOSPHERE = 0,
+  -- Insulates against heat, but permits water to drip through.
+  WOODEN_WALKWAY = 1,
+  --  Less permeable to more CA than a wooden walkway.
+  CONCRETE_WALKWAY = 2,
+  INDOOR_CONCRETE = 3,
+  OUTDOOR_CONCRETE = 4,
+  -- Fairly permeable to most CA.
+  NORMAL_SOIL = 5,
+  -- Retains more moisture than normal soil.
+  BOGGY_SOIL = 6,
+  -- Loses more moisture than normal soil.
+  DRAINED_SOIL = 7,
+  -- Restrictive to heat.
+  FRESH_WATER = 8,
+  -- Restrictive to heat.
+  SALT_WATER = 9,
+  -- Loses the smell of machinery.
+  ETTIN_HOME = 10
+}
+
 -- Cellular automata (emit)
 CAOS.CA_INDEX = {
   SOUND = 0,
