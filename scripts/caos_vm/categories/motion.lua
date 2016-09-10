@@ -165,3 +165,10 @@ end)
 CAOS.Cmd("vely", function()
   return fromSB.y_velocity(world.entityVelocity(self.TARG)[2])
 end)
+
+-- Returns the direction of the last wall the agent collided with. Directions are LEFT, RGHT,
+-- _UP_, or DOWN.
+CAOS.Cmd("wall", function()
+  -- TODO This is a stub
+  return CAOS.DIRECTIONS.DOWN
+end)
