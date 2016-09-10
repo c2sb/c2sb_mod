@@ -268,7 +268,14 @@ end)
 -- Send a message with parameters to another agent. Waits delay ticks before sending the message.
 -- The message_id is from the table of Message Numbers.
 CAOS.Cmd("mesg_wrt_plus", function(agent, message_id, param_1, param_2, delay)
-  world.callScriptedEntity(agent, "addMessage", self.OWNR, message_id, param_1, param_2, delay)
+  -- SPECIAL CASE: Speech bubble
+  -- TODO: Support speech bubble factory (or should we even bother?)
+  -- TODO: Support delay
+  if agent == -1 and message_id == 126 then
+    world.callScriptedEntity(param_2, "monster.say", param_1)
+  else
+    world.callScriptedEntity(agent, "addMessage", self.OWNR, message_id, param_1, param_2, delay)
+  end
 end)
 
 -- Returns whether the lawn was cut last Sunday or not.

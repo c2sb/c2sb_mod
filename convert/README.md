@@ -25,14 +25,15 @@ This is the tricky part. Note that `AgentName` is the name of your agent.
 |-------|-------------|-------------|
 | `\*(.*)$` | `--*\1` | Comments |
 | `\[([^\]]*)\]` | `[[\1]]` | byte array to string |
-| `\b(inst|slow|lock|unlk|over)\b` | `\1()` | Some no-arg commands |
+| `\b(inst|slow|lock|unlk|over|stpc)\b` | `\1()` | Some no-arg commands |
 | `scrp (\d+) (\d+) (\d+) (\d+)` | `scrp(\1, \2, \3, \4, function()` | Script definition (head) |
 | `\breps (\d+|va\d\d|mv\d\d|ov\d\d)` | `reps(\1, function()` | Repeat loop (head) |
 | `\b(enum|etch) (\d+) (\d+) (\d+)` | `\1(\2, \3, \4, function()` | Enums |
 | `\b(endm|next|repe)\b` | `end)` | Script definition (tail), other stuff |
 | `\b(endi|retn)\b` | `end` |  |
-| `\b(attr|bhvr|accg|elas|aero|rnge|fric|tick|wait|perm|pose|base|kill|targ|room) (-?\d+|wdth|hght|posx|posy|posl|post|posr|posb|va\d\d|mv\d\d|ov\d\d|velx|vely|_p1_|_p2_|from|null|targ|ownr|wall)` | `\1(\2)` | Many single-arg commands |
-| `\b(setv|seta|addv|subv|andv|divv|modv|mulv|orrv|rand|mvto|tmvt|mvsf|grap) (-?\d+|wdth|hght|posx|posy|posl|post|posr|posb|va\d\d|mv\d\d|ov\d\d|velx|vely|_p1_|_p2_|from|null|targ|ownr|wall) (-?\d+|wdth|hght|posx|posy|posl|post|posr|posb|va\d\d|mv\d\d|ov\d\d|velx|vely|_p1_|_p2_|from|null|targ|ownr|wall)` | `\1(\2, \3)` | Many two-arg commands |
+| `\b(attr|bhvr|accg|elas|aero|rnge|fric|tick|wait|perm|pose|base|kill|room|obst) (-?\d*\.?\d+|wdth|hght|posx|posy|posl|post|posr|posb|va\d\d|mv\d\d|ov\d\d|velx|vely|_p1_|_p2_|from|null|targ|ownr|wall|rght|left|_up_|down)` | `\1(\2)` | Many single-arg commands |
+| `^([ \t]*)targ (ownr|null|va\d\d|mv\d\d|ov\d\d)` | `\1targ(\2)` | Single-arg commands which can be used as rvalues |
+| `\b(setv|seta|addv|subv|andv|divv|modv|mulv|orrv|rand|mvto|tmvt|mvsf|grap|velo|emit|alph) (-?\d*\.?\d+|wdth|hght|posx|posy|posl|post|posr|posb|va\d\d|mv\d\d|ov\d\d|velx|vely|_p1_|_p2_|from|null|targ|ownr|wall|rght|left|_up_|down) (-?\d*\.?\d+|wdth|hght|posx|posy|posl|post|posr|posb|va\d\d|mv\d\d|ov\d\d|velx|vely|_p1_|_p2_|from|null|targ|ownr|wall|rght|left|_up_|down)` | `\1(\2, \3)` | Many two-arg commands |
 | `\bgame ("[^"]*")` | `game(\1)` | Single-arg string commands |
 | `\bscrx (\d+) (\d+) (\d+) (\d+)` | `scrx(\1, \2, \3, \4)` | |
 | `\bdoif\b` | `if` | |
@@ -45,13 +46,15 @@ This is the tricky part. Note that `AgentName` is the name of your agent.
 | `\blt\b` | `<` | |
 | `\bloop\b` | `repeat` | |
 | `\buntl\b` | `until` | |
-| `\bstim writ\b` | `stim_writ` | Command rename |
-| `\bstim wrt\+\b` | `stim_wrt_plus` | command rename |
+| `\b(stim|mesg) writ\b` | `\1_writ` | Command rename |
+| `\b(stim|mesg) wrt\+` | `\1_wrt_plus` | command rename |
 | `\bgsub (\w+)` | `gsub(\1)` | |
 | `\bsubr (\w+)` | `local function \1()` | NOTE: You must also MOVE this block to the BEGINNING of your SCRP script block! |
 | `\b(wdth|hght|posx|posy|posl|post|posr|posb|va\d\d|mv\d\d|ov\d\d|velx|vely|targ|ownr|wall|pose)( ?)([=~])` | `\1()\2\3` | Don't use equality without function call (LUA Gotcha, left hand) |
 | `=( ?)(wdth|hght|posx|posy|posl|post|posr|posb|va\d\d|mv\d\d|ov\d\d|velx|vely|targ|ownr|wall|pose)\b` | `=\1\2()` | Don't use equality without function call (LUA Gotcha, right hand) |
 | `\brscr\b` | `rscr(function()` | Removal script. Note there must be a `end)` at the end of the file. |
+| `\bsimp (\d+) (\d+) (\d+) ("[^"]*") (\d+) (\d+) (\d+)` | `simp(\1, \2, \3, \4, \5, \6, \7)` | Common `new: simp` command |
+
 
 
 3. Surround your install script with the following
