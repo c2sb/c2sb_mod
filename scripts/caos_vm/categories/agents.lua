@@ -316,6 +316,18 @@ CAOS.Cmd("ownr", function()
   return self.OWNR
 end)
 
+-- Sets the target agent's principal drawing plane. The higher the value, the nearer the camera.
+-- For compound agents, the principal plane is the one for the automatically made first part. The
+-- plane of other parts is relative to this one.
+-- Returns the screen depth plane of the principal part.
+CAOS.TargCmd("plne", function(plane)
+  -- TODO partially implemented
+  if plane ~= nil then
+    self.caos.plane = plane
+  end
+  return self.caos.plane
+end)
+
 -- Returns bottom position of target's bounding box.
 CAOS.TargCmd("posb", function()
   local bounds = mcontroller.boundBox()
