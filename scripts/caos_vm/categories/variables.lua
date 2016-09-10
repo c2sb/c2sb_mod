@@ -39,11 +39,48 @@ CAOS.Cmd("atan", function(x)
   return math.atan(x) * 180.0 / math.pi
 end)
 
+-- Deletes the specified GAME variable.
+CAOS.Cmd("delg", function(variable_name)
+  world.setProperty(variable_name, 0)
+end)
+
 -- Divides a variable by an integer or float, so var = var / div. Uses integer division if both
 -- numbers are integers, or floating point division otherwise.
 CAOS.Cmd("divv", function(var, div)
   var:set(var() / div)
 end, 1)
+
+-- A game variable is a global variable which can be referenced by name.
+-- eg: SETV GAME "pi" 3.142
+-- Game variables are stored as part of the world and so will be saved out in the world file. If a
+-- script uses a non-existant game variable, that variable will be created automatically (with
+-- value integer zero). Agents, integers, floats and strings can be stored in game variables.
+-- Variable names are case sensitive. When a new world is loaded, all the game variables are cleared.
+-- There are some conventions for the variable names:
+-- engine_ for Creatures Engine
+-- cav_ for Creatures Adventures
+-- c3_ for Creatures 3
+-- 
+-- It's important to follow these, as 3rd party developers will just use whatever names they fancy.
+-- DELG deletes a game variable. See also the table of engine Game Variables.
+CAOS.Cmd("game", function(variable_name)
+  local function gameVarGetter(t)
+    local result = world.getProperty(t.variable_name, 0)
+    if tonumber(result) ~= nil then
+      return tonumber(result)
+    else
+      return result
+    end
+  end
+  
+  local function gameVarSetter(t, value)
+    world.setProperty(t.variable_name, value)
+  end
+  
+  local var = CAOS.MakeVar("game", gameVarGetter, gameVarSetter)
+  var.variable_name = variable_name
+  return var
+end)
 
 -- Returns the game name. For example "Creatures 3".
 gnam = "Starbound"
