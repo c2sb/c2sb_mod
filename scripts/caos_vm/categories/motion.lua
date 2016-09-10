@@ -107,13 +107,13 @@ CAOS.TargCmd("obst", function(direction)
     entity_x = entity_x + left
     targ_x = entity_x - range
   elseif direction == CAOS.DIRECTIONS.UP then
-    entity_y = entity_y - top
+    entity_y = entity_y + top
     targ_y = entity_y + range
   elseif direction == CAOS.DIRECTIONS.RIGHT then
     entity_x = entity_x + right
     targ_x = entity_x + range
   elseif direction == CAOS.DIRECTIONS.DOWN then
-    entity_y = entity_y - bottom
+    entity_y = entity_y + bottom
     targ_y = entity_y - range
   end
   
@@ -123,15 +123,14 @@ CAOS.TargCmd("obst", function(direction)
     dist_x = math.abs(dist_x)
     dist_y = math.abs(dist_y)
 
-    -- Subtract 0.5 for half-tile
     if direction == CAOS.DIRECTIONS.LEFT then
-      return fromSB.coordinate(dist_x - 0.5)
+      return fromSB.coordinate(dist_x - 1)
     elseif direction == CAOS.DIRECTIONS.UP then
-      return fromSB.coordinate(dist_y - 0.5)
+      return fromSB.coordinate(dist_y)
     elseif direction == CAOS.DIRECTIONS.RIGHT then
-      return fromSB.coordinate(dist_x - 0.5)
+      return fromSB.coordinate(dist_x)
     elseif direction == CAOS.DIRECTIONS.DOWN then
-      return fromSB.coordinate(dist_y - 0.5)
+      return fromSB.coordinate(dist_y - 1)
     end
 
     return 1000000
