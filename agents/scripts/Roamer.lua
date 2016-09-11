@@ -19,8 +19,8 @@ function Roamer.install()
   setv (ov07, 0)
   setv (ov08, 0)
   --* Get creator positioning
-  --setv (va00, game ("CreatorX"))
-  --setv (va01, game ("CreatorY"))
+  setv (va00, game ("CreatorX"))
+  setv (va01, game ("CreatorY"))
   --* If no values then assume this is C3 only
   if va00() == 0 and va01() == 0 then
     --* Move it to a safe C3 location (just above the incubator area)

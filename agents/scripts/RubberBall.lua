@@ -3,8 +3,8 @@
 function RubberBall.install()
 	inst()
 	--*	get creator positioning
-	--setv(va00, game("CreatorX"))
-	--setv(va01, game("CreatorY"))
+	setv(va00, game("CreatorX"))
+	setv(va01, game("CreatorY"))
 	--*	if no values then assume this is C3 only
 	if va00() == 0 and va01() == 0 then
 	--*		move it to a safe C3 location (just above the incubator area)

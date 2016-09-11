@@ -123,7 +123,6 @@ scrp(3, 8, 4608, 9, function()
     crash()
   end
   velo (rand(10, -10), rand(5, -3))
-  sb.logInfo("obst down = %s", obst (down))
   if obst (down) < 15 and carr() == null then
     accg (0.5)
     wait (100)
