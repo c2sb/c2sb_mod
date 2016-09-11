@@ -27,7 +27,7 @@
       // Below are default values determined by the Creatures engine
 
       // Default value of ACCG is 0.3, using the flawed formula described in motion.lua gives us this value
-      "gravityModifier" : 0.1875,   // accg
+      "gravityModifier" : 0.09375,   // accg
       "bounceFactor" : 1.0,         // elas
       "groundFriction" : 1,       // fric
       "airFriction" : 0,            // aero

@@ -8,7 +8,10 @@ function init()
 end
 
 function onInteraction(args)
-  injectAgent("WeatherGenerator2")
+  --injectAgent("snotrock")
+  --injectAgent("trapper")
+  injectAgent("tuba")
+  --injectAgent("WeatherGenerator2")
   --injectAgent("NG_Eastertribble")
   --injectAgent("Botanoid")
   --injectAgent("BalloonPlant")

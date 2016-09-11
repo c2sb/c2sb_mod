@@ -11,7 +11,7 @@ function robot_toy.install()
 	fric(70)
 	perm(60)
 
-	--puhl(-1, 25, 50)
+	puhl(-1, 25, 50)
 
 	setv(ov10, rand(0, 1))
 	if ov10() == 0 then

@@ -382,6 +382,14 @@ CAOS.TargCmd("posy", function()
   return fromSB.y_coordinate(entity.position()[2])
 end)
 
+-- Set the relative x and y coordinate of the handle that target is picked up by, for the given
+-- pose. This pose is measured from the absolute base specified in the NEW: command, rather than
+-- the relative base specified by the BASE command. Pose -1 sets the same point for all poses.
+-- Returns the x or y coordinate of the handle that target is picked up by for the given pose.
+-- x_or_y is 1 for x, 2 for y. The pose is measured from the absolute base specified in the NEW:
+-- command, rather than the relative base specified by the BASE command.
+CAOS.TargCmd("puhl")
+
 -- Sets the distance that the target can see and hear, and the distance used to test for potential
 -- collisions. See also ESEE, OBST.
 -- Returns the target's range. See ESEE, OBST.
