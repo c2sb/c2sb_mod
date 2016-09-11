@@ -102,14 +102,14 @@ CAOS.Cmd("mulv", function(var, mul)
 end, 1)
 
 -- Reverse the sign of the given integer or float variable, so var = 0 - var.
-function negv(var)
+CAOS.Cmd("negv", function(var)
   var:set(-var())
-end
+end, 1)
 
 -- Peform a bitwise NOT on an integer variable.
-function notv(var)
+CAOS.Cmd("notv", function(var)
   var:set(~var())
-end
+end, 1)
 
 -- Peform a bitwise OR on an integer variable, so var = var | value.
 CAOS.Cmd("orrv", function(var, value)
@@ -127,14 +127,19 @@ CAOS.Cmd("rand", function(value1, value2)
   return self.random:randu32() % (value2 - value1 + 1) + value1
 end)
 
-function rndv(variable, min, max)
-  var:set(rand(min, max))
-end
+CAOS.Cmd("rndv", function(variable, min, max)
+  variable:set(rand(min, max))
+end, 1)
 
 -- Stores a reference to an agent in a variable.
-function seta(var, value)
+CAOS.Cmd("seta", function(var, value)
   var:set(value)
-end
+end, 1)
+
+-- Sets a variable to a string value.
+CAOS.Cmd("sets", function(var, value)
+  var:set(value)
+end, 1)
 
 -- Stores an integer or float in a variable.
 CAOS.Cmd("setv", function(var, value)
