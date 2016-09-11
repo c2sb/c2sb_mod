@@ -157,14 +157,22 @@ CAOS.TargCmd("velo", function(x_velocity, y_velocity)
 end)
 
 -- Horizontal velocity in pixels per tick - floating point.
-CAOS.Cmd("velx", function()
-  return fromSB.velocity(world.entityVelocity(self.TARG)[1])
-end)
+CAOS.register(CAOS.MakeVar("velx",
+  function(t) return fromSB.velocity(world.entityVelocity(self.TARG)[1]) end,
+  function(t, value)
+    local oldVelo = world.entityVelocity(self.TARG)
+    world.callScriptedEntity(self.TARG, "mcontroller.setVelocity", { toSB.velocity(value), oldVelo[2] })
+  end)
+)
 
 -- Vertical velocity in pixels per tick - floating point.
-CAOS.Cmd("vely", function()
-  return fromSB.y_velocity(world.entityVelocity(self.TARG)[2])
-end)
+CAOS.register(CAOS.MakeVar("vely",
+  function(t) return fromSB.y_velocity(world.entityVelocity(self.TARG)[2]) end,
+  function(t, value)
+    local oldVelo = world.entityVelocity(self.TARG)
+    world.callScriptedEntity(self.TARG, "mcontroller.setVelocity", { oldVelo[1], toSB.y_velocity(value) })
+  end)
+)
 
 -- Returns the direction of the last wall the agent collided with. Directions are LEFT, RGHT,
 -- _UP_, or DOWN.

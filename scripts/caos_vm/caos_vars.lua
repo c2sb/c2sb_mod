@@ -26,7 +26,7 @@ function CAOS.VAxx(index)
   local cmd = CAOS.MakeVar(var_name, getter, setter)
   cmd.index = index
 
-  CAOS.register(var_name, cmd)
+  CAOS.register(cmd)
 end
 
 function CAOS.getCaosVar(index)
@@ -52,7 +52,7 @@ function CAOS.OVxx(index)
   local cmd = CAOS.MakeVar(var_name, getter, setter)
   cmd.index = index
 
-  CAOS.register(var_name, cmd)
+  CAOS.register(cmd)
 end
 
 function CAOS.MVxx(index)
@@ -68,7 +68,7 @@ function CAOS.MVxx(index)
   local cmd = CAOS.MakeVar(var_name, getter, setter)
   cmd.index = index
 
-  CAOS.register(var_name, cmd)
+  CAOS.register(cmd)
 end
 
 -- Register variable commands

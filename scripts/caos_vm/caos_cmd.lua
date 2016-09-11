@@ -114,9 +114,9 @@ function CaosCmd.new(self, o)
 end
 
 -- Register a CAOS command in the environment table
-function CAOS.register(name, command)
+function CAOS.register(command)
   -- CAOS is case insensitive, but the prominent conventions are either all-upper or all-lower
-  name = name:lower()
+  local name = command.name:lower()
   if name ~= "type" then
     _ENV[name] = command
   end
@@ -132,7 +132,7 @@ function CAOS.Cmd(command_name, implementation, noResolveArgMask, operateOnTarge
     operateOn = operateOnTarget,
     noResolveMask = noResolveArgMask or 0
   }
-  CAOS.register(command_name, cmd)
+  CAOS.register(cmd)
 end
 
 function CAOS.TargCmd(command_name, implementation, noResolveArgMask)
