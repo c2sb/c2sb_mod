@@ -158,7 +158,7 @@ end)
 CAOS.Cmd("enum", function(family, genus, species, fcn_callback)
   local entities = world.entityQuery(entity.position(), 9999, {
     callScript = "matches_species",
-    boundMode = "position",       -- Simple position comparison should take some load off
+    boundMode = "position",
     callScriptArgs = { family, genus, species }
   })
   
@@ -272,6 +272,7 @@ CAOS.Cmd("mesg_wrt_plus", function(agent, message_id, param_1, param_2, delay)
   -- TODO: Support speech bubble factory (or should we even bother?)
   -- TODO: Support delay
   if agent == -1 and message_id == 126 then
+    sb.logInfo("SAY %s", param_1)
     world.callScriptedEntity(param_2, "monster.say", param_1)
   else
     world.callScriptedEntity(agent, "addMessage", self.OWNR, message_id, param_1, param_2, delay)
@@ -389,6 +390,26 @@ CAOS.TargCmd("rnge", function(distance)
     self.caos.range_check = distance
   end
   return self.caos.range_check
+end)
+
+-- Randomly chooses an agent which matches the given classifier, and targets it.
+CAOS.Cmd("rtar", function(family, genus, species)
+  -- Special case for speech bubble factory
+  if family == 1 and genus == 2 and species == 10 then
+    return -1
+  end
+
+  local entities = world.entityQuery(entity.position(), 9999, {
+    callScript = "matches_species",
+    boundMode = "position",
+    callScriptArgs = { family, genus, species }
+  })
+
+  if #entities > 0 then
+    self.TARG = entities[self.random:randu32() % #entities + 1]
+  else
+    self.TARG = nil
+  end
 end)
 
 -- Returns species of target. See also FMLY, GNUS.
