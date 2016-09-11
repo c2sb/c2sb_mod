@@ -396,7 +396,8 @@ end)
 CAOS.Cmd("rtar", function(family, genus, species)
   -- Special case for speech bubble factory
   if family == 1 and genus == 2 and species == 10 then
-    return -1
+    self.TARG = -1
+    return
   end
 
   local entities = world.entityQuery(entity.position(), 9999, {
