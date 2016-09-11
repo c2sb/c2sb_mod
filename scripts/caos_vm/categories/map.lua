@@ -3,6 +3,11 @@
 -- CAOS FUNCTIONS --
 --------------------
 
+-- Directly adjusts the level of a CA in a room. Specify an identifier of -1 to use the room of
+-- the midpoint of the target agent.
+-- TODO
+CAOS.Cmd("altr")
+
 -- Returns the value of the down constant.
 down = CAOS.DIRECTIONS.DOWN
 
@@ -33,7 +38,7 @@ CAOS.TargCmd("perm", function(permiability)
 end)
 
 -- Returns the value of the right constant.
-right = CAOS.DIRECTIONS.RIGHT
+rght = CAOS.DIRECTIONS.RIGHT
 
 -- Returns the id of the room containing the midpoint of the specified agent.
 -- TODO
