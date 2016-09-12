@@ -139,6 +139,18 @@ CAOS.TargCmd("obst", function(direction)
   end
 end)
 
+-- Returns the relative X distance of the centre point of the second agent from the centre point
+-- of the first.
+CAOS.Cmd("relx", function(first, second)
+  return fromSB.coordinate(world.distance(world.entityPosition(first), world.entityPosition(second))[1])
+end)
+
+-- Returns the relative Y distance of the centre point of the second agent from the centre point
+-- of the first.
+CAOS.Cmd("rely", function(first, second)
+  return fromSB.y_coordinate(world.distance(world.entityPosition(first), world.entityPosition(second))[2])
+end)
+
 -- Test if target can move to the given location and still lie validly within the room system.
 -- Returns 1 if it can, 0 if it can't.
 CAOS.TargCmd("tmvt", function(x, y)
