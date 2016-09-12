@@ -183,7 +183,7 @@ CAOS.ConditionalTargCmd("esee", function(family, genus, species, fcn_callback)
     target = self.TARG
     radius = rnge()
   end
-  if (target == nil) then return {} end
+  if target == nil or not world.entityExists(target) then return {} end
   
   local entities = nil
   if family == CAOS.FAMILY.CREATURE then
@@ -432,6 +432,9 @@ CAOS.Cmd("targ", function(agent)
   if agent ~= nil then
     self.TARG = agent
   end
+  if self.TARG ~= nil and not world.entityExists(self.TARG) then
+    self.TARG = nil
+  end
   return self.TARG
 end)
 
@@ -467,6 +470,20 @@ CAOS.Cmd("totl", function(family, genus, species)
     callScriptArgs = { family, genus, species }
   })
   return #entities
+end)
+
+-- Returns 1 if the two specified agents are touching, or 0 if they are not. Agents are said to
+-- be touching if their bounding rectangles overlap.
+CAOS.Cmd("touc", function(first, second)
+  if first == nil or not world.entityExists(first) or second == nil or not world.entityExists(second) then
+    return 0
+  end
+  local boundsFirst = world.callScriptedEntity(first, "mcontroller.boundBox")
+  local boundsSecond = world.callScriptedEntity(second, "mcontroller.boundBox")
+  return fromSB.boolean(
+    (boundsFirst[1] <= boundsSecond[3] and boundsFirst[3] >= boundsSecond[1]) and
+    (boundsFirst[2] <= boundsSecond[4] and boundsFirst[4] >= boundsSecond[2])
+    )
 end)
 
 -- This returns the equivalent of "uname -a" on compatible systems, or a description of your
