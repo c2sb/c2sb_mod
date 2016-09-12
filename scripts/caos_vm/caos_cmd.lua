@@ -20,7 +20,7 @@ function CAOS.debugArg(arg)
   elseif type(arg) == "table" and arg.is_caos_var then
     return arg.name
   end
-  return arg
+  return tostring(arg)
 end
 
 function CAOS.debugArgList(args)

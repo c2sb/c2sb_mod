@@ -5,18 +5,21 @@
 -- Set acceleration due to gravity in pixels per tick squared.
 -- Returns target's acceleration due to gravity in pixels per tick squared.
 CAOS.TargCmd("accg", function(acceleration)
-  -- TODO: Figure out what Starbound gravity is _actually_ measured in to come up with a correct formula. This is inaccurate.
-  -- For now, we assume starbound gravity is in tiles/s^2 (ship gravity is 80)
-  -- Note that ACCG is measured in "pixels per tick squared", where a tick is 1/20 of a second
-  --      but we can only set a gravity multiplier, not the gravity itself.
-  -- To convert creatures gravity to starbound gravity, we know that: 1 tile = 8 px, 20 tick = 1 s
-  -- We also have that newGravity = worldGravity * gravityMultiplier => gravityMultiplier = newGravity / worldGravity
-  -- Example: (5 px / tick^2) * (20 tick / s) * (20 tick / s) / (8 px / tile)   =   (250 tiles / s^2)
+
   if acceleration ~= nil then
     self.gravity = acceleration
-    local newGravity = acceleration * 20 * 20 / 8.0 / 2
+    -- TODO: Figure out what Starbound gravity is _actually_ measured in to come up with a correct formula. This is inaccurate.
+    -- For now, we assume starbound gravity is in tiles/s^2 (ship gravity is 80)
+    -- Note that ACCG is measured in "pixels per tick squared", where a tick is 1/20 of a second
+    --      but we can only set a gravity multiplier, not the gravity itself.
+    -- To convert creatures gravity to starbound gravity, we know that: 1 tile = 8 px, 20 tick = 1 s
+    -- We also have that newGravity = worldGravity * gravityMultiplier => gravityMultiplier = newGravity / worldGravity
+    -- Example: (5 px / tick^2) * (20 tick / s) * (20 tick / s) / (8 px / tile)   =   (250 tiles / s^2)
+    -- 3 is called the "bullshit constant", as I've been told Starbound gravity is measured in bullshits
+    local newGravity = acceleration * 20 * 20 / 8.0 / 3
     mcontroller.controlParameters({
-      gravityMultiplier = newGravity / world.gravity(entity.position())
+      --gravityMultiplier = newGravity / world.gravity(entity.position())
+      airBuoyancy = 1 - newGravity / world.gravity(entity.position())
     })
   end
   return self.gravity
@@ -28,7 +31,7 @@ end)
 CAOS.TargCmd("aero", function(aerodynamics)
   if aerodynamics ~= nil then
     self.aerodynamics = aerodynamics
-    mcontroller.controlParameters({ airFriction = aerodynamics / 100.0 })
+    mcontroller.controlParameters({ airFriction = aerodynamics / 10.0 })
   end
   return self.aerodynamics
 end)
@@ -54,7 +57,10 @@ end)
 CAOS.TargCmd("fric", function(friction)
   if friction ~= nil then
     self.friction = friction
-    mcontroller.controlParameters({ groundFriction = friction / 100.0 })
+    mcontroller.controlParameters({
+      normalGroundFriction = friction / 10.0,
+      groundFriction = friction / 10.0
+    })
   end
   return self.friction
 end)
