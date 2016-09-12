@@ -12,6 +12,25 @@ function CAOS.resolveVariable(var)
   return var
 end
 
+function CAOS.debugArg(arg)
+  if type(arg) == "function" then
+    return "<function>"
+  elseif type(arg) == "table" and arg.is_caos_command then
+    return arg.name
+  elseif type(arg) == "table" and arg.is_caos_var then
+    return arg.name
+  end
+  return arg
+end
+
+function CAOS.debugArgList(args)
+  local result = {}
+  for i, arg in ipairs(args) do
+    table.insert(result, CAOS.debugArg(arg))
+  end
+  return table.concat(result, " ")
+end
+
 -- CAOS command object, used to store command information such as how it operates.
 CaosCmd = {
 -- Extend/override these values
@@ -44,10 +63,7 @@ CaosCmd = {
 
     -- Log the call
     if CAOS.DEBUG then
-      local pcallResult, argString = pcall(table.concat, args, " ")
-      if not pcallResult then
-        argString = "(failed to resolve args)"
-      end
+      argString = CAOS.debugArgList(args)
       sb.logInfo("[%s:%s,%s,%s] %s %s", entity.id(),
                                         self.caos.family,
                                         self.caos.genus,
@@ -55,6 +71,13 @@ CaosCmd = {
                                         t.name,
                                         argString)
     end
+
+    -- Store the last n calls so that we can find out where we are in the script
+    self.recent_commands = self.recent_commands or {}
+    if #self.recent_commands >= 10 then
+      table.remove(self.recent_commands, 1)
+    end
+    table.insert(self.recent_commands, t.name.." "..CAOS.debugArgList(args))
 
     -- Resolve args (calls functions, retrieves variables, etc)
     for i = 1, args.n do
@@ -82,6 +105,10 @@ CaosCmd = {
         result = t.definition(table.unpack(args))
       end
     elseif operateOn == "TARG" then
+      if self.TARG ~= nil and not world.entityExists(self.TARG) then
+        local recent_commands = table.concat(self.recent_commands, "\n  ")
+        error("Invalid TARG was \""..tostring(self.TARG).."\" on call to "..t.name.."; Script="..self.agentName.."; Recent: \n  "..recent_commands)
+      end
       if t.is_caos_var then
         result = world.callScriptedEntity(self.TARG, t.name..".definition", t, table.unpack(args))
       else

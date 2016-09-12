@@ -41,10 +41,16 @@ end
 
 function CAOS.OVxx(index)
   local function getter(t)
+    if self.TARG == nil or not world.entityExists(self.TARG) then
+      return 0
+    end
     return world.callScriptedEntity(self.TARG, "CAOS.getCaosVar", t.index)
   end
 
   local function setter(t, value)
+    if self.TARG == nil or not world.entityExists(self.TARG) then
+      return
+    end
     world.callScriptedEntity(self.TARG, "CAOS.setCaosVar", t.index, value)
   end
 

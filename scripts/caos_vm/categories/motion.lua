@@ -142,12 +142,18 @@ end)
 -- Returns the relative X distance of the centre point of the second agent from the centre point
 -- of the first.
 CAOS.Cmd("relx", function(first, second)
+  if first == nil or not world.entityExists(first) or second == nil or not world.entityExists(second) then
+    return 0
+  end
   return fromSB.coordinate(world.distance(world.entityPosition(first), world.entityPosition(second))[1])
 end)
 
 -- Returns the relative Y distance of the centre point of the second agent from the centre point
 -- of the first.
 CAOS.Cmd("rely", function(first, second)
+  if first == nil or not world.entityExists(first) or second == nil or not world.entityExists(second) then
+    return 0
+  end
   return fromSB.y_coordinate(world.distance(world.entityPosition(first), world.entityPosition(second))[2])
 end)
 
@@ -170,8 +176,12 @@ end)
 
 -- Horizontal velocity in pixels per tick - floating point.
 CAOS.register(CAOS.MakeVar("velx",
-  function(t) return fromSB.velocity(world.entityVelocity(self.TARG)[1]) end,
+  function(t)
+    if self.TARG == nil or not world.entityExists(self.TARG) then return 0 end
+    return fromSB.velocity(world.entityVelocity(self.TARG)[1])
+  end,
   function(t, value)
+    if self.TARG == nil or not world.entityExists(self.TARG) then return end
     local oldVelo = world.entityVelocity(self.TARG)
     world.callScriptedEntity(self.TARG, "mcontroller.setVelocity", { toSB.velocity(value), oldVelo[2] })
   end)
@@ -179,8 +189,12 @@ CAOS.register(CAOS.MakeVar("velx",
 
 -- Vertical velocity in pixels per tick - floating point.
 CAOS.register(CAOS.MakeVar("vely",
-  function(t) return fromSB.y_velocity(world.entityVelocity(self.TARG)[2]) end,
+  function(t)
+    if self.TARG == nil or not world.entityExists(self.TARG) then return 0 end
+    return fromSB.y_velocity(world.entityVelocity(self.TARG)[2])
+  end,
   function(t, value)
+    if self.TARG == nil or not world.entityExists(self.TARG) then return end
     local oldVelo = world.entityVelocity(self.TARG)
     world.callScriptedEntity(self.TARG, "mcontroller.setVelocity", { oldVelo[1], toSB.y_velocity(value) })
   end)

@@ -8,7 +8,7 @@ function init()
 end
 
 function onInteraction(args)
-  --injectAgent("snotrock")
+  injectAgent("snotrock")
   --injectAgent("trapper")
   injectAgent("tuba")
   --injectAgent("WeatherGenerator2")
