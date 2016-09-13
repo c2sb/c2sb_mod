@@ -156,8 +156,8 @@ end)
 scrp(CAOS.FAMILY.OBJECT, CAOS.OBJECT_GENUS.SEED, 6201, CAOS.EVENT.EATEN, function()
     lock()
     sndc "chwp"
-    --chem(5, 50)
-    --chem(12, 25)
+    chem(5, 50)
+    chem(12, 25)
     kill(ownr)
 end)
 

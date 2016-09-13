@@ -76,23 +76,20 @@ scrp(3, 8, 4608, 9, function()
 
   local function pop()
 --**checks if population is okay then
-    -- TODO
-    targ(ownr)
-    grow()
-    --ttar (3, 3, 4608)
-    --if targ() ~= null then
-    --  targ (ownr)
-    --  relaunch()
-    --else
-    --  if totl (3, 3, 4608) > 30 then
-    --    targ (ownr)
-    --    addv(ov00, 3)
-    --    relaunch()
-    --  else
-    --    targ (ownr)
-    --    grow()
-    --  end
-    --end
+    ttar (3, 3, 4608)
+    if targ() ~= null then
+      targ (ownr)
+      gsub(relaunch)
+    else
+      if totl (3, 3, 4608) > 30 then
+        targ (ownr)
+        addv(ov00, 3)
+        gsub(relaunch)
+      else
+        targ (ownr)
+        gsub(grow)
+      end
+    end
   end
 
   local function crash()

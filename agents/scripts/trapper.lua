@@ -78,7 +78,7 @@ scrp(2, 5, 5, 9, function()
 			etch(2, 14, 0, function()
 				if targ() ~= null then
 					if carr() ~= game "c3_inventory" then
-						if hots ~= game "c3_inventory" then
+						if hots() ~= game "c3_inventory" then
 							addv(va00, 1)
 							if va00() == 1 then
 								if ov00() ~= 5 then

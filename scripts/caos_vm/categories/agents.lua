@@ -48,6 +48,33 @@ function applyFlags()
 
 end
 
+-- A wrapper for world.entityQuery which performs differently based on the given family.
+-- i.e. Players and NPCs are considered "creatures" but don't have any specific callbacks.
+-- We can (in the future) include other entities that are not a creatures agent.
+-- TODO wildcard family
+function familyEntityQuery(family, targetEntity, position, positionOrRadius, options)
+  local entities = {}
+  if family == CAOS.FAMILY.CREATURE then
+    entities = world.entityQuery(position, positionOrRadius, {
+      withoutEntityId = targetEntity,
+      includedTypes = { "npc", "player" },
+      boundMode = options.boundMode or "position"
+    })
+  elseif family == CAOS.FAMILY.OBJECT or family == CAOS.FAMILY.EXTENDED then
+    entities = world.entityQuery(position, positionOrRadius, {
+      withoutEntityId = targetEntity,
+      includedTypes = { "monster" },
+      boundMode = options.boundMode or "position",
+      callScript = options.callScript,
+      callScriptArgs = options.callScriptArgs,
+      callScriptResult = options.callScriptResult or true
+    })
+  else
+    sb.logWarn("Family not supported: %s", family)
+  end
+  return entities
+end
+
 --------------------
 -- CAOS FUNCTIONS --
 --------------------
@@ -156,14 +183,13 @@ end)
 -- each valid agent in turn. family, genus and/or species can be zero to act as wildcards. NEXT
 -- terminates the block of code which is executed with each TARG. After an ENUM, TARG is set to OWNR.
 CAOS.Cmd("enum", function(family, genus, species, fcn_callback)
-  local entities = world.entityQuery(entity.position(), 9999, {
+  local entities = familyEntityQuery(family, nil, entity.position(), 9999, {
     callScript = "matches_species",
-    boundMode = "position",
     callScriptArgs = { family, genus, species }
   })
   
-  for i, entity in ipairs(entities) do
-    self.TARG = entity
+  for _, entityId in ipairs(entities) do
+    self.TARG = entityId
     fcn_callback()
   end
   self.TARG = self.OWNR
@@ -174,44 +200,19 @@ end, 1 << 3)
 -- ATTR Invisible isn't set. See also STAR and SEEE. In install scripts, when there is no OWNR,
 -- TARG is used instead.
 CAOS.ConditionalTargCmd("esee", function(family, genus, species, fcn_callback)
-  local target = nil
-  local radius = nil
-  if (self.OWNR ~= nil) then
-    target = self.OWNR
-    radius = self.caos.range_check
-  else
-    target = self.TARG
-    radius = rnge()
-  end
-  if target == nil or not world.entityExists(target) then return {} end
-  
-  local entities = nil
-  if family == CAOS.FAMILY.CREATURE then
-    entities = world.entityQuery(world.entityPosition(target), toSB.coordinate(radius), {
-      withoutEntityId = target,
-      includedTypes = { "npc", "player" },
-      boundMode = "position"       -- Simple position comparison should take some load off
-    })
-    for i = #entities, 1, -1 do
-      if not entity.entityInSight(entities[i]) then
-        table.remove(entities, i)
-      end
-    end
-  elseif family == CAOS.FAMILY.OBJECT then
-    entities = world.entityQuery(world.entityPosition(target), toSB.coordinate(radius), {
-      withoutEntityId = target,
-      includedTypes = { "monster" },
-      boundMode = "position",       -- Simple position comparison should take some load off
+  local entities = familyEntityQuery(family, self.OWNR,
+    entity.position(),
+    toSB.coordinate(self.caos.range_check),
+    {
       callScript = "target_visible",
-      callScriptArgs = { target, family, genus, species }
+      callScriptArgs = { self.OWNR, family, genus, species }
     })
-  else
-    sb.logWarn("Family not supported: %s", family)
-  end
-  
-  for i,entity in ipairs(entities) do
-    self.TARG = entity
-    fcn_callback()
+
+  for _, entityId in ipairs(entities) do
+    if entity.entityInSight(entityId) then
+      self.TARG = entityId
+      fcn_callback()
+    end
   end
   self.TARG = self.OWNR
 end, 1 << 3)
@@ -219,7 +220,25 @@ end, 1 << 3)
 -- As ENUM, except only enumerates through agents which OWNR is touching. Agents are said to be
 -- touching if their bounding rectangles overlap. See also TTAR. In install scripts, when there is
 -- no OWNR, TARG is used instead.
-CAOS.ConditionalTargCmd("etch")
+CAOS.ConditionalTargCmd("etch", function(family, genus, species, fcn_callback)
+  local bounds = getWorldBounds(self.OWNR)
+
+  local entities = familyEntityQuery(family, self.OWNR,
+    { bounds[1], bounds[4] }, -- left, bottom
+    { bounds[3], bounds[2] }, -- right, top
+    {
+      boundMode = "collisionarea",
+      callScript = "matches_species",
+      callScriptArgs = { family, genus, species }
+    })
+
+  sb.logInfo("%s etch = %s", self.agentName, #entities)
+  for _, entityId in ipairs(entities) do
+    self.TARG = entityId
+    fcn_callback()
+  end
+  self.TARG = self.OWNR
+end, 1 << 3)
 
 -- Returns family of target. See also GNUS, SPCS.
 CAOS.TargCmd("fmly", function()
@@ -272,7 +291,6 @@ CAOS.Cmd("mesg_wrt_plus", function(agent, message_id, param_1, param_2, delay)
   -- TODO: Support speech bubble factory (or should we even bother?)
   -- TODO: Support delay
   if agent == -1 and message_id == 126 then
-    sb.logInfo("SAY %s", param_1)
     world.callScriptedEntity(param_2, "monster.say", param_1)
   else
     world.callScriptedEntity(agent, "addMessage", self.OWNR, message_id, param_1, param_2, delay)
@@ -408,9 +426,8 @@ CAOS.Cmd("rtar", function(family, genus, species)
     return
   end
 
-  local entities = world.entityQuery(entity.position(), 9999, {
+  local entities = familyEntityQuery(family, nil, entity.position(), 9999, {
     callScript = "matches_species",
-    boundMode = "position",
     callScriptArgs = { family, genus, species }
   })
 
@@ -465,11 +482,11 @@ CAOS.TargCmd("tint")
 
 -- Counts the number of agents in the world matching the classifier.
 CAOS.Cmd("totl", function(family, genus, species)
-  local entities = world.entityQuery(entity.position(), 9999, {
+  local entities = familyEntityQuery(family, nil, entity.position(), 9999, {
     callScript = "matches_species",
-    boundMode = "position",       -- Simple position comparison should take some load off
     callScriptArgs = { family, genus, species }
   })
+
   return #entities
 end)
 
@@ -486,6 +503,26 @@ CAOS.Cmd("touc", function(first, second)
     (boundsA[1] <= boundsB[3] and boundsA[3] >= boundsB[1]) and
     (boundsA[2] >= boundsB[4] and boundsA[4] <= boundsB[2])
     )
+end)
+
+CAOS.Cmd("ttar", function(family, genus, species)
+  local bounds = getWorldBounds(self.OWNR)
+
+  local entities = familyEntityQuery(family, self.OWNR,
+    { bounds[1], bounds[4] }, -- left, bottom
+    { bounds[3], bounds[2] }, -- right, top
+    {
+      boundMode = "collisionarea",
+      callScript = "matches_species",
+      callScriptArgs = { family, genus, species }
+    })
+  sb.logInfo("%s ttar = %s", self.agentName, #entities)
+
+  if #entities > 0 then
+    self.TARG = entities[self.random:randu32() % #entities + 1]
+  else
+    self.TARG = nil
+  end
 end)
 
 -- This returns the equivalent of "uname -a" on compatible systems, or a description of your

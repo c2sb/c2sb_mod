@@ -9,14 +9,14 @@ end
 
 function onInteraction(args)
   injectAgent("snotrock")
-  injectAgent("trapper")
+  --injectAgent("trapper")
   injectAgent("tuba")
   injectAgent("WeatherGenerator2")
   injectAgent("NG_Eastertribble")
   injectAgent("Botanoid")
   injectAgent("BalloonPlant")
-  injectAgent("robot_toy")
-  injectAgent("RubberBall")
+  --injectAgent("robot_toy")
+  --injectAgent("RubberBall")
   injectAgent("Roamer")
 end
 
