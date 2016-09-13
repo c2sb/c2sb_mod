@@ -6,10 +6,10 @@ function getImageSize(spriteFile, frameNumber)
   return root.imageSize("/agents/images/"..spriteFile.."/"..spriteFile.."_"..tostring(frameNumber)..".png")
 end
 
-function updateCollision(frameno)
-  -- Retrieve properties for the current image
-  local image_size = getImageSize(self.caos.sprite_file, frameno)
-  
+-- Updates the agent's bounds based on its current sprite_file and first_image
+function updateBounds()
+  local image_size = getImageSize(self.caos.sprite_file, self.caos.first_image)
+
   -- Set the collision polygon
   local half_width = image_size[1] / 2
   local half_height = image_size[2] / 2
@@ -17,17 +17,33 @@ function updateCollision(frameno)
   local top = toSB.coordinate(half_height)
   local right = toSB.coordinate(half_width)
   local bottom = toSB.coordinate(-half_height)
-  
+
+  -- Set the local bounds for script use. This is important because mcontroller.controlParameters
+  -- doesn't appear to update immediately.
+  self.bounds = { left, top, right, bottom }
+
+  -- Update Starbound collision
   local collision_poly =  { {left, top}, {right, top}, {right, bottom}, {left, bottom} }
   mcontroller.controlParameters({
     collisionPoly = collision_poly
   })
-    
-  -- Resolve collision issues, if any (i.e. getting stuck under the floor is a common one)
-  --local newPosition = world.resolvePolyCollision(collision_poly, entity.position(), 16)
-  --if newPosition ~= nil then
-  --  mcontroller.setPosition(newPosition)
-  --end
+end
+
+-- Retrieves the agent's bounds based on its image. Calculates its bounds if it has not already
+-- done so.
+function getBounds()
+  if not self.bounds then
+    updateBounds()
+  end
+  return self.bounds
+end
+
+-- Retrieves an entity's bounding box in world coordinates. Must be another creatures agent.
+function getWorldBounds(entityId)
+  local position = world.entityPosition(entityId)
+  local bounds = world.callScriptedEntity(entityId, "getBounds")
+
+  return { position[1] + bounds[1], position[2] + bounds[2], position[1] + bounds[3], position[2] + bounds[4] }
 end
 
 function updateImageFrame()
@@ -40,10 +56,6 @@ function updateImageFrame()
   -- Set the frame
   animator.setGlobalTag("frameno", frameno)
   animator.setGlobalTag("color_multiply", string.format("FFFFFF%2x", 255 - math.min(self.caos.alpha_value, 255)))
-  
-  -- TODO I am pretty sure setting the collision polygon here is incorrect. It may be set when the
-  -- agent is created ???
-  --updateCollision(frameno)
 end
 
 function addMessage(from_entity, message_id, param_1, param_2, delay)
@@ -70,7 +82,7 @@ end
 
 -- Given the object's top left position, returns the center
 function topLeftPixelsToCenter(position)
-  local bounds = mcontroller.boundBox()
+  local bounds = getBounds()
   return { position[1] - bounds[1], position[2] - bounds[2] }
 end
 

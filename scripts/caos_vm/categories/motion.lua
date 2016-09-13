@@ -86,9 +86,10 @@ end)
 CAOS.TargCmd("mvsf", function(x, y)
   if not isReasonableMove({x, y}) then return end
 
-  local newPosition = world.resolvePolyCollision(mcontroller.collisionPoly(), { toSB.coordinate(x), toSB.y_coordinate(y) }, 8)
+  local targetPosition = topLeftPixelsToCenter({ toSB.coordinate(x), toSB.y_coordinate(y) })
+  local newPosition = world.resolvePolyCollision(mcontroller.collisionPoly(), targetPosition, 8)
   if newPosition ~= nil then
-    mcontroller.setPosition(topLeftPixelsToCenter(newPosition))
+    mcontroller.setPosition(newPosition)
   end
 end)
 
@@ -108,7 +109,7 @@ CAOS.TargCmd("obst", function(direction)
   -- Get the x/y end-point, include entity's bounding box
   local entity_x, entity_y = table.unpack(entity.position())
   local targ_x, targ_y = entity_x, entity_y
-  local left, top, right, bottom = table.unpack(mcontroller.boundBox())
+  local left, top, right, bottom = table.unpack(getBounds())
   if direction == CAOS.DIRECTIONS.LEFT then
     entity_x = entity_x + left
     targ_x = entity_x - range
@@ -167,7 +168,7 @@ end)
 -- Returns 1 if it can, 0 if it can't.
 CAOS.TargCmd("tmvt", function(x, y)
   if isReasonableMove({x, y}) then
-    local left, top, right, bottom = table.unpack(mcontroller.boundBox())
+    local left, top, right, bottom = table.unpack(getBounds())
     x, y = table.unpack(topLeftPixelsToCenter({ toSB.coordinate(x), toSB.y_coordinate(y) }))
     return fromSB.boolean(not world.rectCollision({left + x, top + y, right + x, bottom + y}))
   else

@@ -244,8 +244,8 @@ CAOS.TargCmd("gnus", function()
 end)
 
 CAOS.TargCmd("hght", function()
-  local bounds = mcontroller.boundBox()
-  return fromSB.coordinate(bounds[4] - bounds[2])
+  local bounds = getBounds()
+  return fromSB.coordinate(bounds[2] - bounds[4])
 end)
 
 -- Destroys an agent. The pointer won't be destroyed. For creatures, you probably want to use DEAD first.
@@ -338,7 +338,7 @@ end)
 
 -- Returns bottom position of target's bounding box.
 CAOS.TargCmd("posb", function()
-  local bounds = mcontroller.boundBox()
+  local bounds = getBounds()
   return fromSB.y_coordinate(entity.position()[2] + bounds[4])
 end)
 
@@ -356,19 +356,19 @@ end)
 
 -- Returns left position of target's bounding box.
 CAOS.TargCmd("posl", function()
-  local bounds = mcontroller.boundBox()
+  local bounds = getBounds()
   return fromSB.coordinate(entity.position()[1] + bounds[1])
 end)
 
 -- Returns right position of target's bounding box.
 CAOS.TargCmd("posr", function()
-  local bounds = mcontroller.boundBox()
+  local bounds = getBounds()
   return fromSB.coordinate(entity.position()[1] + bounds[3])
 end)
 
 -- Returns top position of target's bounding box.
 CAOS.TargCmd("post", function()
-  local bounds = mcontroller.boundBox()
+  local bounds = getBounds()
   return fromSB.y_coordinate(entity.position()[2] + bounds[2])
 end)
 
@@ -432,7 +432,8 @@ CAOS.Cmd("targ", function(agent)
   if agent ~= nil then
     self.TARG = agent
   end
-  if self.TARG ~= nil and not world.entityExists(self.TARG) then
+  -- We reserve TARG < 0 for special cases
+  if self.TARG ~= nil and self.TARG >= 0 and not world.entityExists(self.TARG) then
     self.TARG = nil
   end
   return self.TARG
@@ -478,11 +479,12 @@ CAOS.Cmd("touc", function(first, second)
   if first == nil or not world.entityExists(first) or second == nil or not world.entityExists(second) then
     return 0
   end
-  local boundsFirst = world.callScriptedEntity(first, "mcontroller.boundBox")
-  local boundsSecond = world.callScriptedEntity(second, "mcontroller.boundBox")
+  local boundsA = getWorldBounds(first)
+  local boundsB = getWorldBounds(second)
+
   return fromSB.boolean(
-    (boundsFirst[1] <= boundsSecond[3] and boundsFirst[3] >= boundsSecond[1]) and
-    (boundsFirst[2] <= boundsSecond[4] and boundsFirst[4] >= boundsSecond[2])
+    (boundsA[1] <= boundsB[3] and boundsA[3] >= boundsB[1]) and
+    (boundsA[2] >= boundsB[4] and boundsA[4] <= boundsB[2])
     )
 end)
 
@@ -495,7 +497,7 @@ CAOS.Cmd("ufos", function()
 end)
 
 CAOS.TargCmd("wdth", function()
-  local bounds = mcontroller.boundBox()
+  local bounds = getBounds()
   return fromSB.coordinate(bounds[3] - bounds[1])
 end)
 
