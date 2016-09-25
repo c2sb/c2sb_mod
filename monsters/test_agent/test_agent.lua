@@ -222,6 +222,12 @@ function initCaosVars()
   self.caos.behaviors = 0
   self.caos.alpha_value = 0
   self.caos.alpha_blending = 0
+
+  self.caos.red_tint = 128
+  self.caos.green_tint = 128
+  self.caos.blue_tint = 128
+  self.caos.rotation = 128
+  self.caos.swap = 128
 end
 
 -- Kills the agent

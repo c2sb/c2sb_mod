@@ -483,6 +483,12 @@ CAOS.TargCmd("tick", function(tick_rate)
   return self.caos.tick_rate
 end)
 
+-- Like TINT but only tints the current frame. The other frames are no longer available in the
+-- gallery, it becomes a one frame sprite file. Original display engine only.
+CAOS.Cmd("tino", function(red_tint, green_tint, blue_tint, rotation, swap)
+  tint(red_tint, green_tint, blue_tint, rotation, swap)
+end)
+
 -- This tints the TARG agent with the r,g,b tint and applies the colour rotation and swap as per
 -- pigment bleed genes. Specify the PART first for compound agents. The tinted agent or part now
 -- uses a cloned gallery, which means it takes up more memory, and the save world files are larger.
@@ -495,7 +501,29 @@ end)
 -- 3 - Blue
 -- 4 - Rotation
 -- 5 - Swap
-CAOS.TargCmd("tint")
+CAOS.TargCmd("tint", function(red_tint, green_tint, blue_tint, rotation, swap)
+  if green_tint == nil and blue_tint == nil and rotation == nil and swap == nil then
+    local attribute = red_tint
+    if attribute == 1 then
+      return self.caos.red_tint
+    elseif attribute == 2 then
+      return self.caos.green_tint
+    elseif attribute == 3 then
+      return self.caos.blue_tint
+    elseif attribute == 4 then
+      return self.caos.rotation
+    elseif attribute == 5 then
+      return self.caos.swap
+    end
+    return 0
+  end
+  self.caos.red_tint = red_tint
+  self.caos.green_tint = green_tint
+  self.caos.blue_tint = blue_tint
+  self.caos.rotation = rotation
+  self.caos.swap = swap
+  updateImageFrame()
+end)
 
 -- Counts the number of agents in the world matching the classifier.
 CAOS.Cmd("totl", function(family, genus, species)

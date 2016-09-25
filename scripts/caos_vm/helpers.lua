@@ -55,7 +55,12 @@ function updateImageFrame()
   
   -- Set the frame
   animator.setGlobalTag("frameno", frameno)
-  animator.setGlobalTag("color_multiply", string.format("FFFFFF%2x", 255 - math.min(self.caos.alpha_value, 255)))
+  animator.setGlobalTag("color_multiply", string.format("%02X%02X%02X%02X",
+    math.min(self.caos.red_tint, 255),
+    math.min(self.caos.green_tint, 255),
+    math.min(self.caos.blue_tint, 255),
+    255 - math.min(self.caos.alpha_value, 255)))
+  animator.setGlobalTag("hue_shift", string.format("%d", (self.caos.rotation - 128) / 256 * 360 ))
 end
 
 function addMessage(from_entity, message_id, param_1, param_2, delay)
