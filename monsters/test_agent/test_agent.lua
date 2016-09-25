@@ -23,6 +23,10 @@ function init()
   animator.setGlobalTag("sprite_file", self.caos.sprite_file)
   animator.setAnimationState("body", "idle")
 
+  -- Hide the damage bar on mouse over
+  monster.setDamageBar("none")
+
+
   updateBounds()
   setFrameRate()
   self.frame_loop_number = 0
