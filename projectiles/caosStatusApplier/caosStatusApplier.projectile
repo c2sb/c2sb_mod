@@ -1,0 +1,18 @@
+{
+  "projectileName" : "caosStatusApplier",
+  "image" : "invisibleprojectile.png",
+  "frameNumber" : 1,
+  "speed" : 0,
+  "damagePoly" : [ [-36, 0], [-24, -24], [0, -36], [24, -24], [36, 0], [24, 24], [0, 36], [-24, 24] ],
+  "animationLoops" : false,
+  "flippable" : true,
+  "damageTeam" : { "type" : "indiscriminate" },
+  "damageKind" : "hidden",
+  "damageType" : "ignoresdef",
+  "power" : 0,
+  "timeToLive" : 0.1,
+  "piercing" : true,
+  
+  // Override this
+  "statusEffects" : []
+}

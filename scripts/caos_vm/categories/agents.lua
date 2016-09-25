@@ -188,7 +188,7 @@ CAOS.Cmd("enum", function(family, genus, species, fcn_callback)
     callScriptArgs = { family, genus, species }
   })
   
-  for _, entityId in ipairs(entities) do
+  for _, entityId in pairs(entities) do
     self.TARG = entityId
     fcn_callback()
   end
@@ -214,7 +214,7 @@ CAOS.Cmd("esee", function(family, genus, species, fcn_callback)
       callScriptArgs = { self.OWNR, family, genus, species }
     })
 
-  for _, entityId in ipairs(entities) do
+  for _, entityId in pairs(entities) do
     if entity.entityInSight(entityId) then
       self.TARG = entityId
       fcn_callback()
@@ -249,7 +249,7 @@ CAOS.Cmd("etch", function(family, genus, species, fcn_callback)
     sb.logInfo("%s etch = %s", self.agentName, #entities)
   end
   
-  for _, entityId in ipairs(entities) do
+  for _, entityId in pairs(entities) do
     self.TARG = entityId
     fcn_callback()
   end

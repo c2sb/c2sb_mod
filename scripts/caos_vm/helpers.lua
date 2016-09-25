@@ -116,3 +116,13 @@ function isReasonableMove(targetCaosPosition)
   end
   return true
 end
+
+-- Apply status effects using an invisible projectile that spawns on top of the target
+function applyStatusEffects(entityId, effects)
+  world.spawnProjectile("caosStatusApplier",
+    world.entityPosition(entityId),
+    0,
+    {0, 0},
+    false,
+    { statusEffects = effects })
+end
