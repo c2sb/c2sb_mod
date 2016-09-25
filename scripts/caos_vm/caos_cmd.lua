@@ -65,9 +65,9 @@ CaosCmd = {
     if CAOS.DEBUG then
       argString = CAOS.debugArgList(args)
       sb.logInfo("[%s:%s,%s,%s] %s %s", entity.id(),
-                                        self.caos.family,
-                                        self.caos.genus,
-                                        self.caos.species,
+                                        storage.caos.family,
+                                        storage.caos.genus,
+                                        storage.caos.species,
                                         t.name,
                                         argString)
     end
@@ -97,7 +97,7 @@ CaosCmd = {
     elseif t.operateOn == "TARG" then
       if self.TARG ~= nil and not world.entityExists(self.TARG) then
         local recent_commands = table.concat(self.recent_commands, "\n  ")
-        error("Invalid TARG was \""..tostring(self.TARG).."\" on call to "..t.name.."; Script="..self.agentName.."; Recent: \n  "..recent_commands)
+        error("Invalid TARG was \""..tostring(self.TARG).."\" on call to "..t.name.."; Script="..storage.agentName.."; Recent: \n  "..recent_commands)
       end
       if t.is_caos_var then
         result = world.callScriptedEntity(self.TARG, t.name..".definition", t, table.unpack(args))

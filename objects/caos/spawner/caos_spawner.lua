@@ -2,7 +2,7 @@ require "/scripts/caos_vm/caos.lua"
 
 function init()
   self.random = sb.makeRandomSource(world.time() + entity.id() * 1000)
-  self.caos = {}
+  storage.caos = {}
 
   object.setInteractive(true)
 end
@@ -30,13 +30,13 @@ function loadAgentScript(agentName)
 end
 
 function injectAgent(agentName)
-  self.agentName = agentName
+  storage.agentName = agentName
   loadAgentScript(agentName)
   _ENV[agentName].install()
 end
 
 function removeAgent(agentName)
-  self.agentName = agentName
+  storage.agentName = agentName
   loadAgentScript(agentName)
   _ENV[agentName].uninstall()
 end

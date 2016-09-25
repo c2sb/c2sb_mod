@@ -15,14 +15,14 @@ end)
 -- Registers uninstall script
 function rscr(fcn_callback)
   CAOS.uninstall = CAOS.uninstall or {}
-  CAOS.uninstall[self.agentName] = fcn_callback
+  CAOS.uninstall[storage.agentName] = fcn_callback
 end
 
 -- Registers a script in the scriptorium.
 -- Note: Must not be constructed.
 function scrp(family, genus, species, event, fcn_callback)
   init_scriptorium_space(family, genus, species)
-  scriptorium[family][genus][species][event] = fcn_callback
+  CAOS.scriptorium[family][genus][species][event] = fcn_callback
 end
 
 CAOS.Cmd("lock", function()
@@ -31,7 +31,7 @@ end)
 
 -- Remove specified script from the scriptorium.
 function scrx(family, genus, species, event)
-  scriptorium[family][genus][species][event] = nil
+  CAOS.scriptorium[family][genus][species][event] = nil
 end
 
 -- Turn off INST state.

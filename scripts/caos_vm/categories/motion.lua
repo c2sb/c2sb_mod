@@ -1,3 +1,36 @@
+
+-- acceleration due to gravity
+function updateGravity()
+  -- TODO: Figure out what Starbound gravity is _actually_ measured in to come up with a correct formula. This is inaccurate.
+  -- For now, we assume starbound gravity is in tiles/s^2 (ship gravity is 80)
+  -- Note that ACCG is measured in "pixels per tick squared", where a tick is 1/20 of a second
+  --      but we can only set a gravity multiplier, not the gravity itself.
+  -- To convert creatures gravity to starbound gravity, we know that: 1 tile = 8 px, 20 tick = 1 s
+  -- We also have that newGravity = worldGravity * gravityMultiplier => gravityMultiplier = newGravity / worldGravity
+  -- Example: (5 px / tick^2) * (20 tick / s) * (20 tick / s) / (8 px / tile)   =   (250 tiles / s^2)
+  -- 3 is called the "bullshit constant", as I've been told Starbound gravity is measured in bullshits
+  local newGravity = storage.caos.gravity * 20 * 20 / 8.0 / 3
+  mcontroller.controlParameters({
+    --gravityMultiplier = newGravity / world.gravity(entity.position())
+    airBuoyancy = 1 - newGravity / world.gravity(entity.position())
+  })
+end
+
+function updateAerodynamics()
+  mcontroller.controlParameters({ airFriction = storage.caos.aerodynamics / 10.0 })
+end
+
+function updateElasticity()
+  mcontroller.controlParameters({ bounceFactor = storage.caos.elasticity / 100.0 })
+end
+
+function updateFriction()
+  mcontroller.controlParameters({
+    normalGroundFriction = storage.caos.friction / 10.0,
+    groundFriction = storage.caos.friction / 10.0
+  })
+end
+
 -------------
 -- CAOS FUNCTIONS --
 --------------------
@@ -7,22 +40,10 @@
 CAOS.TargCmd("accg", function(acceleration)
 
   if acceleration ~= nil then
-    self.gravity = acceleration
-    -- TODO: Figure out what Starbound gravity is _actually_ measured in to come up with a correct formula. This is inaccurate.
-    -- For now, we assume starbound gravity is in tiles/s^2 (ship gravity is 80)
-    -- Note that ACCG is measured in "pixels per tick squared", where a tick is 1/20 of a second
-    --      but we can only set a gravity multiplier, not the gravity itself.
-    -- To convert creatures gravity to starbound gravity, we know that: 1 tile = 8 px, 20 tick = 1 s
-    -- We also have that newGravity = worldGravity * gravityMultiplier => gravityMultiplier = newGravity / worldGravity
-    -- Example: (5 px / tick^2) * (20 tick / s) * (20 tick / s) / (8 px / tile)   =   (250 tiles / s^2)
-    -- 3 is called the "bullshit constant", as I've been told Starbound gravity is measured in bullshits
-    local newGravity = acceleration * 20 * 20 / 8.0 / 3
-    mcontroller.controlParameters({
-      --gravityMultiplier = newGravity / world.gravity(entity.position())
-      airBuoyancy = 1 - newGravity / world.gravity(entity.position())
-    })
+    storage.caos.gravity = acceleration
+    updateGravity()
   end
-  return self.gravity
+  return storage.caos.gravity
 end)
 
 
@@ -30,10 +51,10 @@ end)
 -- Returns aerodynamic factor as a percentage.
 CAOS.TargCmd("aero", function(aerodynamics)
   if aerodynamics ~= nil then
-    self.aerodynamics = aerodynamics
-    mcontroller.controlParameters({ airFriction = aerodynamics / 10.0 })
+    storage.caos.aerodynamics = aerodynamics
+    updateAerodynamics()
   end
-  return self.aerodynamics
+  return storage.caos.aerodynamics
 end)
 
 -- Set the elasticity percentage. An agent with elasticity 100 will bounce perfectly, one with
@@ -41,10 +62,10 @@ end)
 -- Return the elasticity percentage.
 CAOS.TargCmd("elas", function(elasticity)
   if elasticity ~= nil then
-    self.elasticity = elasticity
-    mcontroller.controlParameters({ bounceFactor = elasticity / 100.0 })
+    storage.caos.elasticity = elasticity
+    updateElasticity()
   end
-  return self.elasticity
+  return storage.caos.elasticity
 end)
 
 -- Returns 1 if target is moving under the influence of gravity, or 0 if it is at rest.
@@ -56,13 +77,10 @@ end)
 -- agent slides along the floor.
 CAOS.TargCmd("fric", function(friction)
   if friction ~= nil then
-    self.friction = friction
-    mcontroller.controlParameters({
-      normalGroundFriction = friction / 10.0,
-      groundFriction = friction / 10.0
-    })
+    storage.caos.friction = friction
+    updateFriction()
   end
-  return self.friction
+  return storage.caos.friction
 end)
 
 -- Returns the movement status of the target. 
@@ -104,7 +122,7 @@ end)
 -- direction. Directions are LEFT, RGHT, _UP_, or DOWN. If the distance to the collsion is greater
 -- than RNGE then a very large number is returned.
 CAOS.TargCmd("obst", function(direction)
-  local range = toSB.coordinate(self.caos.range_check)
+  local range = toSB.coordinate(storage.caos.range_check)
 
   -- Get the x/y end-point, include entity's bounding box
   local entity_x, entity_y = table.unpack(entity.position())

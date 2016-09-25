@@ -30,13 +30,13 @@ function CAOS.VAxx(index)
 end
 
 function CAOS.getCaosVar(index)
-  self.caos.variables = self.caos.variables or {}
-  return self.caos.variables[index] or 0
+  storage.caos.variables = storage.caos.variables or {}
+  return storage.caos.variables[index] or 0
 end
 
 function CAOS.setCaosVar(index, value)
-  self.caos.variables = self.caos.variables or {}
-  self.caos.variables[index] = value
+  storage.caos.variables = storage.caos.variables or {}
+  storage.caos.variables[index] = value
 end
 
 function CAOS.OVxx(index)

@@ -1,50 +1,49 @@
-function applyFlags()
-
-    if (self.caos.attributes & CAOS.ATTRIBUTES.CARRYABLE) ~= 0 then
-      -- TODO
-    end
-    if (self.caos.attributes & CAOS.ATTRIBUTES.MOUSEABLE) ~= 0 then
-      -- TODO
-    end
-    
-    -- CAOS.ATTRIBUTES.ACTIVATEABLE
-    monster.setInteractive(
-      (self.caos.attributes & CAOS.ATTRIBUTES.ACTIVATEABLE) ~= 0 or
-      (self.caos.behaviors & CAOS.PERMISSIONS.ACTIVATE_1) ~= 0 or
-      (self.caos.behaviors & CAOS.PERMISSIONS.ACTIVATE_2) ~= 0)
-    
-    if (self.caos.attributes & CAOS.ATTRIBUTES.GREEDY_CABIN) ~= 0 then
-      -- TODO
-    end
-    if (self.caos.attributes & CAOS.ATTRIBUTES.INVISIBLE) ~= 0 then
-      -- TODO
-    end
-    if (self.caos.attributes & CAOS.ATTRIBUTES.FLOATABLE) ~= 0 then
-      -- TODO
-    end
-    
-    -- CAOS.ATTRIBUTES.SUFFER_COLLISIONS
-    mcontroller.controlParameters({
-      collisionEnabled = (self.caos.attributes & CAOS.ATTRIBUTES.SUFFER_COLLISIONS) ~= 0
-    })
-    
-    -- CAOS.ATTRIBUTES.SUFFER_PHYSICS
-    mcontroller.controlParameters({
-      gravityEnabled = (self.caos.attributes & CAOS.ATTRIBUTES.SUFFER_PHYSICS) ~= 0
-    })
-    
-    if (self.caos.attributes & CAOS.ATTRIBUTES.CAMERA_SHY) ~= 0 then
-      -- TODO
-    end
-    if (self.caos.attributes & CAOS.ATTRIBUTES.OPEN_AIR_CABIN) ~= 0 then
-      -- TODO
-    end
-    if (self.caos.attributes & CAOS.ATTRIBUTES.ROTATABLE) ~= 0 then
-      -- TODO
-    end
-    if (self.caos.attributes & CAOS.ATTRIBUTES.PRESENCE) ~= 0 then
-      -- TODO
-    end
+function updateFlags()
+  if (storage.caos.attributes & CAOS.ATTRIBUTES.CARRYABLE) ~= 0 then
+    -- TODO
+  end
+  if (storage.caos.attributes & CAOS.ATTRIBUTES.MOUSEABLE) ~= 0 then
+    -- TODO
+  end
+  
+  -- CAOS.ATTRIBUTES.ACTIVATEABLE
+  monster.setInteractive(
+    (storage.caos.attributes & CAOS.ATTRIBUTES.ACTIVATEABLE) ~= 0 or
+    (storage.caos.behaviors & CAOS.PERMISSIONS.ACTIVATE_1) ~= 0 or
+    (storage.caos.behaviors & CAOS.PERMISSIONS.ACTIVATE_2) ~= 0)
+  
+  if (storage.caos.attributes & CAOS.ATTRIBUTES.GREEDY_CABIN) ~= 0 then
+    -- TODO
+  end
+  if (storage.caos.attributes & CAOS.ATTRIBUTES.INVISIBLE) ~= 0 then
+    -- TODO
+  end
+  if (storage.caos.attributes & CAOS.ATTRIBUTES.FLOATABLE) ~= 0 then
+    -- TODO
+  end
+  
+  -- CAOS.ATTRIBUTES.SUFFER_COLLISIONS
+  mcontroller.controlParameters({
+    collisionEnabled = (storage.caos.attributes & CAOS.ATTRIBUTES.SUFFER_COLLISIONS) ~= 0
+  })
+  
+  -- CAOS.ATTRIBUTES.SUFFER_PHYSICS
+  mcontroller.controlParameters({
+    gravityEnabled = (storage.caos.attributes & CAOS.ATTRIBUTES.SUFFER_PHYSICS) ~= 0
+  })
+  
+  if (storage.caos.attributes & CAOS.ATTRIBUTES.CAMERA_SHY) ~= 0 then
+    -- TODO
+  end
+  if (storage.caos.attributes & CAOS.ATTRIBUTES.OPEN_AIR_CABIN) ~= 0 then
+    -- TODO
+  end
+  if (storage.caos.attributes & CAOS.ATTRIBUTES.ROTATABLE) ~= 0 then
+    -- TODO
+  end
+  if (storage.caos.attributes & CAOS.ATTRIBUTES.PRESENCE) ~= 0 then
+    -- TODO
+  end
 
 end
 
@@ -86,8 +85,8 @@ end
 -- than using an intensity value of 0 or 256. At the moment alpha channels only work on compressed,
 -- non-mirrored, non-zoomed sprites.
 CAOS.TargCmd("alph", function(alpha_value, yesorno)
-  self.caos.alpha_value = alpha_value
-  self.caos.alpha_blending = yesorno
+  storage.caos.alpha_value = alpha_value
+  storage.caos.alpha_blending = yesorno
   updateImageFrame()
 end)
 
@@ -110,8 +109,8 @@ CAOS.TargCmd("anim", function(pose_list)
     pose_list = animStringToArray(pose_list)
   end
 
-  self.animation = pose_list
-  self.animation_index = 0
+  storage.animation = pose_list
+  storage.animation_index = 0
 end)
 
 CAOS.Cmd("anms", function(anim_string)
@@ -122,10 +121,10 @@ end)
 -- to pass into this command.
 CAOS.TargCmd("attr", function(attributes)
   if attributes ~= nil then
-    self.caos.attributes = attributes
-    applyFlags()
+    storage.caos.attributes = attributes
+    updateFlags()
   end
-  return self.caos.attributes
+  return storage.caos.attributes
 end)
 
 -- Set the base image for this agent or part. The index is relative to the first_image specified in
@@ -133,23 +132,23 @@ end)
 -- Returns the BASE image for the current agent/part. Returns -1 if an invalid part.
 CAOS.Cmd("base", function(index)
   if index ~= nil then
-    self.caos.base_image = index
+    storage.caos.base_image = index
   end
-  return self.caos.base_imag
+  return storage.caos.base_imag
 end)
 
 -- Sets the creature permissions for target. Sum the entries in the Creature Permissions table to
 -- get the value to use.
 CAOS.TargCmd("bhvr", function(flags)
   if flags ~= nil then
-    self.caos.behaviors = flags
-    applyFlags()
+    storage.caos.behaviors = flags
+    updateFlags()
   end
-  return self.caos.behaviors
+  return storage.caos.behaviors
 end)
 
 CAOS.Cmd("call", function(event_no, param_1, param_2)
-  local call_fn = scriptorium[self.caos.family][self.caos.genus][self.caos.species][event_no]
+  local call_fn = CAOS.scriptorium[storage.caos.family][storage.caos.genus][storage.caos.species][event_no]
   if call_fn ~= nil then
     -- Save state
     local oldP1 = _p1_
@@ -208,7 +207,7 @@ CAOS.Cmd("esee", function(family, genus, species, fcn_callback)
 
   local entities = familyEntityQuery(family, self.OWNR,
     world.entityPosition(self.OWNR),
-    toSB.coordinate(self.caos.range_check),
+    toSB.coordinate(storage.caos.range_check),
     {
       callScript = "target_visible",
       callScriptArgs = { self.OWNR, family, genus, species }
@@ -246,7 +245,7 @@ CAOS.Cmd("etch", function(family, genus, species, fcn_callback)
     })
 
   if #entities > 0 then
-    sb.logInfo("%s etch = %s", self.agentName, #entities)
+    sb.logInfo("%s etch = %s", storage.agentName, #entities)
   end
   
   for _, entityId in pairs(entities) do
@@ -259,7 +258,7 @@ end, 1 << 3)
 
 -- Returns family of target. See also GNUS, SPCS.
 CAOS.TargCmd("fmly", function()
-  return self.caos.family
+  return storage.caos.family
 end)
 
 -- This command sets the frame rate on the TARG agent. If it is a compound agent, then the part
@@ -276,7 +275,7 @@ from = nil
 
 -- Returns genus of target. See also FMLY, SPCS.
 CAOS.TargCmd("gnus", function()
-  return self.caos.genus
+  return storage.caos.genus
 end)
 
 CAOS.TargCmd("hght", function()
@@ -335,7 +334,7 @@ CAOS.Cmd("new_simp", function(family, genus, species, sprite_file, image_count, 
     ["image_count"] = image_count,
     ["first_image"] = first_image,
     ["plane"] = plane,
-    ["agentName"] = self.agentName
+    ["agentName"] = storage.agentName
   })
 end)
 function new.simp(_, family, genus, species, sprite_file, image_count, first_image, plane)
@@ -348,7 +347,7 @@ null = nil
 -- Wait until the current agent/part's ANIMation is over before continuing. Looping anims stop this
 -- command terminating until the animation is changed to a non-looping one.
 CAOS.Cmd("over", function()
-  while self.animation ~= nil do
+  while storage.animation ~= nil do
     coroutine.yield()
   end
 end)
@@ -366,9 +365,9 @@ end)
 CAOS.TargCmd("plne", function(plane)
   -- TODO partially implemented
   if plane ~= nil then
-    self.caos.plane = plane
+    storage.caos.plane = plane
   end
-  return self.caos.plane
+  return storage.caos.plane
 end)
 
 -- Returns bottom position of target's bounding box.
@@ -381,12 +380,12 @@ end)
 -- Return the current POSE of the target agent/part, or -1 if invalid part.
 CAOS.TargCmd("pose", function(pose_index)
   if (pose_index ~= nil) then
-    self.caos.pose_image = pose_index
-    self.animation = nil
-    self.animation_index = 0
+    storage.caos.pose_image = pose_index
+    storage.animation = nil
+    storage.animation_index = 0
     updateImageFrame()
   end
-  return self.caos.pose_image
+  return storage.caos.pose_image
 end)
 
 -- Returns left position of target's bounding box.
@@ -430,9 +429,9 @@ CAOS.TargCmd("puhl")
 -- Returns the target's range. See ESEE, OBST.
 CAOS.TargCmd("rnge", function(distance)
   if distance ~= nil then
-    self.caos.range_check = distance
+    storage.caos.range_check = distance
   end
-  return self.caos.range_check
+  return storage.caos.range_check
 end)
 
 -- Randomly chooses an agent which matches the given classifier, and targets it.
@@ -457,7 +456,7 @@ end)
 
 -- Returns species of target. See also FMLY, GNUS.
 CAOS.TargCmd("spcs", function()
-  return self.caos.species
+  return storage.caos.species
 end)
 
 -- This sets the TARG variable to the agent specified.
@@ -477,10 +476,10 @@ end)
 -- Returns the current timer rate set by the command TICK.
 CAOS.TargCmd("tick", function(tick_rate)
   if (tick_rate ~= nil) then
-    self.caos.tick_rate = tick_rate
+    storage.caos.tick_rate = tick_rate
     self.last_tick_time = world.time()
   end
-  return self.caos.tick_rate
+  return storage.caos.tick_rate
 end)
 
 -- Like TINT but only tints the current frame. The other frames are no longer available in the
@@ -505,23 +504,23 @@ CAOS.TargCmd("tint", function(red_tint, green_tint, blue_tint, rotation, swap)
   if green_tint == nil and blue_tint == nil and rotation == nil and swap == nil then
     local attribute = red_tint
     if attribute == 1 then
-      return self.caos.red_tint
+      return storage.caos.red_tint
     elseif attribute == 2 then
-      return self.caos.green_tint
+      return storage.caos.green_tint
     elseif attribute == 3 then
-      return self.caos.blue_tint
+      return storage.caos.blue_tint
     elseif attribute == 4 then
-      return self.caos.rotation
+      return storage.caos.rotation
     elseif attribute == 5 then
-      return self.caos.swap
+      return storage.caos.swap
     end
     return 0
   end
-  self.caos.red_tint = red_tint
-  self.caos.green_tint = green_tint
-  self.caos.blue_tint = blue_tint
-  self.caos.rotation = rotation
-  self.caos.swap = swap
+  storage.caos.red_tint = red_tint
+  storage.caos.green_tint = green_tint
+  storage.caos.blue_tint = blue_tint
+  storage.caos.rotation = rotation
+  storage.caos.swap = swap
   updateImageFrame()
 end)
 
@@ -561,7 +560,7 @@ CAOS.Cmd("ttar", function(family, genus, species)
       callScript = "matches_species",
       callScriptArgs = { family, genus, species }
     })
-  sb.logInfo("%s ttar = %s", self.agentName, #entities)
+  sb.logInfo("%s ttar = %s", storage.agentName, #entities)
 
   if #entities > 0 then
     self.TARG = entities[self.random:randu32() % #entities + 1]

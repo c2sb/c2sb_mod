@@ -8,7 +8,7 @@ end
 
 -- Updates the agent's bounds based on its current sprite_file and first_image
 function updateBounds()
-  local image_size = getImageSize(self.caos.sprite_file, self.caos.first_image)
+  local image_size = getImageSize(storage.caos.sprite_file, storage.caos.first_image)
 
   -- Set the collision polygon
   local half_width = image_size[1] / 2
@@ -47,20 +47,20 @@ function getWorldBounds(entityId)
 end
 
 function updateImageFrame()
-  assert(type(self.caos.first_image) == "number", "first_image is not a number")
-  assert(type(self.caos.base_image) == "number", "base_image is not a number")
-  assert(type(self.caos.pose_image) == "number", "pose_image is not a number")
+  assert(type(storage.caos.first_image) == "number", "first_image is not a number")
+  assert(type(storage.caos.base_image) == "number", "base_image is not a number")
+  assert(type(storage.caos.pose_image) == "number", "pose_image is not a number")
   
-  local frameno = self.caos.first_image + self.caos.base_image + self.caos.pose_image
+  local frameno = storage.caos.first_image + storage.caos.base_image + storage.caos.pose_image
   
   -- Set the frame
   animator.setGlobalTag("frameno", frameno)
   animator.setGlobalTag("color_multiply", string.format("%02X%02X%02X%02X",
-    math.min(self.caos.red_tint, 255),
-    math.min(self.caos.green_tint, 255),
-    math.min(self.caos.blue_tint, 255),
-    255 - math.min(self.caos.alpha_value, 255)))
-  animator.setGlobalTag("hue_shift", string.format("%d", (self.caos.rotation - 128) / 256 * 360 ))
+    math.min(storage.caos.red_tint, 255),
+    math.min(storage.caos.green_tint, 255),
+    math.min(storage.caos.blue_tint, 255),
+    255 - math.min(storage.caos.alpha_value, 255)))
+  animator.setGlobalTag("hue_shift", string.format("%d", (storage.caos.rotation - 128) / 256 * 360 ))
 end
 
 function addMessage(from_entity, message_id, param_1, param_2, delay)
@@ -75,14 +75,14 @@ end
 
 -- Sets the frame rate using Creatures values as the rate.
 function setFrameRate(rate)
-  rate = rate or 1
+  storage.frame_rate = rate or 1
 
   -- Update delta is in frames.
   -- Starbound: 60fps
   -- Creatures: 20fps
   -- Note: We can't modify the update delta unfortunately because we need to listen for collisions
   --script.setUpdateDelta(3 * rate)
-  self.frame_rate = 3 * rate
+  self.sb_frame_rate = 3 * rate
 end
 
 -- Given the object's top left position, returns the center
@@ -92,15 +92,15 @@ function topLeftPixelsToCenter(position)
 end
 
 function matches_species(family, genus, species)
-  if family ~= 0 and family ~= self.caos.family then
+  if family ~= 0 and family ~= storage.caos.family then
     return false
   end
   
-  if genus ~= 0 and genus ~= self.caos.genus then
+  if genus ~= 0 and genus ~= storage.caos.genus then
     return false
   end
   
-  return species == 0 or species == self.caos.species
+  return species == 0 or species == storage.caos.species
 end
 
 function target_visible(entityId, family, genus, species)
@@ -108,10 +108,10 @@ function target_visible(entityId, family, genus, species)
 end
 
 function init_scriptorium_space(family, genus, species)
-  if scriptorium == nil then scriptorium = {} end
-  if scriptorium[family] == nil then scriptorium[family] = {} end
-  if scriptorium[family][genus] == nil then scriptorium[family][genus] = {} end
-  if scriptorium[family][genus][species] == nil then scriptorium[family][genus][species] = {} end
+  if CAOS.scriptorium == nil then CAOS.scriptorium = {} end
+  if CAOS.scriptorium[family] == nil then CAOS.scriptorium[family] = {} end
+  if CAOS.scriptorium[family][genus] == nil then CAOS.scriptorium[family][genus] = {} end
+  if CAOS.scriptorium[family][genus][species] == nil then CAOS.scriptorium[family][genus][species] = {} end
 end
 
 function isReasonableMove(targetCaosPosition)
