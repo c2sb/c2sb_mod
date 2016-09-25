@@ -86,25 +86,15 @@ CaosCmd = {
       end
     end
 
-    local operateOn = t.operateOn
-    -- Conditional targ
-    if operateOn == "CTARG" then
-      if self.OWNR ~= nil then
-        operateOn = "OWNR"
-      else
-        operateOn = "TARG"
-      end
-    end
-
     -- Next, determine how it's operated.
     local result = nil
-    if operateOn == "OWNR" then
+    if t.operateOn == "OWNR" then
       if t.is_caos_var then
         result = t.definition(t, table.unpack(args))
       else
         result = t.definition(table.unpack(args))
       end
-    elseif operateOn == "TARG" then
+    elseif t.operateOn == "TARG" then
       if self.TARG ~= nil and not world.entityExists(self.TARG) then
         local recent_commands = table.concat(self.recent_commands, "\n  ")
         error("Invalid TARG was \""..tostring(self.TARG).."\" on call to "..t.name.."; Script="..self.agentName.."; Recent: \n  "..recent_commands)
@@ -164,8 +154,4 @@ end
 
 function CAOS.TargCmd(command_name, implementation, noResolveArgMask)
   CAOS.Cmd(command_name, implementation, noResolveArgMask, "TARG")
-end
-
-function CAOS.ConditionalTargCmd(command_name, implementation, noResolveArgMask)
-  CAOS.Cmd(command_name, implementation, noResolveArgMask, "CTARG")
 end

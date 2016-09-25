@@ -199,9 +199,15 @@ end, 1 << 3)
 -- it is within RNGE, its PERM allows it to see through all intervening walls, and for creatures
 -- ATTR Invisible isn't set. See also STAR and SEEE. In install scripts, when there is no OWNR,
 -- TARG is used instead.
-CAOS.ConditionalTargCmd("esee", function(family, genus, species, fcn_callback)
+CAOS.Cmd("esee", function(family, genus, species, fcn_callback)
+  -- When OWNR is null we use TARG instead
+  local oldOwnr = self.OWNR
+  if self.OWNR == nil then
+    self.OWNR = self.TARG
+  end
+
   local entities = familyEntityQuery(family, self.OWNR,
-    entity.position(),
+    world.entityPosition(self.OWNR),
     toSB.coordinate(self.caos.range_check),
     {
       callScript = "target_visible",
@@ -214,13 +220,20 @@ CAOS.ConditionalTargCmd("esee", function(family, genus, species, fcn_callback)
       fcn_callback()
     end
   end
+  self.OWNR = oldOwnr
   self.TARG = self.OWNR
 end, 1 << 3)
 
 -- As ENUM, except only enumerates through agents which OWNR is touching. Agents are said to be
 -- touching if their bounding rectangles overlap. See also TTAR. In install scripts, when there is
 -- no OWNR, TARG is used instead.
-CAOS.ConditionalTargCmd("etch", function(family, genus, species, fcn_callback)
+CAOS.Cmd("etch", function(family, genus, species, fcn_callback)
+  -- When OWNR is null we use TARG instead
+  local oldOwnr = self.OWNR
+  if self.OWNR == nil then
+    self.OWNR = self.TARG
+  end
+
   local bounds = getWorldBounds(self.OWNR)
 
   local entities = familyEntityQuery(family, self.OWNR,
@@ -232,11 +245,15 @@ CAOS.ConditionalTargCmd("etch", function(family, genus, species, fcn_callback)
       callScriptArgs = { family, genus, species }
     })
 
-  sb.logInfo("%s etch = %s", self.agentName, #entities)
+  if #entities > 0 then
+    sb.logInfo("%s etch = %s", self.agentName, #entities)
+  end
+  
   for _, entityId in ipairs(entities) do
     self.TARG = entityId
     fcn_callback()
   end
+  self.OWNR = oldOwnr
   self.TARG = self.OWNR
 end, 1 << 3)
 
