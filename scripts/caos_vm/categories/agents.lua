@@ -3,7 +3,7 @@ function updateFlags()
     -- TODO
   end
   if (storage.caos.attributes & CAOS.ATTRIBUTES.MOUSEABLE) ~= 0 then
-    -- TODO
+    -- TODO - Enable/Disable relocateable status
   end
   
   -- CAOS.ATTRIBUTES.ACTIVATEABLE
@@ -45,6 +45,8 @@ function updateFlags()
     -- TODO
   end
 
+  --status.setStatusProperty("invulnerable",
+  --  (storage.caos.behaviors & CAOS.PERMISSIONS.HIT) ~= 0 and 1.0 or 0.0)
 end
 
 -- A wrapper for world.entityQuery which performs differently based on the given family.

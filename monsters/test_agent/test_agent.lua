@@ -55,7 +55,8 @@ function update(dt)
       checkCollision()
       or checkTimer()
       or checkMessages()
-      or checkActivate())
+      or checkActivate()
+      or checkDamaged())
   end
 
   resumeScript()
@@ -103,6 +104,14 @@ function checkTimer()
     -- Timer shouldn't interrupt other scripts
     if isScriptActive() then return false end
     return create_coroutine(CAOS.EVENT.TIMER)
+  end
+  return false
+end
+
+function checkDamaged()
+  if self.damaged then
+    self.damaged = false
+    return create_coroutine(CAOS.EVENT.HIT)
   end
   return false
 end

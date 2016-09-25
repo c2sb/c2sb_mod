@@ -7,16 +7,17 @@
   "parts" : [ ],
 
   "animation" : "test_agent.animation",
+  "reversed" : true, // I don't know why, but the converted images appear inverted
 
   "dropPools" : [ ],
 
   "baseParameters" : {
     "scripts" : [
-     "/monsters/test_agent/test_agent.lua"
+      "/monsters/test_agent/test_agent.lua"
     ],
     "initialScriptDelta" : 1,
 
-    "metaBoundBox" : [-0.1, -0.1, 0.1, 0.1],
+    "metaBoundBox" : [-1, -1, 1, 1],
     "scale" : 1,
     "imageScale" : 0.4,     // "scale" doesn't pixelate the image when resizing
 
@@ -27,18 +28,18 @@
       // Below are default values determined by the Creatures engine
 
       // Default value of ACCG is 0.3, using the flawed formula described in motion.lua gives us this value
-      //"gravityModifier" : 0.09375,   // accg
       "bounceFactor" : 1.0,         // elas
       "groundFriction" : 10,         // Other ground friction?
       "normalGroundFriction" : 10,   // fric
-      "airBuoyancy" : 0.875,
+      "airBuoyancy" : 0.875,        // accg
       "airFriction" : 0,            // aero
       "collisionEnabled" : false,   // attr (SUFFER_COLLISIONS)
       "gravityEnabled" : false      // attr (GRAVITY_ENABLED)
     },
 
     "bodyMaterialKind" : "organic",
-
+    "damageTeamType" : "passive",
+    "knockoutTime" : 0.0,
     "knockoutEffect" : "",
 
     "statusSettings" : {
@@ -50,21 +51,23 @@
       "appliesWeatherStatusEffects" : false,
       "minimumLiquidStatusEffectPercentage" : 0.1,
 
+      "primaryScriptSources" : [
+        "/monsters/test_agent/status_script.lua"
+      ],
+      "primaryScriptDelta" : 5,
+
       "stats" : {
         "knockbackStunTime" : {
-          "baseValue" : 0.25
+          "baseValue" : 0.0
         },
         "knockbackThreshold" : {
-          "baseValue" : 9
+          "baseValue" : 0
         },
         "maxHealth" : {
           "baseValue" : 1000
         },
         "protection" : {
-          "baseValue" : 100
-        },
-        "invulnerable" : {
-          "baseValue" : 1.0
+          "baseValue" : 0.0
         },
         "healthRegen" : {
           "baseValue" : 0.0

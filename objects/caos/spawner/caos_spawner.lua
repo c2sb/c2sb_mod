@@ -15,8 +15,8 @@ function onInteraction(args)
   injectAgent("NG_Eastertribble")
   injectAgent("Botanoid")
   injectAgent("BalloonPlant")
-  --injectAgent("robot_toy")
-  --injectAgent("RubberBall")
+  injectAgent("robot_toy")
+  injectAgent("RubberBall")
   injectAgent("Roamer")
 end
 
